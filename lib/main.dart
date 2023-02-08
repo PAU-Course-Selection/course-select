@@ -1,87 +1,188 @@
 import 'package:flutter/material.dart';
+import 'animation/fade_nimation.dart';
 
-void main() {
-  runApp(const MyApp());
-}
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+void main() => runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: HomePage(),
+    )
+);
 
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Agile Project',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-
-      _counter++;
-    });
-  }
-
+class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+        backgroundColor: Colors.white,
+        body: SingleChildScrollView(
+          child: Container(
+            child: Column(
+              children: <Widget>[
+                Column(
+                  children: [
+                    Container(
+                      height: 400,
+                      child: Stack(
+                        children: <Widget>[
+                          Positioned(
+                            left: 20,
+                            width: 400,
+                            height: 500,
+                            child: FadeAnimation(0.5, Container(
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage('assets/images/bg.jpg'),
+                                      fit: BoxFit.contain
+                                  )
+                              ),
+                            )),
+                          ),
+                          Positioned(
+                            left: 30,
+                            width: 80,
+                            height: 200,
+                            child: FadeAnimation(1, Container(
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage('assets/images/light-1.png')
+                                  )
+                              ),
+                            )),
+                          ),
+                          Positioned(
+                            left: 140,
+                            width: 80,
+                            height: 120,
+                            child: FadeAnimation(1.3, Container(
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage('assets/images/light-2.png')
+                                  )
+                              ),
+                            )),
+                          ),
+                          Positioned(
+                            right: 40,
+                            top: 40,
+                            width: 80,
+                            height: 100,
+                            child: FadeAnimation(1.5, Container(
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage('assets/images/clock.png')
+                                  )
+                              ),
+                            )),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  child: FadeAnimation(1.6, Container(
+                    margin: EdgeInsets.only(top: 10, left: 30),
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                          "Login",
+                          style: TextStyle(
+                              color: Color(0xFF0C005A),
+                              fontSize: 35,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Lato'
+                          )),
+                    ),
+                  )),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(30.0),
+                  child: Column(
+                    children: <Widget>[
+                      FadeAnimation(1.8, Container(
+                        padding: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Color.fromRGBO(143, 148, 251, .2),
+                                  blurRadius: 10.0,
+                                  offset: Offset(0, 5)
+                              ),
+                              BoxShadow(
+                                  color: Color.fromRGBO(143, 148, 251, .1),
+                                  blurRadius: 10.0,
+                                  offset: Offset(0, 5)
+                              )
+                            ]
+                        ),
+                        child: Column(
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.all(8.0),
+                              decoration: BoxDecoration(
+                                  border: Border(bottom: BorderSide(color: Colors.grey[100]!))
+                              ),
+                              child: TextField(
+                                decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    hintText: "Email",
+                                    hintStyle: TextStyle(color: Colors.grey[500])
+                                ),
+                              ),
+                            ),
+                            Container(
+                              padding: EdgeInsets.all(8.0),
+                              child: TextField(
+                                decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    hintText: "Password",
+                                    hintStyle: TextStyle(color: Colors.grey[500])
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      )),
+                      SizedBox(height: 30,),
+                      FadeAnimation(2, Container(
+                        height: 50,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            gradient: LinearGradient(
+                                colors: [
+                                  Color.fromRGBO(143, 148, 251, 1),
+                                  Color(0xffEF514C),
+                                ]
+                            )
+                        ),
+                        child: Center(
+                          child: Text(
+                              "Login",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Roboto')),
+                        ),
+                      )),
+                      SizedBox(height: 30,),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          FadeAnimation(1.5, Text("Not yet a Student?", style: TextStyle(color: Color.fromRGBO(143, 148, 251, 1)),)),
+                          FadeAnimation(1.5, Text(" Register", style: TextStyle(color: Color(0xFF0C005A), fontWeight: FontWeight.bold)),
+                          )],
+                      ),
+                      SizedBox(height: 10,),
+                      FadeAnimation(1.5, Text("Forgot Password?", style: TextStyle(color: Color(0xffEC4F4A)),)),
+                    ],
+                  ),
+                )
+              ],
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+          ),
+        )
     );
   }
 }
