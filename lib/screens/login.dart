@@ -75,6 +75,7 @@ class LoginPage extends StatelessWidget {
                     ),
                   ],
                 ),
+
                 Container(
                   child: FadeAnimation(1.6, Container(
                     margin: EdgeInsets.only(top: 10, left: 30),
@@ -169,11 +170,13 @@ class LoginPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             FadeAnimation(1.5, Text("Not yet a Student?", style: TextStyle(color: Color.fromRGBO(143, 148, 251, 1)),)),
-                            FadeAnimation(1.5, Text(" Register", style: TextStyle(color: Color(0xFF0C005A), fontWeight: FontWeight.bold)),
+                            FadeAnimation(1.5, TextButton(
+                                onPressed: () { Navigator.popAndPushNamed(context, PageRoutes.register); },
+                                child: Text("Register", style: TextStyle(color: Color(0xFF0C005A), fontWeight: FontWeight.bold))),
                             )],
                         ),
                       ),
-                      SizedBox(height: 10,),
+
                       FadeAnimation(1.5, Text("Forgot Password?", style: TextStyle(color: Color(0xffEC4F4A)),)),
                     ],
                   ),

@@ -146,7 +146,7 @@ class RegisterPage extends StatelessWidget {
                               child: TextField(
                                 decoration: InputDecoration(
                                     border: InputBorder.none,
-                                    hintText: "Password",
+                                    hintText: "Password",//Do passwords need to be invisible?
                                     hintStyle: TextStyle(color: Colors.grey[500])
                                 ),
                               ),
@@ -176,17 +176,15 @@ class RegisterPage extends StatelessWidget {
                         ),
                       )),
                       SizedBox(height: 30,),
-                      GestureDetector(
-                        onTap: () => {Navigator.popAndPushNamed(context, PageRoutes.login)},
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            FadeAnimation(1.5, Text("Already a Student?", style: TextStyle(color: Color.fromRGBO(143, 148, 251, 1)),)),
-                            FadeAnimation(1.5, Text(" Login", style: TextStyle(color: Color(0xFF0C005A), fontWeight: FontWeight.bold)),
-                            )],
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          FadeAnimation(1.5, Text("Already a Student?", style: TextStyle(color: Color.fromRGBO(143, 148, 251, 1)),)),
+                          FadeAnimation(1.5, TextButton(
+                              onPressed: () { Navigator.popAndPushNamed(context, PageRoutes.login); },
+                              child: Text("Login", style: TextStyle(color: Color(0xFF0C005A), fontWeight: FontWeight.bold))),
+                          )],
                       ),
-                      SizedBox(height: 10,),
                     ],
                   ),
                 )

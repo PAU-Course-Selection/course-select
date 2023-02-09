@@ -18,7 +18,7 @@ class WelcomePage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               GestureDetector(
-                onTap: () => {Navigator.popAndPushNamed(context, PageRoutes.register)},
+                onTap: () => {Navigator.pushNamed(context, PageRoutes.register)},
                   child: Text('Register')),
               GestureDetector(
               onTap: () => {Navigator.popAndPushNamed(context, PageRoutes.login)},
