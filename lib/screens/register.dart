@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../animation/fade_nimation.dart';
 import '../routes/routes.dart';
@@ -17,13 +18,13 @@ class RegisterPage extends StatelessWidget {
                 Column(
                   children: [
                     Container(
-                      height: 350,
+                      height: 320,
                       child: Stack(
                         children: <Widget>[
                           Positioned(
                             left: 10,
-                            width: 420,
-                            height: 500,
+                            width: 420.w,
+                            height: 440.h,
                             child: FadeAnimation(0.5, Container(
                               decoration: BoxDecoration(
                                   image: DecorationImage(
@@ -35,8 +36,8 @@ class RegisterPage extends StatelessWidget {
                           ),
                           Positioned(
                             left: 30,
-                            width: 80,
-                            height: 150,
+                            width: 80.w,
+                            height: 120.h,
                             child: FadeAnimation(1, Container(
                               decoration: BoxDecoration(
                                   image: DecorationImage(
@@ -47,8 +48,8 @@ class RegisterPage extends StatelessWidget {
                           ),
                           Positioned(
                             left: 140,
-                            width: 80,
-                            height: 110,
+                            width: 80.w,
+                            height: 80.h,
                             child: FadeAnimation(1.3, Container(
                               decoration: BoxDecoration(
                                   image: DecorationImage(
@@ -58,10 +59,10 @@ class RegisterPage extends StatelessWidget {
                             )),
                           ),
                           Positioned(
-                            right: 40,
-                            top: 40,
-                            width: 80,
-                            height: 100,
+                            right: 30,
+                            top: 20,
+                            width: 80.w,
+                            height: 80.h,
                             child: FadeAnimation(1.5, Container(
                               decoration: BoxDecoration(
                                   image: DecorationImage(
@@ -77,7 +78,7 @@ class RegisterPage extends StatelessWidget {
                 ),
                 Container(
                   child: FadeAnimation(1.6, Container(
-                    margin: EdgeInsets.only(top: 10, left: 30),
+                    margin: EdgeInsets.only(top: 10.h, left: 30),
                     child: Align(
                       alignment: Alignment.topLeft,
                       child: Text(
@@ -175,7 +176,6 @@ class RegisterPage extends StatelessWidget {
                                   fontFamily: 'Roboto')),
                         ),
                       )),
-                      const SizedBox(height: 30,),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
