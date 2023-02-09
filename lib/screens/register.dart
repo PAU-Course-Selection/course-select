@@ -175,14 +175,14 @@ class RegisterPage extends StatelessWidget {
                                   fontFamily: 'Roboto')),
                         ),
                       )),
-                      SizedBox(height: 30,),
+                      const SizedBox(height: 30,),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          FadeAnimation(1.5, Text("Already a Student?", style: TextStyle(color: Color.fromRGBO(143, 148, 251, 1)),)),
+                          const FadeAnimation(1.5, Text("Already a Student?", style: TextStyle(color: Color.fromRGBO(143, 148, 251, 1)),)),
                           FadeAnimation(1.5, TextButton(
                               onPressed: () { Navigator.popAndPushNamed(context, PageRoutes.login); },
-                              child: Text("Login", style: TextStyle(color: Color(0xFF0C005A), fontWeight: FontWeight.bold))),
+                              child: const Text("Login", style: TextStyle(color: Color(0xFF0C005A), fontWeight: FontWeight.bold))),
                           )],
                       ),
                     ],
