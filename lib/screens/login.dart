@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../animation/fade_nimation.dart';
 import '../routes/routes.dart';
 
 class LoginPage extends StatelessWidget {
@@ -25,7 +23,7 @@ class LoginPage extends StatelessWidget {
                             left: 20.w,
                             width: 400.w,
                             height: 450.h,
-                            child: FadeAnimation(0.5, Container(
+                            child: Container(
                               decoration: BoxDecoration(
                                   image: DecorationImage(
                                       image: AssetImage('assets/images/bg.jpg'),
@@ -33,51 +31,46 @@ class LoginPage extends StatelessWidget {
                                   )
                               ),
                             )),
-                          ),
                           Positioned(
                             left: 30,
                             width: 80.w,
                             height: 150.h,
-                            child: FadeAnimation(1, Container(
+                            child: Container(
                               decoration: BoxDecoration(
                                   image: DecorationImage(
                                       image: AssetImage('assets/images/light-1.png')
                                   )
                               ),
                             )),
-                          ),
                           Positioned(
                             left: 140,
                             width: 80.w,
                             height: 90.h,
-                            child: FadeAnimation(1.3, Container(
+                            child: Container(
                               decoration: BoxDecoration(
                                   image: DecorationImage(
                                       image: AssetImage('assets/images/light-2.png')
                                   )
                               ),
                             )),
-                          ),
                           Positioned(
                             right: 40,
                             top: 20,
                             width: 80.w,
                             height: 100.h,
-                            child: FadeAnimation(1.5, Container(
+                            child: Container(
                               decoration: BoxDecoration(
                                   image: DecorationImage(
                                       image: AssetImage('assets/images/clock.png')
                                   )
                               ),
                             )),
-                          ),
                         ],
                       ),
                     ),
                   ],
                 ),
-
-                FadeAnimation(1.6, Container(
+                Container(
                   margin: EdgeInsets.only(top: 10.0.h, left: 30),
                   child: const Align(
                     alignment: Alignment.topLeft,
@@ -90,12 +83,12 @@ class LoginPage extends StatelessWidget {
                             fontFamily: 'Lato'
                         )),
                   ),
-                )),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(30.0),
                   child: Column(
                     children: <Widget>[
-                      FadeAnimation(1.8, Container(
+                      Container(
                         padding: const EdgeInsets.all(5),
                         decoration: BoxDecoration(
                             color: Colors.white,
@@ -140,9 +133,9 @@ class LoginPage extends StatelessWidget {
                             )
                           ],
                         ),
-                      )),
+                      ),
                       SizedBox(height: 30.0.h),
-                      FadeAnimation(2, Container(
+                      Container(
                         height: 50,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
@@ -161,22 +154,21 @@ class LoginPage extends StatelessWidget {
                                   fontWeight: FontWeight.bold,
                                   fontFamily: 'Roboto')),
                         ),
-                      )),
+                      ),
                       SizedBox(height: 10.h,),
                       GestureDetector(
                         onTap: () => {Navigator.popAndPushNamed(context, PageRoutes.register)},
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            FadeAnimation(1.5, Text("Not yet a Student?", style: TextStyle(color: Color.fromRGBO(143, 148, 251, 1)),)),
-                            FadeAnimation(1.5, TextButton(
+                            Text("Not yet a Student?", style: TextStyle(color: Color.fromRGBO(143, 148, 251, 1)),),
+                            TextButton(
                                 onPressed: () { Navigator.popAndPushNamed(context, PageRoutes.register); },
                                 child: Text("Register", style: TextStyle(color: Color(0xFF0C005A), fontWeight: FontWeight.bold))),
-                            )],
+                            ],
                         ),
                       ),
-
-                      FadeAnimation(1.5, Text("Forgot Password?", style: TextStyle(color: Color(0xffEC4F4A)),)),
+                      Text("Forgot Password?", style: TextStyle(color: Color(0xffEC4F4A)),),
                     ],
                   ),
                 )

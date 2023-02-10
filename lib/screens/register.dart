@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../animation/fade_nimation.dart';
 import '../routes/routes.dart';
 
 class RegisterPage extends StatelessWidget {
@@ -25,7 +23,7 @@ class RegisterPage extends StatelessWidget {
                             left: 10,
                             width: 420.w,
                             height: 440.h,
-                            child: FadeAnimation(0.5, Container(
+                            child: Container(
                               decoration: BoxDecoration(
                                   image: DecorationImage(
                                       image: AssetImage('assets/images/regbg.jpg'),
@@ -33,51 +31,47 @@ class RegisterPage extends StatelessWidget {
                                   )
                               ),
                             )),
-                          ),
                           Positioned(
                             left: 30,
                             width: 80.w,
                             height: 120.h,
-                            child: FadeAnimation(1, Container(
+                            child: Container(
                               decoration: BoxDecoration(
                                   image: DecorationImage(
                                       image: AssetImage('assets/images/light-1.png')
                                   )
                               ),
                             )),
-                          ),
                           Positioned(
                             left: 140,
                             width: 80.w,
                             height: 80.h,
-                            child: FadeAnimation(1.3, Container(
+                            child: Container(
                               decoration: BoxDecoration(
                                   image: DecorationImage(
                                       image: AssetImage('assets/images/light-2.png')
                                   )
                               ),
                             )),
-                          ),
                           Positioned(
                             right: 30,
                             top: 20,
                             width: 80.w,
                             height: 80.h,
-                            child: FadeAnimation(1.5, Container(
+                            child: Container(
                               decoration: BoxDecoration(
                                   image: DecorationImage(
                                       image: AssetImage('assets/images/clock.png')
                                   )
                               ),
                             )),
-                          ),
                         ],
                       ),
                     ),
                   ],
                 ),
                 Container(
-                  child: FadeAnimation(1.6, Container(
+                  child: Container(
                     margin: EdgeInsets.only(top: 10.h, left: 30),
                     child: Align(
                       alignment: Alignment.topLeft,
@@ -91,12 +85,11 @@ class RegisterPage extends StatelessWidget {
                           )),
                     ),
                   )),
-                ),
                 Padding(
                   padding: EdgeInsets.all(30.0),
                   child: Column(
                     children: <Widget>[
-                      FadeAnimation(1.8, Container(
+                      Container(
                         padding: EdgeInsets.all(5),
                         decoration: BoxDecoration(
                             color: Colors.white,
@@ -154,9 +147,9 @@ class RegisterPage extends StatelessWidget {
                             )
                           ],
                         ),
-                      )),
+                      ),
                       SizedBox(height: 30,),
-                      FadeAnimation(2, Container(
+                      Container(
                         height: 50,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
@@ -175,15 +168,15 @@ class RegisterPage extends StatelessWidget {
                                   fontWeight: FontWeight.bold,
                                   fontFamily: 'Roboto')),
                         ),
-                      )),
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const FadeAnimation(1.5, Text("Already a Student?", style: TextStyle(color: Color.fromRGBO(143, 148, 251, 1)),)),
-                          FadeAnimation(1.5, TextButton(
+                          const Text("Already a Student?", style: TextStyle(color: Color.fromRGBO(143, 148, 251, 1)),),
+                          TextButton(
                               onPressed: () { Navigator.popAndPushNamed(context, PageRoutes.login); },
                               child: const Text("Login", style: TextStyle(color: Color(0xFF0C005A), fontWeight: FontWeight.bold))),
-                          )],
+                          ],
                       ),
                     ],
                   ),
