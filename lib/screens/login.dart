@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../animation/fade_nimation.dart';
+import '../animation/fade_animation.dart';
 import '../routes/routes.dart';
 
 class LoginPage extends StatelessWidget {

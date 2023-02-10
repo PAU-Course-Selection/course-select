@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../animation/fade_nimation.dart';
+import '../animation/fade_animation.dart';
 import '../routes/routes.dart';
 
 class RegisterPage extends StatelessWidget {
@@ -181,7 +181,10 @@ class RegisterPage extends StatelessWidget {
                         children: [
                           const FadeAnimation(1.5, Text("Already a Student?", style: TextStyle(color: Color.fromRGBO(143, 148, 251, 1)),)),
                           FadeAnimation(1.5, TextButton(
-                              onPressed: () { Navigator.popAndPushNamed(context, PageRoutes.login); },
+                              onPressed: () {
+                                Navigator.popAndPushNamed(context, PageRoutes.login);
+
+                                },
                               child: const Text("Login", style: TextStyle(color: Color(0xFF0C005A), fontWeight: FontWeight.bold))),
                           )],
                       ),
