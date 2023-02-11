@@ -6,18 +6,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../auth/auth_exceptions.dart';
 import '../auth/bloc/auth_bloc.dart';
+import '../auth/bloc/auth_event.dart';
 import '../dialogs/error_dialog.dart';
 import '../routes/routes.dart';
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({Key? key}) : super(key: key);
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({Key? key}) : super(key: key);
 
   // static final screenId = 'register_screen';
   @override
-  _RegisterPageState createState() => _RegisterPageState();
+  _RegisterScreenState createState() => _RegisterScreenState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _RegisterScreenState extends State<RegisterScreen> {
   late final TextEditingController _name;
   late final TextEditingController _email;
   late final TextEditingController _password;
@@ -128,10 +129,10 @@ class _RegisterPageState extends State<RegisterPage> {
                 Container(
                     child: Container(
                   margin: EdgeInsets.only(top: 10.h, left: 30),
-                  child: const Align(
+                  child: Align(
                     alignment: Alignment.topLeft,
-                    child: Text("Register",
-                        style: TextStyle(
+                    child: Text(context.loc.register,
+                        style: const TextStyle(
                             color: Color(0xFF0C005A),
                             fontSize: 35,
                             fontWeight: FontWeight.bold,
@@ -143,22 +144,21 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: Column(
                     children: <Widget>[
                       Container(
-                        padding: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: [
-                              const BoxShadow(
-                                  color: Color.fromRGBO(143, 148, 251, .2),
-                                  blurRadius: 10.0,
-                                  offset: Offset(0, 5)),
-                              const BoxShadow(
-                                  color: Color.fromRGBO(143, 148, 251, .1),
-                                  blurRadius: 10.0,
-                                  offset: Offset(0, 5))
-                            ]),
-                        child: Column(
-                          children: <Widget>[
+                          padding: const EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: const [
+                                BoxShadow(
+                                    color: Color.fromRGBO(143, 148, 251, .2),
+                                    blurRadius: 10.0,
+                                    offset: Offset(0, 5)),
+                                BoxShadow(
+                                    color: Color.fromRGBO(143, 148, 251, .1),
+                                    blurRadius: 10.0,
+                                    offset: Offset(0, 5))
+                              ]),
+                          child: Column(children: <Widget>[
                             Container(
                               padding: const EdgeInsets.all(8.0),
                               decoration: BoxDecoration(
@@ -166,9 +166,11 @@ class _RegisterPageState extends State<RegisterPage> {
                                       bottom: BorderSide(
                                           color: Colors.grey[100]!))),
                               child: TextField(
+                                controller: _name,
                                 decoration: InputDecoration(
                                     border: InputBorder.none,
-                                    hintText: "Name",
+                                    hintText:
+                                        context.loc.name_text_field_placeholder,
                                     hintStyle:
                                         TextStyle(color: Colors.grey[500])),
                               ),
@@ -180,9 +182,11 @@ class _RegisterPageState extends State<RegisterPage> {
                                       bottom: BorderSide(
                                           color: Colors.grey[100]!))),
                               child: TextField(
+                                controller: _email,
                                 decoration: InputDecoration(
                                     border: InputBorder.none,
-                                    hintText: "Email",
+                                    hintText: context
+                                        .loc.email_text_field_placeholder,
                                     hintStyle:
                                         TextStyle(color: Colors.grey[500])),
                               ),
@@ -190,55 +194,85 @@ class _RegisterPageState extends State<RegisterPage> {
                             Container(
                               padding: const EdgeInsets.all(8.0),
                               child: TextField(
+                                obscureText: true,
+                                controller: _password,
                                 decoration: InputDecoration(
                                     border: InputBorder.none,
                                     hintText: "Password",
+
                                     //Do passwords need to be invisible?
                                     hintStyle:
                                         TextStyle(color: Colors.grey[500])),
                               ),
-                            )
-                          ],
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      Container(
-                        height: 50,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            gradient: const LinearGradient(colors: [
-                              Color.fromRGBO(143, 148, 251, 1),
-                              Color(0xffEF514C),
-                            ])),
-                        child: const Center(
-                          child: Text("Register",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Roboto')),
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            "Already a Student?",
-                            style: TextStyle(
-                                color: Color.fromRGBO(143, 148, 251, 1)),
-                          ),
-                          TextButton(
-                              onPressed: () {
-                                Navigator.popAndPushNamed(
-                                    context, PageRoutes.login);
-                              },
-                              child: const Text("Login",
-                                  style: TextStyle(
-                                      color: Color(0xFF0C005A),
-                                      fontWeight: FontWeight.bold))),
-                        ],
-                      ),
+                            ),
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            Container(
+                              height: 50,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                gradient: const LinearGradient(colors: [
+                                  Color.fromRGBO(143, 148, 251, 1),
+                                  Color(0xffEF514C),
+                                ]),
+                              ),
+                              child: Center(
+                                child: Column(
+                                  children: [
+                                    TextButton(
+                                      onPressed: () async {
+                                        final name = _name.text;
+                                        final email = _email.text;
+                                        final password = _password.text;
+                                        context.read<AuthBloc>().add(
+                                              AuthEventRegister(
+                                                name,
+                                                email,
+                                                password,
+                                              ),
+                                            );
+                                      },
+                                      child: Text(
+                                        context.loc.register,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'Roboto',
+                                        ),
+                                      ),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        const Text(
+                                          "Already a Student?",
+                                          style: TextStyle(
+                                              color: Color.fromRGBO(
+                                                  143, 148, 251, 1)),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            context.read<AuthBloc>().add(
+                                                  const AuthEventLogOut(),
+                                                );
+                                          },
+                                          child: const Text(
+                                            "Login",
+                                            style: TextStyle(
+                                              color: Color(0xFF0C005A),
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ])),
                     ],
                   ),
                 )
