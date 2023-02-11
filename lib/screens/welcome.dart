@@ -1,31 +1,27 @@
-import 'package:course_select/screens/register.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../routes/routes.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({Key? key}) : super(key: key);
-  static final screenId = 'welcome_screen';
+  static const screenId = 'welcome_screen';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        body: Container(
-        child: Center(
+        body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               GestureDetector(
                 onTap: () => {Navigator.pushNamed(context, PageRoutes.register)},
-                  child: Text('Register')),
+                  child: const Text('Register')),
               GestureDetector(
               onTap: () => {Navigator.popAndPushNamed(context, PageRoutes.login)},
-              child: Text('Login'))
+              child: const Text('Login'))
             ],
           ),
-        )
         ));
   }
 }
