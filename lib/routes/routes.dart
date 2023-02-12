@@ -16,10 +16,10 @@ class PageRoutes{
 
   Map<String, WidgetBuilder> routes() {
     return{
-      welcome: (context) => WelcomePage(),
-      login: (context) => LoginPage(),
+      welcome: (context) => const WelcomePage(),
+      login: (context) => const LoginPage(),
       register: (context) => RegisterPage(),
-      home: (context) => AppNavScreen(),
+      home: (context) => const AppNavScreen(),
 
     };
   }

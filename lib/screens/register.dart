@@ -109,7 +109,7 @@ class RegisterPage extends StatelessWidget {
                       child: Column(
                         children: <Widget>[
                           Container(
-                            padding: EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(8.0),
                             decoration: BoxDecoration(
                                 border: Border(bottom: BorderSide(color: Colors.grey[100]!))
                             ),
@@ -122,7 +122,7 @@ class RegisterPage extends StatelessWidget {
                             ),
                           ),
                           Container(
-                            padding: EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(8.0),
                             decoration: BoxDecoration(
                                 border: Border(bottom: BorderSide(color: Colors.grey[100]!))
                             ),
@@ -135,7 +135,7 @@ class RegisterPage extends StatelessWidget {
                             ),
                           ),
                           Container(
-                            padding: EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(8.0),
                             child: TextField(
                               decoration: InputDecoration(
                                   border: InputBorder.none,
