@@ -1,11 +1,50 @@
+import 'dart:developer';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import '../routes/routes.dart';
+import '../shared_widgets/gradient_button.dart';
+import 'auth.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   static const screenId = 'login_screen';
 
   const LoginPage({Key? key}) : super(key: key);
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+
+  String? errorMessage = '';
+  bool isLogin = true;
+
+  final TextEditingController _controllerEmail = TextEditingController();
+  final TextEditingController _controllerPassword = TextEditingController();
+
+  Future<void> signInWithEmailAndPassword() async {
+    try {
+      await Auth().signInWithEmailAndPassword(
+        email: _controllerEmail.text,
+        password: _controllerPassword.text,
+      );
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        errorMessage = e.message;
+      });
+    }
+  }
+
+  Widget _errorMessage() {
+    return Text(errorMessage == ''?'' : 'Hmm? $errorMessage', style: const TextStyle(color: Colors.red),);
+  }
+
+  bool _errorVisibility = false;
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,6 +153,7 @@ class LoginPage extends StatelessWidget {
                                 border: Border(bottom: BorderSide(color: Colors.grey[100]!))
                             ),
                             child: TextField(
+                              controller: _controllerEmail,
                               decoration: InputDecoration(
                                   border: InputBorder.none,
                                   hintText: "Email",
@@ -124,49 +164,54 @@ class LoginPage extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.all(8.0),
                             child: TextField(
+                              controller: _controllerPassword,
                               decoration: InputDecoration(
                                   border: InputBorder.none,
                                   hintText: "Password",
                                   hintStyle: TextStyle(color: Colors.grey[500])
                               ),
                             ),
-                          )
+                          ),
+
                         ],
                       ),
                     ),
                     SizedBox(height: 30.0.h),
-                    Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          gradient: const LinearGradient(
-                              colors: [
-                                Color.fromRGBO(143, 148, 251, 1),
-                                Color(0xffEF514C),
-                              ]
-                          )
-                      ),
-                      child: const Center(
-                        child: Text(
-                            "Login",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'Roboto')),
-                      ),
+                    Visibility(
+                      visible: _errorVisibility,
+                        child: _errorMessage()),
+                    GradientButton(
+                      buttonText: 'Login',
+                      onPressed: () async {
+                        await signInWithEmailAndPassword();
+                        log('LOGIN');
+                        setState((){
+                          isLogin = !isLogin;
+                        });
+                        if(isLogin ) {
+                            log('success');
+                            setState(() {
+                              _errorVisibility = false;
+                              Get.toNamed(PageRoutes.home);
+                            });
+                          } else{
+                            _errorVisibility = true;
+                          }
+                        log('error visible' + _errorVisibility.toString());
+                        log('isLogin' + isLogin.toString());
+                        log('isLogin' + errorMessage.toString());
+
+                      }
                     ),
                     SizedBox(height: 10.h,),
-                    GestureDetector(
-                      onTap: () => {Navigator.popAndPushNamed(context, PageRoutes.register)},
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text("Not yet a Student?", style: TextStyle(color: Color.fromRGBO(143, 148, 251, 1)),),
-                          TextButton(
-                              onPressed: () { Navigator.popAndPushNamed(context, PageRoutes.register); },
-                              child: const Text("Register", style: TextStyle(color: Color(0xFF0C005A), fontWeight: FontWeight.bold))),
-                          ],
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("Not yet a Student?", style: TextStyle(color: Color.fromRGBO(143, 148, 251, 1)),),
+                        TextButton(
+                            onPressed: () { Get.toNamed(PageRoutes.register); },
+                            child: const Text("Register", style: TextStyle(color: Color(0xFF0C005A), fontWeight: FontWeight.bold))),
+                        ],
                     ),
                     const Text("Forgot Password?", style: TextStyle(color: Color(0xffEC4F4A)),),
                   ],
@@ -178,3 +223,4 @@ class LoginPage extends StatelessWidget {
     );
   }
 }
+

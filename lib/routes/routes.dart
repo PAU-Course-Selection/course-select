@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 
-import '../screens/app_nav_screen.dart';
-import '../screens/login.dart';
-import '../screens/register.dart';
-import '../screens/welcome.dart';
+import '../screens/home_page.dart';
+import '../screens/login_page.dart';
+import '../screens/register_page.dart';
+import '../screens/welcome_page.dart';
 
 class PageRoutes{
   static const String welcome = 'welcome';
@@ -18,8 +18,8 @@ class PageRoutes{
     return{
       welcome: (context) => const WelcomePage(),
       login: (context) => const LoginPage(),
-      register: (context) => RegisterPage(),
-      home: (context) => const AppNavScreen(),
+      register: (context) => const RegisterPage(),
+      home: (context) => HomePage(),
 
     };
   }

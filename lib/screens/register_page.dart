@@ -1,11 +1,52 @@
+import 'dart:developer';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import '../routes/routes.dart';
+import '../shared_widgets/gradient_button.dart';
+import 'auth.dart';
 
-class RegisterPage extends StatelessWidget {
+class RegisterPage extends StatefulWidget {
   static const screenId = 'register_screen';
 
   const RegisterPage({Key? key}) : super(key: key);
+
+  @override
+  State<RegisterPage> createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
+
+  String? errorMessage = '';
+  bool isLogin = true;
+
+  final TextEditingController _controllerEmail = TextEditingController();
+  final TextEditingController _controllerPassword = TextEditingController();
+
+
+
+  Future<void> createUserWithEmailAndPassword() async {
+    try {
+      await Auth().createUserWithEmailAndPassword(
+        email: _controllerEmail.text,
+        password: _controllerPassword.text,
+      );
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        errorMessage = e.message;
+      });
+    }
+  }
+
+  Widget _errorMessage() {
+    return Text(errorMessage == '' ? '' : 'Hmm? $errorMessage', style: const TextStyle(color: Colors.red),);
+  }
+
+  bool _errorVisibility = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -127,6 +168,7 @@ class RegisterPage extends StatelessWidget {
                                 border: Border(bottom: BorderSide(color: Colors.grey[100]!))
                             ),
                             child: TextField(
+                              controller: _controllerEmail,
                               decoration: InputDecoration(
                                   border: InputBorder.none,
                                   hintText: "Email",
@@ -137,6 +179,7 @@ class RegisterPage extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.all(8.0),
                             child: TextField(
+                              controller: _controllerPassword,
                               decoration: InputDecoration(
                                   border: InputBorder.none,
                                   hintText: "Password",//Do passwords need to be invisible?
@@ -148,32 +191,35 @@ class RegisterPage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 30,),
-                    Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          gradient: const LinearGradient(
-                              colors: [
-                                Color.fromRGBO(143, 148, 251, 1),
-                                Color(0xffEF514C),
-                              ]
-                          )
-                      ),
-                      child: const Center(
-                        child: Text(
-                            "Register",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'Roboto')),
-                      ),
+                    Visibility(
+                        visible: _errorVisibility,
+                        child: _errorMessage()),
+
+                    GradientButton(
+                      buttonText: 'Register',
+                      onPressed: () async {
+                        await createUserWithEmailAndPassword();
+                        log('REGISTER');
+                        setState((){
+                          isLogin = !isLogin;
+                        });
+                        if(isLogin){
+                          log('success');
+                          setState((){
+                            _errorVisibility = false;
+                          });
+                          Get.toNamed(PageRoutes.home);
+                        }else {
+                          _errorVisibility = true;
+                        }
+                      },
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Text("Already a Student?", style: TextStyle(color: Color.fromRGBO(143, 148, 251, 1)),),
                         TextButton(
-                            onPressed: () { Navigator.popAndPushNamed(context, PageRoutes.login); },
+                            onPressed: () {Get.toNamed(PageRoutes.login);  },
                             child: const Text("Login", style: TextStyle(color: Color(0xFF0C005A), fontWeight: FontWeight.bold))),
                         ],
                     ),
