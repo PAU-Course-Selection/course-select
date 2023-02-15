@@ -27,7 +27,7 @@ class HomePage extends StatelessWidget {
     return ElevatedButton(
       onPressed: () => {
         signOut(),
-        Get.toNamed(PageRoutes.welcome)},
+        Get.offAndToNamed(PageRoutes.login_register)},
       child: const Text('Sign Out'),
     );
   }
@@ -37,6 +37,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: _title(),
+        automaticallyImplyLeading: false,
       ),
       body: Container(
         height: double.infinity,

@@ -39,11 +39,8 @@ class Onboarding extends StatelessWidget {
               const Text('Users will have an overview of app features (onboarding)'),
               const SizedBox(height: 20),
               TextButton(
-              onPressed: () => {Get.toNamed(PageRoutes.register)},
-              child: const Text('Register')),
-              TextButton(
-                  onPressed: () => {Get.toNamed(PageRoutes.login)},
-                  child: const Text('Login'))
+              onPressed: () => {Get.toNamed(PageRoutes.login_register)},
+              child: const Text('Get Started'))
             ],
           ),
         ));

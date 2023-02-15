@@ -8,20 +8,21 @@ import '../routes/routes.dart';
 import '../shared_widgets/gradient_button.dart';
 import 'auth.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginRegisterPage extends StatefulWidget {
   static const screenId = 'login_screen';
 
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginRegisterPage({Key? key}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<LoginRegisterPage> createState() => _LoginRegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginRegisterPageState extends State<LoginRegisterPage> {
 
   String? errorMessage = '';
   bool isLogin = true;
 
+  final TextEditingController _controllerName = TextEditingController();
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
 
@@ -31,6 +32,7 @@ class _LoginPageState extends State<LoginPage> {
         email: _controllerEmail.text,
         password: _controllerPassword.text,
       );
+      Get.offAndToNamed(PageRoutes.home);
     } on FirebaseAuthException catch (e) {
       setState(() {
         errorMessage = e.message;
@@ -39,11 +41,45 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _errorMessage() {
-    return Text(errorMessage == ''?'' : 'Hmm? $errorMessage', style: const TextStyle(color: Colors.red),);
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text(errorMessage == ''?'' : 'Hmm... $errorMessage', style: const TextStyle(color: Colors.red),),
+    );
   }
 
-  bool _errorVisibility = false;
+  Future<void> createUserWithEmailAndPassword() async {
+    try {
+      await Auth().createUserWithEmailAndPassword(
+        email: _controllerEmail.text,
+        password: _controllerPassword.text,
+      );
+      Get.offAndToNamed(PageRoutes.home);
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        errorMessage = e.message;
+      });
+    }
+  }
 
+  Widget _loginOrRegisterButton() {
+    return TextButton(
+      onPressed: () {
+        setState(() {
+          isLogin = !isLogin;
+          errorMessage = '';
+        });
+      },
+      child: isLogin? const RegisterOrLogin(text1: "Not yet a Student?", text2: " Register",): const RegisterOrLogin(text1: "Already a Student?", text2: " Login",),
+    );
+  }
+
+  Widget _submitButton() {
+    return GradientButton(
+      onPressed:
+      isLogin ? signInWithEmailAndPassword : createUserWithEmailAndPassword,
+      buttonText: isLogin? 'Login' : 'Register',
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,11 +147,11 @@ class _LoginPageState extends State<LoginPage> {
               ),
               Container(
                 margin: EdgeInsets.only(top: 10.0.h, left: 30),
-                child: const Align(
+                child: Align(
                   alignment: Alignment.topLeft,
                   child: Text(
-                      "Login",
-                      style: TextStyle(
+                      isLogin ? 'Login' : 'Register',
+                      style: const TextStyle(
                           color: Color(0xFF0C005A),
                           fontSize: 35,
                           fontWeight: FontWeight.bold,
@@ -147,6 +183,22 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       child: Column(
                         children: <Widget>[
+                          Visibility(
+                            visible: isLogin? false:true,
+                            child: Container(
+                            padding: const EdgeInsets.all(8.0),
+                            decoration: BoxDecoration(
+                                border: Border(bottom: BorderSide(color: Colors.grey[100]!))
+                            ),
+                            child: TextField(
+                              controller: _controllerName,
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: "Name",
+                                  hintStyle: TextStyle(color: Colors.grey[500])
+                              ),
+                            ),
+                          ),),
                           Container(
                             padding: const EdgeInsets.all(8.0),
                             decoration: BoxDecoration(
@@ -176,43 +228,11 @@ class _LoginPageState extends State<LoginPage> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 30.0.h),
-                    Visibility(
-                      visible: _errorVisibility,
-                        child: _errorMessage()),
-                    GradientButton(
-                      buttonText: 'Login',
-                      onPressed: () async {
-                        await signInWithEmailAndPassword();
-                        log('LOGIN');
-                        setState((){
-                          isLogin = !isLogin;
-                        });
-                        if(isLogin ) {
-                            log('success');
-                            setState(() {
-                              _errorVisibility = false;
-                              Get.toNamed(PageRoutes.home);
-                            });
-                          } else{
-                            _errorVisibility = true;
-                          }
-                        log('error visible' + _errorVisibility.toString());
-                        log('isLogin' + isLogin.toString());
-                        log('isLogin' + errorMessage.toString());
-
-                      }
-                    ),
-                    SizedBox(height: 10.h,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text("Not yet a Student?", style: TextStyle(color: Color.fromRGBO(143, 148, 251, 1)),),
-                        TextButton(
-                            onPressed: () { Get.toNamed(PageRoutes.register); },
-                            child: const Text("Register", style: TextStyle(color: Color(0xFF0C005A), fontWeight: FontWeight.bold))),
-                        ],
-                    ),
+                    SizedBox(height: 10.0.h),
+                    _errorMessage(),
+                    _submitButton(),
+                    _loginOrRegisterButton(),
+                    SizedBox(height: 5.h,),
                     const Text("Forgot Password?", style: TextStyle(color: Color(0xffEC4F4A)),),
                   ],
                 ),
@@ -220,6 +240,25 @@ class _LoginPageState extends State<LoginPage> {
             ],
           ),
         )
+    );
+  }
+}
+
+class RegisterOrLogin extends StatelessWidget {
+  final String text1;
+  final String text2;
+  const RegisterOrLogin({
+    Key? key, required this.text1, required this.text2,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(text1, style: const TextStyle(color: Color.fromRGBO(143, 148, 251, 1)),),
+        Text(text2, style: const TextStyle(color: Color(0xFF0C005A), fontWeight: FontWeight.bold)),
+        ],
     );
   }
 }
