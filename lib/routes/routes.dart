@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import '../screens/home_page.dart';
 import '../screens/login_page.dart';
 import '../screens/user_profile_page.dart';
-import '../screens/welcome_page.dart';
+import '../screens/intro_pages/welcome_page.dart';
 
 class PageRoutes{
   static const String welcome = 'welcome';

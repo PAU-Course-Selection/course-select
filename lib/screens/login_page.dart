@@ -215,7 +215,7 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
                               decoration: InputDecoration(
                                   border: InputBorder.none,
                                   hintText: "Name",
-                                  hintStyle: TextStyle(color: Colors.grey[500])
+                                  hintStyle: TextStyle(color: _showError? Colors.red: Colors.grey[500])
                               ),
                             ),
                           ),),
@@ -251,7 +251,6 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 10.0.h),
                     _error(),
                     _errorMessage(),
                     _submitButton(),
