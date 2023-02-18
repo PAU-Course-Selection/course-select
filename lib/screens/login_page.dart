@@ -101,6 +101,14 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
   }
 
   @override
+  void dispose() {
+    _controllerName.dispose();
+    _controllerEmail.dispose();
+    _controllerPassword.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,

@@ -36,9 +36,18 @@ class Onboarding extends StatefulWidget {
   State<Onboarding> createState() => _OnboardingState();
 }
 
+
 class _OnboardingState extends State<Onboarding> {
+
   final PageController _controller = PageController();
   bool _onLastPage = false;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
