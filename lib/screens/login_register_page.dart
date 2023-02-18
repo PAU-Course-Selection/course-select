@@ -49,7 +49,7 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
     );
   }
 
-  Widget _error() {
+  Widget _emptyFieldError() {
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: Text(!_showError ? '' : 'All fields required...', style: const TextStyle(color: Colors.red),),
@@ -259,12 +259,16 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
                         ],
                       ),
                     ),
-                    _error(),
+                    _emptyFieldError(),
                     _errorMessage(),
                     _submitButton(),
                     _loginOrRegisterButton(),
-                    SizedBox(height: 5.h,),
-                    const Text("Forgot Password?", style: TextStyle(color: Color(0xffEC4F4A)),),
+                    TextButton(
+                      onPressed: () {
+                        Get.toNamed(PageRoutes.forgotPassword);
+                      },
+                      child: Text(isLogin? 'Forgot Password?': '', style: const TextStyle(color: Color(0xffEC4F4A)),),
+                      ),
                   ],
                 ),
               )
