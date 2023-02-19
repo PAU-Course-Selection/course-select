@@ -1,5 +1,5 @@
-import 'dart:developer';
-
+import 'package:course_select/controllers/user_controller.dart';
+import 'package:course_select/utils/firebase_data_management.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -21,7 +21,9 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
 
   String? errorMessage = '';
   bool isLogin = true;
+  bool _showError = false;
 
+  final userController = Get.put(UserController());
   final TextEditingController _controllerName = TextEditingController();
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
@@ -42,18 +44,35 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
 
   Widget _errorMessage() {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(4.0),
       child: Text(errorMessage == ''?'' : 'Hmm... $errorMessage', style: const TextStyle(color: Colors.red),),
+    );
+  }
+
+  Widget _emptyFieldError() {
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: Text(!_showError ? '' : 'All fields required...', style: const TextStyle(color: Colors.red),),
     );
   }
 
   Future<void> createUserWithEmailAndPassword() async {
     try {
-      await Auth().createUserWithEmailAndPassword(
-        email: _controllerEmail.text,
-        password: _controllerPassword.text,
-      );
-      Get.offAndToNamed(PageRoutes.home);
+
+      if(_controllerName.text != ''){
+        await Auth().createUserWithEmailAndPassword(
+          email: _controllerEmail.text,
+          password: _controllerPassword.text,
+        );
+        userController.setUserName(_controllerName.text);
+        userSetup(displayName:_controllerName.text, email: _controllerEmail.text);
+        Get.offAndToNamed(PageRoutes.home);
+      }else{
+        setState(() {
+          _showError = true;
+        });
+      }
+
     } on FirebaseAuthException catch (e) {
       setState(() {
         errorMessage = e.message;
@@ -79,6 +98,14 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
       isLogin ? signInWithEmailAndPassword : createUserWithEmailAndPassword,
       buttonText: isLogin? 'Login' : 'Register',
     );
+  }
+
+  @override
+  void dispose() {
+    _controllerName.dispose();
+    _controllerEmail.dispose();
+    _controllerPassword.dispose();
+    super.dispose();
   }
 
   @override
@@ -191,11 +218,12 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
                                 border: Border(bottom: BorderSide(color: Colors.grey[100]!))
                             ),
                             child: TextField(
+                              keyboardType: TextInputType.name,
                               controller: _controllerName,
                               decoration: InputDecoration(
                                   border: InputBorder.none,
                                   hintText: "Name",
-                                  hintStyle: TextStyle(color: Colors.grey[500])
+                                  hintStyle: TextStyle(color: _showError? Colors.red: Colors.grey[500])
                               ),
                             ),
                           ),),
@@ -205,6 +233,7 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
                                 border: Border(bottom: BorderSide(color: Colors.grey[100]!))
                             ),
                             child: TextField(
+                              keyboardType: TextInputType.emailAddress,
                               controller: _controllerEmail,
                               decoration: InputDecoration(
                                   border: InputBorder.none,
@@ -216,6 +245,8 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
                           Container(
                             padding: const EdgeInsets.all(8.0),
                             child: TextField(
+                              obscureText: true,
+                              keyboardType: TextInputType.visiblePassword,
                               controller: _controllerPassword,
                               decoration: InputDecoration(
                                   border: InputBorder.none,
@@ -228,12 +259,16 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 10.0.h),
+                    _emptyFieldError(),
                     _errorMessage(),
                     _submitButton(),
                     _loginOrRegisterButton(),
-                    SizedBox(height: 5.h,),
-                    const Text("Forgot Password?", style: TextStyle(color: Color(0xffEC4F4A)),),
+                    TextButton(
+                      onPressed: () {
+                        Get.toNamed(PageRoutes.forgotPassword);
+                      },
+                      child: Text(isLogin? 'Forgot Password?': '', style: const TextStyle(color: Color(0xffEC4F4A)),),
+                      ),
                   ],
                 ),
               )
