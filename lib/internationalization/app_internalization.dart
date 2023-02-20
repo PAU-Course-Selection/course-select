@@ -10,15 +10,18 @@ class AppTranslations extends Translations {
       'register': 'Register',
       'forgot_password': 'Forgot password?',
       'name': 'Name',
+      'no_student':'Not yet a Student？',
+      'already_s' : 'Already a Student?'
     },
     'zh_CN': {
-      'email': '邮件',
+      'email': '邮箱',
       'password': '密码',
-      'login': '登记',
+      'login': '登陆',
       'register': '注册',
       'forgot_password': '忘记密码?',
-      'name': '名字',
+      'name': '姓名',
+      'no_student':'还不是学生？',
+      'already_s':'已有账户？'
     }
-
   };
 }
