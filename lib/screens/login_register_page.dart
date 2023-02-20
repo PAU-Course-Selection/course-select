@@ -61,11 +61,11 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
 
       if(_controllerName.text != ''){
         await Auth().createUserWithEmailAndPassword(
-          email: _controllerEmail.text,
-          password: _controllerPassword.text,
+          email: _controllerEmail.text.trim(),
+          password: _controllerPassword.text.trim(),
         );
         userController.setUserName(_controllerName.text);
-        userSetup(displayName:_controllerName.text, email: _controllerEmail.text);
+        userSetup(displayName:_controllerName.text.trim(), email: _controllerEmail.text.trim());
         Get.offAndToNamed(PageRoutes.home);
       }else{
         setState(() {
@@ -88,7 +88,7 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
           errorMessage = '';
         });
       },
-      child: isLogin? const RegisterOrLogin(text1: "Not yet a Student?", text2: " Register",): const RegisterOrLogin(text1: "Already a Student?", text2: " Login",),
+      child: isLogin? RegisterOrLogin(text1: "Not yet a Student? ", text2: 'register'.tr,): RegisterOrLogin(text1: "Already a Student? ", text2: 'login'.tr,),
     );
   }
 
@@ -96,7 +96,7 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
     return GradientButton(
       onPressed:
       isLogin ? signInWithEmailAndPassword : createUserWithEmailAndPassword,
-      buttonText: isLogin? 'Login' : 'Register',
+      buttonText: isLogin? 'login'.tr : 'register'.tr,
     );
   }
 
@@ -177,7 +177,7 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
                 child: Align(
                   alignment: Alignment.topLeft,
                   child: Text(
-                      isLogin ? 'Login' : 'Register',
+                      isLogin ? 'login'.tr : 'register'.tr,
                       style: const TextStyle(
                           color: Color(0xFF0C005A),
                           fontSize: 35,
@@ -222,7 +222,7 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
                               controller: _controllerName,
                               decoration: InputDecoration(
                                   border: InputBorder.none,
-                                  hintText: "Name",
+                                  hintText: 'name'.tr,
                                   hintStyle: TextStyle(color: _showError? Colors.red: Colors.grey[500])
                               ),
                             ),
@@ -237,7 +237,7 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
                               controller: _controllerEmail,
                               decoration: InputDecoration(
                                   border: InputBorder.none,
-                                  hintText: "Email",
+                                  hintText: 'email'.tr,
                                   hintStyle: TextStyle(color: Colors.grey[500])
                               ),
                             ),
@@ -250,7 +250,7 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
                               controller: _controllerPassword,
                               decoration: InputDecoration(
                                   border: InputBorder.none,
-                                  hintText: "Password",
+                                  hintText: 'password'.tr,
                                   hintStyle: TextStyle(color: Colors.grey[500])
                               ),
                             ),
@@ -267,7 +267,7 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
                       onPressed: () {
                         Get.toNamed(PageRoutes.forgotPassword);
                       },
-                      child: Text(isLogin? 'Forgot Password?': '', style: const TextStyle(color: Color(0xffEC4F4A)),),
+                      child: Text(isLogin? 'forgot_password'.tr: '', style: const TextStyle(color: Color(0xffEC4F4A)),),
                       ),
                   ],
                 ),
