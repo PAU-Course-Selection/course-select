@@ -28,6 +28,8 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
 
+  DatabaseManager db = DatabaseManager();
+
   Future<void> signInWithEmailAndPassword() async {
     try {
       await Auth().signInWithEmailAndPassword(
@@ -58,14 +60,13 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
 
   Future<void> createUserWithEmailAndPassword() async {
     try {
-
       if(_controllerName.text != ''){
         await Auth().createUserWithEmailAndPassword(
           email: _controllerEmail.text.trim(),
           password: _controllerPassword.text.trim(),
         );
         userController.setUserName(_controllerName.text);
-        userSetup(displayName:_controllerName.text.trim(), email: _controllerEmail.text.trim());
+        db.userSetup(displayName:_controllerName.text.trim(), email: _controllerEmail.text.trim());
         Get.offAndToNamed(PageRoutes.home);
       }else{
         setState(() {
