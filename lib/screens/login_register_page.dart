@@ -89,7 +89,7 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
           errorMessage = '';
         });
       },
-      child: isLogin? RegisterOrLogin(text1: "Not yet a Student? ", text2: 'register'.tr,): RegisterOrLogin(text1: "Already a Student? ", text2: 'login'.tr,),
+      child: isLogin? RegisterOrLogin(text1: 'no_student'.tr, text2: 'register'.tr,): RegisterOrLogin(text1: 'already_s'.tr, text2: 'login'.tr,),
     );
   }
 
