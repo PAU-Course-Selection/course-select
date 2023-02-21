@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 
+///Creates a class which map keys to values which can be translated depending on locale
 class AppTranslations extends Translations {
   @override
   Map<String, Map<String, String>> get keys => {
@@ -11,7 +12,8 @@ class AppTranslations extends Translations {
       'forgot_password': 'Forgot password?',
       'name': 'Name',
       'no_student':'Not yet a Student？',
-      'already_s' : 'Already a Student?'
+      'already_s' : 'Already a Student?',
+      'search': 'Search for courses'
     },
     'zh_CN': {
       'email': '邮箱',

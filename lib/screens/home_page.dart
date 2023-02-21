@@ -1,9 +1,14 @@
+import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:course_select/controllers/course_controller.dart';
 import 'package:course_select/controllers/user_controller.dart';
 import 'package:course_select/routes/routes.dart';
+import 'package:course_select/shared_widgets/category_button.dart';
+import 'package:course_select/shared_widgets/constants.dart';
+import 'package:course_select/shared_widgets/course_card.dart';
 import 'package:course_select/utils/firebase_data_management.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'auth.dart';
 
@@ -15,10 +20,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  ///Instantiates
   final User? user = Auth().currentUser;
   DatabaseManager db = DatabaseManager();
   final userController = Get.put(UserController());
   final courseController = Get.put(CourseController());
+
+  final TextEditingController _controllerSearch = TextEditingController();
+
+
 
   Future<void> signOut() async {
     await Auth().signOut();
@@ -28,11 +38,23 @@ class _HomePageState extends State<HomePage> {
     return const Text('Home');
   }
 
-  Widget _userUid() {
-    return Text(user?.email ?? 'User email');
+  String _userName() {
+    for(var student in userController.usersList){
+      if (student.email == user?.email){
+         return student.displayName?? '';
+      }
+    }
+    return '';
   }
-  Widget _userName() {
-    return Text(user?.displayName ?? 'name');
+
+  Widget _date() {
+    for(var student in userController.usersList){
+      if (student.email == user?.email){
+        DateTime date = student.dateCreated.toDate();
+        return Text(date.toString());
+      }
+    }
+    return const Text('');
   }
 
   Widget _signOutButton() {
@@ -45,6 +67,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future getModels(){
+    db.getUsers(userController);
     return db.getCourses(courseController);
   }
 
@@ -54,64 +77,168 @@ class _HomePageState extends State<HomePage> {
     getModels();
   }
 
+  int _currentIndex = 0;
+  int _counter = 0;
+
+  void _incrementCounter() {
+    setState(() {
+      _counter++;
+    });
+  }
+
 
 
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
-      appBar: AppBar(
-        title: _title(),
-        automaticallyImplyLeading: false,
+      bottomNavigationBar: BottomNavyBar(
+        selectedIndex: _currentIndex,
+        showElevation: true,
+        itemCornerRadius: 24,
+        curve: Curves.easeIn,
+        onItemSelected: (index) => setState(() => _currentIndex = index),
+        items: <BottomNavyBarItem>[
+          BottomNavyBarItem(
+            icon: Icon(Icons.library_books_outlined),
+            title: Text('Home'),
+            activeColor: kPrimaryColour,
+            textAlign: TextAlign.center,
+          ),
+          BottomNavyBarItem(
+            icon: const Icon(Icons.star_border),
+            title: const Text('My courses'),
+            activeColor: kPrimaryColour,
+            textAlign: TextAlign.center,
+          ),
+          BottomNavyBarItem(
+            icon: Icon(Icons.notification_add),
+            title: Text(
+              'Inbox',
+            ),
+            activeColor: kPrimaryColour,
+            textAlign: TextAlign.center,
+          ),
+          BottomNavyBarItem(
+            icon: Icon(Icons.calendar_month),
+            title: Text('Timetable'),
+            activeColor: kPrimaryColour,
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
       body: FutureBuilder(
         future: getModels(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          double screenWidth = MediaQuery.of(context).size.width;
           /// The snapshot data type have to be same of the result of your web service method
           if (snapshot.connectionState == ConnectionState.done) {
             /// When the result of the future call respond and has data show that data
-            return Container(
-              height: double.infinity,
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(
-                    height: 200,
-                    width: 300,
-                    child: ListView.builder(
-                        itemCount: courseController.courseList.length,
-                        itemBuilder: (context, index) {
-                          return Card(
-                            child: ListTile(
-                              leading: const Icon(Icons.library_books),
-                              title: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 8),
-                                child: Text(courseController.courseList[index].courseName,),
-                              ),
-                              subtitle: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('Course ID: ' + courseController.courseList[index].courseId,),
-                                  Text('Subject Area: ' + courseController.courseList[index].subjectArea,),
-                                  Text('Skill level: ' + courseController.courseList[index].level,),
-                                ],
-                              ),
+            return SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.all(25),
+                child: SafeArea(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 100.h,
+                        width: double.infinity,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children:  [
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children:  [
+                                const Text('Hello,', style: TextStyle(color: Colors.grey, fontSize: 16, fontFamily: 'Roboto'),),
+                                Text(_userName(), style: kHeadlineMedium.copyWith(fontSize: 30)),
+                              ],
                             ),
-                          );
-                        }),
+                        CircleAvatar(
+                          backgroundColor: Colors.transparent,
+                          child: SizedBox(
+                              child: ClipOval(
+                                child: Image.asset("assets/images/avatar.jpg",
+                                ),
+                              )
+                          )
+                        )],
+                        ),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(15),
+                            boxShadow: const [
+                              BoxShadow(
+                                  color: Color.fromRGBO(143, 148, 251, .2),
+                                  blurRadius: 10.0,
+                                  offset: Offset(0, 5)
+                              ),
+                              BoxShadow(
+                                  color: Color.fromRGBO(143, 148, 251, .1),
+                                  blurRadius: 10.0,
+                                  offset: Offset(0, 5)
+                              )
+                            ]
+                        ),
+                        padding: EdgeInsets.all(15),
+                        width: double.infinity,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: const [
+                            Text('Search', style: TextStyle(color: Colors.grey, fontSize: 14, fontFamily: 'Roboto')),
+                            Icon(Icons.search, color: Color(0xff0DAB76),)
+                          ],
+                        ),
+                      ),
+
+                      Container(
+                        padding: EdgeInsets.only(top: 30, bottom: 20),
+                        child: Text('Courses', style: kHeadlineMedium,),
+                      ),
+
+                      Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: const [
+                              CategoryButton(bgColour: Colors.white, iconBgColour: Colors.blue, icon: Icons.school_rounded, iconColour: Colors.white, text: 'All courses',),
+                              CategoryButton(bgColour: Color(0xffF2F3D9), iconBgColour: Colors.orange, icon: Icons.child_care, iconColour: Colors.white, text: 'Beginner',),
+                            ],
+                          ),
+                          SizedBox(height: 15,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              CategoryButton(bgColour: Colors.white, iconBgColour: Colors.pinkAccent, icon: Icons.sports_gymnastics, iconColour: Colors.white, text: 'Intermediate',),
+                              CategoryButton(bgColour: Colors.white, iconBgColour: Colors.green, icon: Icons.celebration, iconColour: Colors.white, text: 'Advanced',),
+                            ],
+                          )
+                        ],
+                      ),
+
+                      const SizedBox(height: 20,),
+
+                      SizedBox(
+                        height: 300,
+                        width: double.infinity,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                            itemCount: 3,
+                            itemBuilder: (context, index) {
+                              return Card(
+                                child: CourseCard(courseTitle: courseController.courseList[index].courseName, courseImage: 'assets/images/course_image.png',),
+                              );
+                            }),
+                      ),],
                   ),
-                  Text('Hi ' + userController.userName.string),
-                  _userUid(),
-                  _signOutButton(),
-                ],
+                ),
               ),
             );
           }else if(snapshot.hasError) {
-            return Container(child: Center(child: Text('Oops...something happened',style: TextStyle(color: Colors.black),),));
+            return const Center(child: Text('Oops...something happened',style: TextStyle(color: Colors.black),),);
           }
           /// While is no data show this
           return const Center(child: Text('No data'));

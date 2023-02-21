@@ -61,6 +61,7 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
   Future<void> createUserWithEmailAndPassword() async {
     try {
       if(_controllerName.text != ''){
+
         await Auth().createUserWithEmailAndPassword(
           email: _controllerEmail.text.trim(),
           password: _controllerPassword.text.trim(),

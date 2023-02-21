@@ -33,6 +33,9 @@ class MyApp extends StatelessWidget {
           locale: const Locale('zh', 'CN'),
           translations: AppTranslations(),
           routes: PageRoutes().routes(),
+          theme: ThemeData(
+            textTheme: const TextTheme()
+          ),
         );
       },
       child: const WelcomePage(),

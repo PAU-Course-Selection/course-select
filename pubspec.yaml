@@ -41,6 +41,7 @@ dependencies:
   cloud_firestore: ^4.4.1
   smooth_page_indicator: ^1.0.1
   lottie: ^2.2.0
+  bottom_navy_bar: ^6.0.0
 
 
 dev_dependencies:
@@ -92,4 +93,6 @@ flutter:
         - asset: assets/fonts/Lato-Black.ttf
         - asset: assets/fonts/Lato-Bold.ttf
         - asset: assets/fonts/Lato-Regular.ttf
-
+    - family: OpenSans
+      fonts:
+        - asset: assets/fonts/OpenSans.ttf
