@@ -2,7 +2,6 @@ import 'package:course_select/routes/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 import '../controllers/user_controller.dart';
 import 'auth.dart';
