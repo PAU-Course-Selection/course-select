@@ -13,7 +13,7 @@ class CourseCard extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
     return Container(
       decoration: BoxDecoration(
-          color: Color(0xffa7fcd1),
+          color: const Color(0xffa7fcd1),
           borderRadius: BorderRadius.circular(15),
           boxShadow: const [
             BoxShadow(
@@ -28,19 +28,15 @@ class CourseCard extends StatelessWidget {
             )
           ]
       ),
-      padding: EdgeInsets.all(15),
+      padding: const EdgeInsets.all(15),
       width: screenWidth * 0.55,
       height: 300.h,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Container(
-            child: Image(image: AssetImage(courseImage),fit: BoxFit.contain, ),
-          ),
-          Container(
-            child: Text(courseTitle, style: kHeadlineMedium.copyWith(fontSize: 18),
-              maxLines: 2, overflow: TextOverflow.ellipsis,),
-          )
+          Image(image: AssetImage(courseImage),fit: BoxFit.contain, ),
+          Text(courseTitle, style: kHeadlineMedium.copyWith(fontSize: 18),
+            maxLines: 2, overflow: TextOverflow.ellipsis,)
         ],
       ),
     );

@@ -100,8 +100,8 @@ class _HomePageState extends State<HomePage> {
         onItemSelected: (index) => setState(() => _currentIndex = index),
         items: <BottomNavyBarItem>[
           BottomNavyBarItem(
-            icon: Icon(Icons.library_books_outlined),
-            title: Text('Home'),
+            icon: const Icon(Icons.library_books_outlined),
+            title: const Text('Home'),
             activeColor: kPrimaryColour,
             textAlign: TextAlign.center,
           ),
@@ -112,16 +112,16 @@ class _HomePageState extends State<HomePage> {
             textAlign: TextAlign.center,
           ),
           BottomNavyBarItem(
-            icon: Icon(Icons.notification_add),
-            title: Text(
+            icon: const Icon(Icons.notification_add),
+            title: const Text(
               'Inbox',
             ),
             activeColor: kPrimaryColour,
             textAlign: TextAlign.center,
           ),
           BottomNavyBarItem(
-            icon: Icon(Icons.calendar_month),
-            title: Text('Timetable'),
+            icon: const Icon(Icons.calendar_month),
+            title: const Text('Timetable'),
             activeColor: kPrimaryColour,
             textAlign: TextAlign.center,
           ),
@@ -155,14 +155,17 @@ class _HomePageState extends State<HomePage> {
                                 Text(_userName(), style: kHeadlineMedium.copyWith(fontSize: 30)),
                               ],
                             ),
-                        CircleAvatar(
-                          backgroundColor: Colors.transparent,
-                          child: SizedBox(
-                              child: ClipOval(
-                                child: Image.asset("assets/images/avatar.jpg",
-                                ),
-                              )
-                          )
+                        GestureDetector(
+                          onTap: () => Get.toNamed(PageRoutes.userProfile),
+                          child: CircleAvatar(
+                            backgroundColor: Colors.transparent,
+                            child: SizedBox(
+                                child: ClipOval(
+                                  child: Image.asset("assets/images/avatar.jpg",
+                                  ),
+                                )
+                            )
+                          ),
                         )],
                         ),
                       ),
@@ -195,7 +198,7 @@ class _HomePageState extends State<HomePage> {
                       ),
 
                       Container(
-                        padding: EdgeInsets.only(top: 30, bottom: 20),
+                        padding: const EdgeInsets.only(top: 30, bottom: 20),
                         child: Text('Courses', style: kHeadlineMedium,),
                       ),
 
@@ -211,7 +214,7 @@ class _HomePageState extends State<HomePage> {
                           SizedBox(height: 15,),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
+                            children: const [
                               CategoryButton(bgColour: Colors.white, iconBgColour: Colors.pinkAccent, icon: Icons.sports_gymnastics, iconColour: Colors.white, text: 'Intermediate',),
                               CategoryButton(bgColour: Colors.white, iconBgColour: Colors.green, icon: Icons.celebration, iconColour: Colors.white, text: 'Advanced',),
                             ],
@@ -240,7 +243,7 @@ class _HomePageState extends State<HomePage> {
           }else if(snapshot.hasError) {
             return const Center(child: Text('Oops...something happened',style: TextStyle(color: Colors.black),),);
           }
-          /// While is no data show this
+          /// While there is no data or error show some shimmer
           return const Center(child: Text('No data'));
         }),
     );
