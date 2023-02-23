@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
   Widget _date() {
     for(var student in userController.usersList){
       if (student.email == user?.email){
-        DateTime date = student.dateCreated.toDate();
+        DateTime? date = student.dateCreated?.toDate();
         return Text(date.toString());
       }
     }

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class User{
   String? uid;
   String? displayName;
-  Timestamp dateCreated = Timestamp.now();
+  Timestamp? dateCreated = Timestamp.now();
   int? avatar;
   String? email;
 
