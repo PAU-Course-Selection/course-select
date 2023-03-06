@@ -1,4 +1,5 @@
 import 'package:course_select/routes/routes.dart';
+import 'package:course_select/shared_widgets/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,7 +18,7 @@ class UserProfilePage extends StatelessWidget {
   }
 
   Widget _title() {
-    return const Text('User Profile');
+    return const Text('Edit Profile');
   }
 
   Widget _userUid() {
@@ -57,22 +58,59 @@ class UserProfilePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: _title(),
+        backgroundColor: kPrimaryColour,
+        foregroundColor: Colors.black,
+        actions:const [Padding(
+          padding: EdgeInsets.only(right: 15.0),
+          child: Icon(Icons.edit),
+        )],
       ),
       body: Container(
-        height: double.infinity,
+        height: 160,
         width: double.infinity,
         padding: const EdgeInsets.all(20),
-        child: Column(
+        child:Row(
           crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(_userName()),
-            _date(),
-            _userUid(),
-            _signOutButton(),
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(10.0),
+              child: photo(),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                children: <Widget>[
+                  Text(_userName()),
+                  _date(),
+                  _userUid(),
+                  _signOutButton(),
+                ],
+              ),
+            ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class photo extends StatelessWidget {
+  const photo({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => Get.toNamed(PageRoutes.userProfile),
+      child: CircleAvatar(
+          backgroundColor: Colors.transparent,
+          child: SizedBox(
+              child: ClipOval(
+                child: Image.asset(
+                  "assets/images/avatar.jpg",
+                ),
+              ))),
     );
   }
 }
