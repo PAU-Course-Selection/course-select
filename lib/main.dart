@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:course_select/routes/routes.dart';
+import 'package:get/get.dart';
 import 'firebase_options.dart';
 import 'package:course_select/screens/intro_pages/welcome_page.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           // You can use the library anywhere in the app even in theme
           home: child,
-          locale: const Locale('zh', 'CN'),
+          locale: Get.deviceLocale,
           translations: AppTranslations(),
           routes: PageRoutes().routes(),
           theme: ThemeData(
