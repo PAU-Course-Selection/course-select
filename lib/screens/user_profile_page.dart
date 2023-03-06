@@ -18,7 +18,7 @@ class UserProfilePage extends StatelessWidget {
   }
 
   Widget _title() {
-    return const Text('Edit Profile');
+    return const Text('My Profile');
   }
 
   Widget _userUid() {
@@ -47,7 +47,10 @@ class UserProfilePage extends StatelessWidget {
     for(var student in userController.usersList){
       if (student.email == user?.email){
         DateTime? date = student.dateCreated?.toDate();
-        return Text(date.toString());
+        String? year = date?.year.toString();
+        String? month = date?.month.toString();
+        String? day = date?.day.toString();
+        return Text("Joined on $year-$month-$day");
       }
     }
     return const Text('');
@@ -58,59 +61,79 @@ class UserProfilePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: _title(),
-        backgroundColor: kPrimaryColour,
+        backgroundColor: Colors.white,
         foregroundColor: Colors.black,
+        elevation: 0,
         actions:const [Padding(
           padding: EdgeInsets.only(right: 15.0),
           child: Icon(Icons.edit),
         )],
       ),
-      body: Container(
-        height: 160,
-        width: double.infinity,
-        padding: const EdgeInsets.all(20),
-        child:Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Padding(
-              padding: EdgeInsets.all(10.0),
-              child: photo(),
+      body: Column(
+        children: [
+          Container(
+            height: 160,
+            width: double.infinity,
+            padding: const EdgeInsets.all(20),
+            child:Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: PhotoAvatar(),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(_userName(),style: const TextStyle(fontWeight: FontWeight.bold),),
+                      _userUid(),
+                      _date(),
+                      _signOutButton(),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                children: <Widget>[
-                  Text(_userName()),
-                  _date(),
-                  _userUid(),
-                  _signOutButton(),
-                ],
-              ),
-            ),
-          ],
-        ),
+
+          ),
+          //TODO create list tiles for settings and options according to design
+          Text("Language"),
+          Text("Clear Schedule"),
+          Text("Manage Courses"),
+          Text("Allow Activity Sharing"),
+          Text("Log Out"),
+          Text("Delete Account"),
+          const Expanded(child: Text("App version 1.0.1", style: TextStyle(color: Colors.grey),))
+        ],
       ),
     );
   }
 }
 
-class photo extends StatelessWidget {
-  const photo({
+class PhotoAvatar extends StatelessWidget {
+  const PhotoAvatar({
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => Get.toNamed(PageRoutes.userProfile),
-      child: CircleAvatar(
+    return Stack(
+      children: [
+        const CircleAvatar(
+          minRadius: 60.0,
           backgroundColor: Colors.transparent,
-          child: SizedBox(
-              child: ClipOval(
-                child: Image.asset(
-                  "assets/images/avatar.jpg",
-                ),
-              ))),
+          backgroundImage: AssetImage("assets/images/avatar.jpg")),
+
+        Positioned(
+          bottom: 0,
+            right: 5,
+            child: CircleAvatar(
+              backgroundColor: Colors.white,
+              radius: 15,
+                child: Icon(Icons.camera_alt,size: 20, color: kPrimaryColour,)))
+      ]
     );
   }
 }
