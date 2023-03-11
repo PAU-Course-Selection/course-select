@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:course_select/controllers/course_controller.dart';
@@ -15,7 +17,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
-import 'package:solid_bottom_sheet/solid_bottom_sheet.dart';
 
 import 'auth.dart';
 import 'my_courses_page.dart';
@@ -72,9 +73,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   int _currentIndex = 0;
-  bool _isFilterVisible = true;
+  bool _isFilterVisible = false;
   late ValueNotifier<double> valueNotifier;
-  SolidController _controller = SolidController();
 
   ///List of Nav Screens
   late final List<Widget> _widgetOptions = <Widget>[
@@ -89,7 +89,7 @@ class _HomePageState extends State<HomePage> {
               children: [
                 SafeArea(
                     child: Container(
-                      padding: EdgeInsets.only(bottom: 25),
+                      padding: const EdgeInsets.only(bottom: 25),
                       child: Column(
                         children: [
                           SizedBox(
@@ -196,7 +196,7 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         Visibility(
                             visible: _isFilterVisible,
-                            child: CoursesFilter()), //Course Filters
+                            child: const CoursesFilter()), //Course Filters
                         const CategoryTitle(text: 'Currently Active'),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -211,7 +211,7 @@ class _HomePageState extends State<HomePage> {
                                 children: [
                                   Container(
                                     padding: const EdgeInsets.all(10),
-                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.red,
+                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),
                                         image: const DecorationImage(image: AssetImage('assets/images/html.jpg'))),
                                     height: 70,
                                     width: 70,
