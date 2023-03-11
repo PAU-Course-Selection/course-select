@@ -4,6 +4,8 @@ import 'package:course_select/shared_widgets/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:solid_bottom_sheet/solid_bottom_sheet.dart';
 
 import '../controllers/user_controller.dart';
 import 'auth.dart';
@@ -72,6 +74,7 @@ class UserProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         title: _title(),
@@ -94,7 +97,31 @@ class UserProfilePage extends StatelessWidget {
               children: [
                  Padding(
                   padding: const EdgeInsets.all(10.0),
-                  child: PhotoAvatar(image: _avatar(),)
+                  child: GestureDetector(
+                    onTap: (){
+                      print('avatar touched');
+                      showCupertinoModalBottomSheet(
+                      topRadius: const Radius.circular(20) ,
+                      barrierColor: Colors.black54,
+                      elevation: 8,
+                      context: context,
+                      builder: (context) =>  Material(child: Container(
+                        height: screenHeight * 0.25,
+                        child: Flexible(
+                          child: Column(
+                            children: [
+                              TextButton(onPressed: (){}, child: const Text('Choose Photo', style: TextStyle(fontSize: 16),), style: ButtonStyle(),),
+                              Divider(),
+                              TextButton(onPressed: (){}, child: const Text('Take Photo', style: TextStyle(fontSize: 16))),
+                              Divider(),
+                              TextButton(onPressed: (){}, child: const Text('Cancel', style: TextStyle(fontSize: 16))),
+                            ],
+                          ),
+                        ),
+                      )),
+                      );
+                    },
+                      child: PhotoAvatar(image: _avatar(),))
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10.0),

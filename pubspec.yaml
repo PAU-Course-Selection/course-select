@@ -44,6 +44,8 @@ dependencies:
   bottom_navy_bar: ^6.0.0
   simple_circular_progress_bar: ^1.0.2
   cached_network_image: ^3.2.3
+  solid_bottom_sheet: ^0.1.10
+  modal_bottom_sheet: ^3.0.0-pre
 
 
 dev_dependencies:

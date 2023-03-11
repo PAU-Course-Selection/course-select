@@ -10,10 +10,12 @@ import 'package:course_select/shared_widgets/constants.dart';
 import 'package:course_select/shared_widgets/course_card.dart';
 import 'package:course_select/utils/firebase_data_management.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
+import 'package:solid_bottom_sheet/solid_bottom_sheet.dart';
 
 import 'auth.dart';
 import 'my_courses_page.dart';
@@ -72,6 +74,7 @@ class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
   bool _isFilterVisible = true;
   late ValueNotifier<double> valueNotifier;
+  SolidController _controller = SolidController();
 
   ///List of Nav Screens
   late final List<Widget> _widgetOptions = <Widget>[
@@ -139,20 +142,32 @@ class _HomePageState extends State<HomePage> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                RaisedContainer(child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text('Search',
-                                        style: TextStyle(
-                                            color: Colors.grey,
-                                            fontSize: 16,
-                                            fontFamily: 'Roboto')),
-                                    Icon(
-                                      Icons.search,
-                                      color: const Color(0xff0DAB76).withOpacity(0.7),
-                                    )
-                                  ],
-                                ), width: screenWidth * 0.73, bgColour: Colors.white,),
+                                GestureDetector(
+                                  onTap:(){
+                                    showCupertinoModalBottomSheet(
+                                      duration: const Duration(milliseconds: 100),
+                                      topRadius: const Radius.circular(20) ,
+                                      barrierColor: Colors.black54,
+                                      elevation: 8,
+                                      context: context,
+                                      builder: (context) => const Material(child: MyCourses()),
+                                    );
+                                  },
+                                  child: RaisedContainer(child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text('Search',
+                                          style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 16,
+                                              fontFamily: 'Roboto')),
+                                      Icon(
+                                        Icons.search,
+                                        color: const Color(0xff0DAB76).withOpacity(0.7),
+                                      )
+                                    ],
+                                  ), width: screenWidth * 0.73, bgColour: Colors.white,),
+                                ),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 5.0),
                                   child: GestureDetector(
