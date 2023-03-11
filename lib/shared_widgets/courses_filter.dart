@@ -10,10 +10,9 @@ class CoursesFilter extends StatefulWidget {
 
 class _CoursesFilterState extends State<CoursesFilter> {
   bool b1 = false;
-  bool b2 =false;
-  bool b3 =false;
-  bool b4=false;
-
+  bool b2 = false;
+  bool b3 = false;
+  bool b4 = false;
 
   @override
   Widget build(BuildContext context) {
