@@ -148,7 +148,7 @@ class PhotoAvatar extends StatelessWidget {
                 placeholder: (context, url){
                   return const CircularProgressIndicator();
                 },
-                errorWidget: (context, url, error) => const Icon(Icons.error),
+                errorWidget: (context, url, error) => const Icon(Icons.person, color: Colors.grey,),
               ),
             )),
 

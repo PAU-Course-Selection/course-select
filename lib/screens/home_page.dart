@@ -126,7 +126,7 @@ class _HomePageState extends State<HomePage> {
                                             placeholder: (context, url){
                                               return  CircularProgressIndicator(strokeWidth: 2, color: kPrimaryColour,);
                                             },
-                                            errorWidget: (context, url, error) => const Icon(Icons.error),
+                                            errorWidget: (context, url, error) => const Icon(Icons.person, color: Colors.grey,),
                                           ),
                                         )),
                                   )
