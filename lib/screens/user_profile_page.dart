@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:course_select/routes/routes.dart';
 import 'package:course_select/shared_widgets/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -56,6 +57,19 @@ class UserProfilePage extends StatelessWidget {
     return const Text('');
   }
 
+  String _avatar(){
+    try {
+      for (var student in userController.usersList) {
+        if (student.email == user?.email) {
+          return student.avatar ?? '';
+        }
+      }
+    }on ArgumentError catch(e) {
+      print(e);
+    }
+    return '';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,9 +92,9 @@ class UserProfilePage extends StatelessWidget {
             child:Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Padding(
-                  padding: EdgeInsets.all(10.0),
-                  child: PhotoAvatar(),
+                 Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: PhotoAvatar(image: _avatar(),)
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10.0),
@@ -112,19 +126,31 @@ class UserProfilePage extends StatelessWidget {
   }
 }
 
+
+
 class PhotoAvatar extends StatelessWidget {
+  final String image;
   const PhotoAvatar({
-    Key? key,
+    Key? key, required this.image,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        const CircleAvatar(
-          minRadius: 60.0,
-          backgroundColor: Colors.transparent,
-          backgroundImage: AssetImage("assets/images/avatar.jpg")),
+        CircleAvatar(
+            radius: 45,
+            backgroundColor: Colors.white,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(45),
+              child: CachedNetworkImage(
+                imageUrl: image,
+                placeholder: (context, url){
+                  return const CircularProgressIndicator();
+                },
+                errorWidget: (context, url, error) => const Icon(Icons.error),
+              ),
+            )),
 
         Positioned(
           bottom: 0,

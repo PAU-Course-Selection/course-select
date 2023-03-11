@@ -18,7 +18,8 @@ class DatabaseManager{
           'displayName': displayName,
           'uid': uid,
           'email': email,
-          'dateCreated': DateTime.now()
+          'dateCreated': DateTime.now(),
+          'avatar': 'https://firebasestorage.googleapis.com/v0/b/agileproject-76bf9.appspot.com/o/User%20Data%2Fuser.png?alt=media&token=0b4c347c-e8d9-456c-b76a-b02f2e4080a0'
         });
   }
 

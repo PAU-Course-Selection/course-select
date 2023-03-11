@@ -6,7 +6,7 @@ class User{
   String? uid;
   String? displayName;
   Timestamp? dateCreated = Timestamp.now();
-  int? avatar;
+  String? avatar;
   String? email;
 
   ///A constructor for setting attribute values when creating a user object
