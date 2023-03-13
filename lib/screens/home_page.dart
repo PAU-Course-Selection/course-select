@@ -190,82 +190,85 @@ class _HomePageState extends State<HomePage> {
                     )
                 ),
                 Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Visibility(
-                            visible: _isFilterVisible,
-                            child: const CoursesFilter()), //Course Filters
-                        const CategoryTitle(text: 'Currently Active'),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                          child: Container(
-                            padding: const EdgeInsets.all(15),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                              color:  kLightBackground.withOpacity(0.2),
-                            ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(10),
-                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),
-                                        image: const DecorationImage(image: AssetImage('assets/images/html.jpg'))),
-                                    height: 70,
-                                    width: 70,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: const [
-                                      Text('Symmetry Theory', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Text('2 lessons left', style: TextStyle(color: Colors.grey),)
-                                    ],
-                                  ),
-                                  SimpleCircularProgressBar(
-                                    animationDuration: 1,
-                                    backColor: const Color(0xffD9D9D9),
-                                    progressColors: [kSelected,kPrimaryColour],
-                                    progressStrokeWidth: 8,
-                                    backStrokeWidth: 8,
-                                    size: 50,
-                                    valueNotifier: valueNotifier,
-                                    mergeMode: true,
-                                    onGetText: (double value) {
-                                      return Text('${value.toInt()}%');
-                                    },
-                                  ),
-
-
-                                ],
+                  child: RefreshIndicator(
+                    onRefresh: () async{
+                      await getModels();
+                    },
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Visibility(
+                              visible: _isFilterVisible,
+                              child: const CoursesFilter()), //Course Filters
+                          const CategoryTitle(text: 'Currently Active'),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                            child: Container(
+                              padding: const EdgeInsets.all(15),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                color:  kLightBackground.withOpacity(0.2),
                               ),
-                              width: double.infinity,),
-                        ),//Courses Title
-                        const CategoryTitle(text: 'Top Picks'), //Courses Title
-                        Padding(
-                          padding: const EdgeInsets.only(left: 25.0),
-                          child: SizedBox(
-                            height: 300,
-                            width: double.infinity,
-                            child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: 3,
-                                itemBuilder: (context, index) {
-                                  return Card(
-                                    child: CourseCard(
-                                      courseTitle: courseController
-                                          .courseList[index].courseName,
-                                      courseImage: 'assets/images/course_image.png',
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(10),
+                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),
+                                          image: const DecorationImage(image: AssetImage('assets/images/html.jpg'))),
+                                      height: 70,
+                                      width: 70,
                                     ),
-                                  );
-                                }),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: const [
+                                        Text('Symmetry Theory', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Text('2 lessons left', style: TextStyle(color: Colors.grey),)
+                                      ],
+                                    ),
+                                    SimpleCircularProgressBar(
+                                      animationDuration: 1,
+                                      backColor: const Color(0xffD9D9D9),
+                                      progressColors: [kSelected,kPrimaryColour],
+                                      progressStrokeWidth: 8,
+                                      backStrokeWidth: 8,
+                                      size: 50,
+                                      valueNotifier: valueNotifier,
+                                      mergeMode: true,
+                                      onGetText: (double value) {
+                                        return Text('${value.toInt()}%');
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                width: double.infinity,),
+                          ),//Courses Title
+                          const CategoryTitle(text: 'Top Picks'), //Courses Title
+                          Padding(
+                            padding: const EdgeInsets.only(left: 25.0),
+                            child: SizedBox(
+                              height: 300,
+                              width: double.infinity,
+                              child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: 3,
+                                  itemBuilder: (context, index) {
+                                    return Card(
+                                      child: CourseCard(
+                                        courseTitle: courseController
+                                            .courseList[index].courseName,
+                                        courseImage: 'assets/images/course_image.png',
+                                      ),
+                                    );
+                                  }),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),

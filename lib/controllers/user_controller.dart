@@ -5,6 +5,7 @@ import 'package:course_select/models/user_data_model.dart' as student;
 ///Creates a controller class with user attributes which notify all widgets of changes
 class UserController extends GetxController {
   var _userName = 'user'.obs;
+  var _avatar = '';
 
   ///Sets the user's name to be updated and used across different screens
   setUserName(String name) {
@@ -13,6 +14,10 @@ class UserController extends GetxController {
 
   set userName(value) {
     _userName = value;
+  }
+
+  set avatar(value) {
+    _avatar = value;
   }
 
   ///A getter for the authenticated user's name

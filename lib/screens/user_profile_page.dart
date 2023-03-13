@@ -1,20 +1,32 @@
+import 'dart:io' as io;
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:course_select/routes/routes.dart';
 import 'package:course_select/shared_widgets/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:solid_bottom_sheet/solid_bottom_sheet.dart';
 
 import '../controllers/user_controller.dart';
 import 'auth.dart';
 
-class UserProfilePage extends StatelessWidget {
+class UserProfilePage extends StatefulWidget {
   UserProfilePage({Key? key}) : super(key: key);
 
+  @override
+  State<UserProfilePage> createState() => _UserProfilePageState();
+}
+
+class _UserProfilePageState extends State<UserProfilePage> {
   final User? user = Auth().currentUser;
+
   final userController = Get.put(UserController());
+
+  String imageUrl = '';
 
   Future<void> signOut() async {
     await Auth().signOut();
@@ -70,6 +82,57 @@ class UserProfilePage extends StatelessWidget {
     return '';
   }
 
+  Future loadAvatar() async{
+    ImagePicker imagePicker = ImagePicker();
+    XFile? file = await imagePicker.pickImage(
+        source: ImageSource.camera);
+    print(file?.path);
+
+    if (file == null) return;
+    //Import dart:core
+    String uniqueFileName = DateTime.now()
+        .millisecondsSinceEpoch
+        .toString();
+
+    //Get a reference to storage root
+    Reference referenceRoot =
+    FirebaseStorage.instance.ref();
+    Reference referenceDirImages =
+    referenceRoot.child('images');
+
+    //Create a reference for the image to be stored
+    Reference referenceImageToUpload =
+    referenceDirImages
+        .child(uniqueFileName);
+
+    //Handle errors/success
+    try {
+      //Store the file
+      await referenceImageToUpload
+          .putFile(io.File(file!.path));
+      //Success: get the download URL
+      imageUrl = await referenceImageToUpload
+          .getDownloadURL();
+    } catch (error) {
+      //Some error occurred
+    }
+
+    var myUser = await FirebaseFirestore
+        .instance
+        .collection("Users")
+        .where("uid",
+        isEqualTo: user?.uid)
+        .get();
+    if (myUser.docs.isNotEmpty) {
+      var docId = myUser.docs.first.id;
+
+      DocumentReference docRef = FirebaseFirestore.instance.collection("Users").doc(docId);
+      await docRef.update({"avatar": imageUrl});
+
+
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -99,7 +162,6 @@ class UserProfilePage extends StatelessWidget {
                     padding: const EdgeInsets.all(10.0),
                     child: GestureDetector(
                         onTap: () {
-                          print('avatar touched');
                           showCupertinoModalBottomSheet(
                             topRadius: const Radius.circular(20),
                             barrierColor: Colors.black54,
@@ -111,26 +173,62 @@ class UserProfilePage extends StatelessWidget {
                               child: Column(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
-                                children: const [
-                                  EditImageOptionsItem(
-                                    text: 'Choose Photo',
+                                children: [
+                                  TextButton(
+                                    onPressed: () async {
+                                      print('choose image');
+                                      loadAvatar();
+                                    },
+                                    child: const Text('Choose Image'),
                                   ),
-                                  Divider(height: 0,),
+                                  const Divider(
+                                    height: 0,
+                                  ),
                                   EditImageOptionsItem(
                                     text: 'Take Photo',
+                                    onPressed: () {},
                                   ),
-                                  Divider(height: 0,),
+                                  const Divider(
+                                    height: 0,
+                                  ),
                                   EditImageOptionsItem(
                                     text: 'Cancel',
+                                    onPressed: () {},
                                   )
                                 ],
                               ),
                             )),
                           );
                         },
-                        child: PhotoAvatar(
-                          image: _avatar(),
-                        ))),
+                        child: Stack(children: [
+                          CircleAvatar(
+                              radius: 45,
+                              backgroundColor: Colors.white,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(45),
+                                child: CachedNetworkImage(
+                                  imageUrl: _avatar(),
+                                  placeholder: (context, url) {
+                                    return const CircularProgressIndicator();
+                                  },
+                                  errorWidget: (context, url, error) => const Icon(
+                                    Icons.person,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              )),
+                          Positioned(
+                              bottom: 0,
+                              right: 5,
+                              child: CircleAvatar(
+                                  backgroundColor: Colors.white,
+                                  radius: 15,
+                                  child: Icon(
+                                    Icons.camera_alt,
+                                    size: 20,
+                                    color: kPrimaryColour,
+                                  )))
+                        ]))),
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Column(
@@ -169,10 +267,12 @@ class UserProfilePage extends StatelessWidget {
 
 class EditImageOptionsItem extends StatelessWidget {
   final String text;
+  final Function onPressed;
 
   const EditImageOptionsItem({
     Key? key,
     required this.text,
+    required this.onPressed,
   }) : super(key: key);
 
   @override
@@ -180,10 +280,11 @@ class EditImageOptionsItem extends StatelessWidget {
     double screenHeight = MediaQuery.of(context).size.height;
     return TextButton(
       style: ButtonStyle(
-          overlayColor: MaterialStateColor.resolveWith((states) => kSelected.withOpacity(0.5)),
+          overlayColor: MaterialStateColor.resolveWith(
+              (states) => kSelected.withOpacity(0.5)),
           minimumSize: MaterialStateProperty.all(
               Size(double.infinity, screenHeight * 0.065))),
-      onPressed: () {},
+      onPressed: () => onPressed,
       child: Text(
         text,
         style: const TextStyle(fontSize: 16, color: Colors.black),
