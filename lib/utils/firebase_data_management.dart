@@ -1,10 +1,11 @@
-import 'package:course_select/controllers/course_controller.dart';
+import 'package:course_select/controllers/course_notifier.dart';
 import 'package:course_select/models/course_data_model.dart';
 import 'package:course_select/models/user_data_model.dart' as student;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
 
-import '../controllers/user_controller.dart';
+import '../controllers/user_notifier.dart';
 
 class DatabaseManager{
   final data  = FirebaseFirestore.instance ;
@@ -23,32 +24,32 @@ class DatabaseManager{
         });
   }
 
-  getUsers(UserController userController) async {
+  getUsers(UserNotifier userNotifier) async {
     FirebaseFirestore rootRef = FirebaseFirestore.instance;
     rootRef.settings = const Settings(persistenceEnabled: true);
     rootRef.snapshotsInSync();
     QuerySnapshot snapshot = await rootRef.collection('Users').get();
 
-    List<student.User> _users = [];
+    List<student.UserModel> _users = [];
 
     for (var document in snapshot.docs) {
       //final data = document as Map<String, dynamic>;
-      student.User user = student.User.fromMap(document.data() as Map<String, dynamic>) ;
+      student.UserModel user = student.UserModel.fromMap(document.data() as Map<String, dynamic>) ;
       _users.add(user);
     }
     if (snapshot.metadata.isFromCache) {
       print('YES! YES! I AM FROM CACHE');
     }
-    userController.usersList = _users;
+    userNotifier.usersList = _users;
   }
 
-  getCourses(CourseController courseController) async {
+  getCourses(CourseNotifier courseNotifier) async {
     FirebaseFirestore rootRef = FirebaseFirestore.instance;
     rootRef.settings = const Settings(persistenceEnabled: true);
     rootRef.snapshotsInSync();
     QuerySnapshot snapshot = await rootRef.collection('Courses').get();
 
-    List<Course> _courses = [];
+    RxList<Course> _courses = RxList();
 
     for (var document in snapshot.docs) {
       //final data = document as Map<String, dynamic>;
@@ -58,7 +59,7 @@ class DatabaseManager{
     if (snapshot.metadata.isFromCache) {
       print('YES! YES! I AM FROM CACHE');
     }
-    courseController.courseList = _courses;
+    courseNotifier.courseList = _courses;
   }
 
 

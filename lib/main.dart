@@ -1,6 +1,10 @@
+import 'package:course_select/controllers/course_notifier.dart';
+import 'package:course_select/controllers/home_page_notifier.dart';
+import 'package:course_select/controllers/user_notifier.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:course_select/routes/routes.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'package:course_select/screens/intro_pages/welcome_page.dart';
 import 'package:flutter/material.dart';
@@ -22,24 +26,42 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //Set the fit size (Find your UI design, look at the dimensions of the device screen and fill it in, unit in dp)
-    return ScreenUtilInit(
-      designSize: const Size(430, 932),
-      minTextAdapt: true,
-      splitScreenMode: false,
-      builder: (context , child) {
-        return GetMaterialApp(
-          debugShowCheckedModeBanner: false,
-          // You can use the library anywhere in the app even in theme
-          home: child,
-          locale: Get.deviceLocale,
-          translations: AppTranslations(),
-          routes: PageRoutes().routes(),
-          theme: ThemeData(
-            textTheme: const TextTheme()
-          ),
-        );
-      },
-      child: const WelcomePage(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+            create: (context) => UserNotifier()
+        ),
+        ChangeNotifierProvider(
+            create: (context) => HomePageNotifier()
+        ),
+        ChangeNotifierProvider(
+            create: (context) => CourseNotifier()
+        ),
+      ],
+      child: ScreenUtilInit(
+        designSize: const Size(430, 932),
+        minTextAdapt: true,
+        splitScreenMode: false,
+        builder: (context , child) {
+          return GetMaterialApp(
+            debugShowCheckedModeBanner: false,
+// You can use the library anywhere in the app even in theme
+            home: child,
+            locale: Get.deviceLocale,
+            translations: AppTranslations(),
+            routes: PageRoutes().routes(),
+            theme: ThemeData(
+                textTheme: const TextTheme(
+                  bodyMedium: TextStyle(
+                    fontFamily: 'Roboto'
+                  )
+                )
+            ),
+          );
+        },
+        child: const WelcomePage(),
+      )
     );
   }
 }
+

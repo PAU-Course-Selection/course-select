@@ -5,8 +5,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
-import '../controllers/course_controller.dart';
-import '../controllers/user_controller.dart';
+import '../controllers/course_notifier.dart';
+import '../controllers/user_notifier.dart';
 import '../models/course_data_model.dart';
 import '../utils/firebase_data_management.dart';
 
@@ -19,8 +19,8 @@ class MyCourses extends StatefulWidget {
 
 class _MyCoursesState extends State<MyCourses> {
   DatabaseManager db = DatabaseManager();
-  final userController = Get.put(UserController());
-  final courseController = Get.put(CourseController());
+  final userController = Get.put(UserNotifier());
+  final courseController = Get.put(CourseNotifier());
 
   static List<Course> courses = [
     Course(
@@ -191,7 +191,7 @@ class _MyCoursesState extends State<MyCourses> {
                                         child: Container(
                                           padding: const EdgeInsets.all(15),
                                           child: const Icon(
-                                            Icons.favorite_border_rounded,
+                                            Icons.bookmark_border_rounded,
                                             color: Colors.orange,
                                           ),
                                         )),

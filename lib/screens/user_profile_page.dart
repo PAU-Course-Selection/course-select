@@ -10,9 +10,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:provider/provider.dart';
 
-import '../controllers/user_controller.dart';
-import 'auth.dart';
+import '../controllers/user_notifier.dart';
+import '../utils/auth.dart';
+import '../utils/firebase_data_management.dart';
 
 class UserProfilePage extends StatefulWidget {
   UserProfilePage({Key? key}) : super(key: key);
@@ -22,65 +24,24 @@ class UserProfilePage extends StatefulWidget {
 }
 
 class _UserProfilePageState extends State<UserProfilePage> {
-  final User? user = Auth().currentUser;
-
-  final userController = Get.put(UserController());
 
   String imageUrl = '';
-
-  Future<void> signOut() async {
-    await Auth().signOut();
-  }
+  late final UserNotifier userNotifier;
+  final DatabaseManager db = DatabaseManager();
+  final User? user = Auth().currentUser;
 
   Widget _title() {
     return const Text('My Profile');
   }
 
-  Widget _userUid() {
-    return Text(user?.email ?? 'User email');
-  }
-
   Widget _signOutButton() {
     return ElevatedButton(
-      onPressed: () => {signOut(), Get.offAndToNamed(PageRoutes.loginRegister)},
+      onPressed: () => {Auth().signOut(), Get.offAndToNamed(PageRoutes.loginRegister)},
       child: const Text('Sign Out'),
     );
   }
 
-  String _userName() {
-    for (var student in userController.usersList) {
-      if (student.email == user?.email) {
-        return student.displayName ?? '';
-      }
-    }
-    return '';
-  }
 
-  Widget _date() {
-    for (var student in userController.usersList) {
-      if (student.email == user?.email) {
-        DateTime? date = student.dateCreated?.toDate();
-        String? year = date?.year.toString();
-        String? month = date?.month.toString();
-        String? day = date?.day.toString();
-        return Text("Joined on $year-$month-$day");
-      }
-    }
-    return const Text('');
-  }
-
-  String _avatar() {
-    try {
-      for (var student in userController.usersList) {
-        if (student.email == user?.email) {
-          return student.avatar ?? '';
-        }
-      }
-    } on ArgumentError catch (e) {
-      print(e);
-    }
-    return '';
-  }
 
   Future loadAvatar() async{
     ImagePicker imagePicker = ImagePicker();
@@ -129,13 +90,31 @@ class _UserProfilePageState extends State<UserProfilePage> {
       DocumentReference docRef = FirebaseFirestore.instance.collection("Users").doc(docId);
       await docRef.update({"avatar": imageUrl});
 
+      userNotifier.avatar = imageUrl;
+
 
     }
   }
 
   @override
+  void initState() {
+    userNotifier = Provider.of<UserNotifier>(context, listen: false);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
+
+    Future getData() async{
+     var users = await db.getUsers(userNotifier);
+     userNotifier.updateUserName();
+     userNotifier.updateEmail();
+     userNotifier.updateAvatar();
+     userNotifier.updateDate();
+      return users;
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: _title(),
@@ -149,117 +128,128 @@ class _UserProfilePageState extends State<UserProfilePage> {
           )
         ],
       ),
-      body: Column(
-        children: [
-          Container(
-            height: 160,
-            width: double.infinity,
-            padding: const EdgeInsets.all(20),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: GestureDetector(
-                        onTap: () {
-                          showCupertinoModalBottomSheet(
-                            topRadius: const Radius.circular(20),
-                            barrierColor: Colors.black54,
-                            elevation: 8,
-                            context: context,
-                            builder: (context) => Material(
-                                child: SizedBox(
-                              height: screenHeight * 0.25,
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  TextButton(
-                                    onPressed: () async {
-                                      print('choose image');
-                                      loadAvatar();
-                                    },
-                                    child: const Text('Choose Image'),
-                                  ),
-                                  const Divider(
-                                    height: 0,
-                                  ),
-                                  EditImageOptionsItem(
-                                    text: 'Take Photo',
-                                    onPressed: () {},
-                                  ),
-                                  const Divider(
-                                    height: 0,
-                                  ),
-                                  EditImageOptionsItem(
-                                    text: 'Cancel',
-                                    onPressed: () {},
-                                  )
-                                ],
-                              ),
-                            )),
-                          );
-                        },
-                        child: Stack(children: [
-                          CircleAvatar(
-                              radius: 45,
-                              backgroundColor: Colors.white,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(45),
-                                child: CachedNetworkImage(
-                                  imageUrl: _avatar(),
-                                  placeholder: (context, url) {
-                                    return const CircularProgressIndicator();
-                                  },
-                                  errorWidget: (context, url, error) => const Icon(
-                                    Icons.person,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              )),
-                          Positioned(
-                              bottom: 0,
-                              right: 5,
-                              child: CircleAvatar(
+      body: FutureBuilder(
+        future: getData(),
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          return Column(
+            children: [
+              Container(
+                height: 160,
+                width: double.infinity,
+                padding: const EdgeInsets.all(20),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: GestureDetector(
+                            onTap: () {
+                              showCupertinoModalBottomSheet(
+                                isDismissible: true,
+                                topRadius: const Radius.circular(20),
+                                barrierColor: Colors.black54,
+                                elevation: 8,
+                                context: context,
+                                builder: (context) => Material(
+                                    child: SizedBox(
+                                      height: screenHeight * 0.25,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          EditImageOptionsItem(
+                                            text: 'Take Photo',
+                                            onPressed: () async{
+                                              await loadAvatar();
+                                            },
+                                          ),
+                                          const Divider(
+                                            height: 0,
+                                          ),
+                                          EditImageOptionsItem(
+                                            text: 'Choose Image',
+                                            onPressed: () {},
+                                          ),
+                                          const Divider(
+                                            height: 0,
+                                          ),
+                                          EditImageOptionsItem(
+                                            text: 'Cancel',
+                                            onPressed: () {
+                                              print('printed');
+                                              Navigator.pop(context);
+                                            },
+                                          )
+                                        ],
+                                      ),
+                                    )),
+                              ).whenComplete(() async{
+                                await db.getUsers(userNotifier);
+                                userNotifier.updateAvatar();
+                              } );
+                            },
+                            child: Stack(children: [
+                              CircleAvatar(
+                                  radius: 45,
                                   backgroundColor: Colors.white,
-                                  radius: 15,
-                                  child: Icon(
-                                    Icons.camera_alt,
-                                    size: 20,
-                                    color: kPrimaryColour,
-                                  )))
-                        ]))),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        _userName(),
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(45),
+                                    child: CachedNetworkImage(
+                                      imageUrl: userNotifier.avatar,
+                                      placeholder: (context, url) {
+                                        return const CircularProgressIndicator();
+                                      },
+                                      errorWidget: (context, url, error) => const Icon(
+                                        Icons.person,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  )),
+                              Positioned(
+                                  bottom: 0,
+                                  right: 5,
+                                  child: CircleAvatar(
+                                      backgroundColor: Colors.white,
+                                      radius: 15,
+                                      child: Icon(
+                                        Icons.camera_alt,
+                                        size: 20,
+                                        color: kPrimaryColour,
+                                      )))
+                            ]))),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            userNotifier.userName,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Text(userNotifier.email?? 'User email'),
+                          Text(userNotifier.joinDate),
+                          _signOutButton(),
+                        ],
                       ),
-                      _userUid(),
-                      _date(),
-                      _signOutButton(),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
-          //TODO create list tiles for settings and options according to design
-          Text("Language"),
-          Text("Clear Schedule"),
-          Text("Manage Courses"),
-          Text("Allow Activity Sharing"),
-          Text("Log Out"),
-          Text("Delete Account"),
-          const Expanded(
-              child: Text(
-            "App version 1.0.1",
-            style: TextStyle(color: Colors.grey),
-          ))
-        ],
+              ),
+              //TODO create list tiles for settings and options according to design
+              Text("Language"),
+              Text("Clear Schedule"),
+              Text("Manage Courses"),
+              Text("Allow Activity Sharing"),
+              Text("Log Out"),
+              Text("Delete Account"),
+              const Expanded(
+                  child: Text(
+                    "App version 1.0.1",
+                    style: TextStyle(color: Colors.grey),
+                  ))
+            ],
+          );
+        }
       ),
     );
   }
@@ -284,7 +274,7 @@ class EditImageOptionsItem extends StatelessWidget {
               (states) => kSelected.withOpacity(0.5)),
           minimumSize: MaterialStateProperty.all(
               Size(double.infinity, screenHeight * 0.065))),
-      onPressed: () => onPressed,
+      onPressed: () => onPressed.call(),
       child: Text(
         text,
         style: const TextStyle(fontSize: 16, color: Colors.black),

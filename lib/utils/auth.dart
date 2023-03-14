@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../models/user_data_model.dart';
+
 ///Encapsulates all needed FirebaseAuth methods and useful getters for later use
 class Auth{
   ///Creates a  firebase instance for the whole app

@@ -1,4 +1,4 @@
-import 'package:course_select/controllers/user_controller.dart';
+import 'package:course_select/controllers/user_notifier.dart';
 import 'package:course_select/utils/firebase_data_management.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../routes/routes.dart';
 import '../shared_widgets/gradient_button.dart';
-import 'auth.dart';
+import '../utils/auth.dart';
 
 class LoginRegisterPage extends StatefulWidget {
   static const screenId = 'login_screen';
@@ -23,7 +23,7 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
   bool isLogin = true;
   bool _showError = false;
 
-  final userController = Get.put(UserController());
+  final userController = Get.put(UserNotifier());
   final TextEditingController _controllerName = TextEditingController();
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();

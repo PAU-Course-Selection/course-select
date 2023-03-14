@@ -3,11 +3,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'constants.dart';
 
-class CourseCard extends StatelessWidget {
+class CourseCard extends StatefulWidget {
   final String courseTitle;
   final String courseImage;
   const CourseCard({Key? key, required this.courseTitle, required this.courseImage}) : super(key: key);
 
+  @override
+  State<CourseCard> createState() => _CourseCardState();
+}
+
+class _CourseCardState extends State<CourseCard> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -34,8 +39,8 @@ class CourseCard extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Image(image: AssetImage(courseImage),fit: BoxFit.contain, ),
-          Text(courseTitle, style: kHeadlineMedium.copyWith(fontSize: 18),
+          Image(image: AssetImage(widget.courseImage),fit: BoxFit.contain, ),
+          Text(widget.courseTitle, style: kHeadlineMedium.copyWith(fontSize: 18),
             maxLines: 2, overflow: TextOverflow.ellipsis,)
         ],
       ),
