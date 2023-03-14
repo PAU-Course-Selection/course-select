@@ -49,5 +49,7 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
     <string>Study Sprint uses your device Camera to take a photo for your profile :)</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Study Sprint needs access to your Gallery to select a photo for your profile :)</string>
 </dict>
 </plist>

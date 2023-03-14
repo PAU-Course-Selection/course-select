@@ -29,6 +29,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
   late final UserNotifier userNotifier;
   final DatabaseManager db = DatabaseManager();
   final User? user = Auth().currentUser;
+  late Future futureData;
 
   Widget _title() {
     return const Text('My Profile');
@@ -41,12 +42,23 @@ class _UserProfilePageState extends State<UserProfilePage> {
     );
   }
 
+  Future getData() async{
+    var users = await db.getUsers(userNotifier);
+    userNotifier.updateUserName();
+    userNotifier.updateEmail();
+    userNotifier.updateAvatar();
+    userNotifier.updateDate();
+    return users;
+  }
+
+  late XFile? imgFile;
 
 
-  Future loadAvatar() async{
+
+  Future loadAvatar(bool useCamera) async{
     ImagePicker imagePicker = ImagePicker();
     XFile? file = await imagePicker.pickImage(
-        source: ImageSource.camera);
+        source: useCamera? ImageSource.camera: ImageSource.gallery);
     print(file?.path);
 
     if (file == null) return;
@@ -95,26 +107,21 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
     }
   }
+  bool imgChanged = false;
 
   @override
   void initState() {
     userNotifier = Provider.of<UserNotifier>(context, listen: false);
+    futureData = getData();
+    oldUrl = userNotifier.avatar;
     super.initState();
   }
+
+  late String oldUrl;
 
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
-
-    Future getData() async{
-     var users = await db.getUsers(userNotifier);
-     userNotifier.updateUserName();
-     userNotifier.updateEmail();
-     userNotifier.updateAvatar();
-     userNotifier.updateDate();
-      return users;
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: _title(),
@@ -129,7 +136,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
         ],
       ),
       body: FutureBuilder(
-        future: getData(),
+        future: futureData,
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           return Column(
             children: [
@@ -144,6 +151,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         padding: const EdgeInsets.all(10.0),
                         child: GestureDetector(
                             onTap: () {
+
                               showCupertinoModalBottomSheet(
                                 isDismissible: true,
                                 topRadius: const Radius.circular(20),
@@ -160,7 +168,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                           EditImageOptionsItem(
                                             text: 'Take Photo',
                                             onPressed: () async{
-                                              await loadAvatar();
+                                              await loadAvatar(true);
+                                              setState(() {
+                                                imgChanged = true;
+                                              });
                                             },
                                           ),
                                           const Divider(
@@ -168,7 +179,12 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                           ),
                                           EditImageOptionsItem(
                                             text: 'Choose Image',
-                                            onPressed: () {},
+                                            onPressed: () async{
+                                              await loadAvatar(false);
+                                              setState(() {
+                                                imgChanged = true;
+                                              });
+                                            },
                                           ),
                                           const Divider(
                                             height: 0,
@@ -176,16 +192,19 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                           EditImageOptionsItem(
                                             text: 'Cancel',
                                             onPressed: () {
-                                              print('printed');
+                                              setState(() {
+                                                futureData = getData();
+                                              });
                                               Navigator.pop(context);
                                             },
                                           )
                                         ],
                                       ),
                                     )),
-                              ).whenComplete(() async{
-                                await db.getUsers(userNotifier);
-                                userNotifier.updateAvatar();
+                              ).whenComplete((){
+                                setState(() {
+                                  futureData = getData();
+                                });
                               } );
                             },
                             child: Stack(children: [
@@ -193,8 +212,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                   radius: 45,
                                   backgroundColor: Colors.white,
                                   child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(45),
+                                    borderRadius: BorderRadius.circular(75.0),
                                     child: CachedNetworkImage(
+                                      height: 100.0,
+                                      width: 100.0,
+                                      fit: BoxFit.cover,
                                       imageUrl: userNotifier.avatar,
                                       placeholder: (context, url) {
                                         return const CircularProgressIndicator();

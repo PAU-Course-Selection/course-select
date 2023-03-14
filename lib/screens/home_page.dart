@@ -101,10 +101,12 @@ class _HomePageState extends State<HomePage> {
                                           radius: 30,
                                           backgroundColor: Colors.white,
                                           child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(45),
+                                            borderRadius: BorderRadius.circular(75.0),
                                             child: CachedNetworkImage(
-                                              fit: BoxFit.fill,
-                                              imageUrl: userNotifier.avatar??'',
+                                              height: 100.0,
+                                              width: 100.0,
+                                              fit: BoxFit.cover,
+                                              imageUrl: userNotifier.avatar ?? '',
                                               placeholder: (context, url){
                                                 return  CircularProgressIndicator(strokeWidth: 2, color: kPrimaryColour,);
                                               },
@@ -167,7 +169,6 @@ class _HomePageState extends State<HomePage> {
                       onRefresh: () {
                         setState(() {
                           futureData = getModels();
-
                         });
                         return futureData;
                       },

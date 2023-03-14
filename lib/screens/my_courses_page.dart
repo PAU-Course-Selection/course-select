@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:flutter/services.dart';
 import '../controllers/course_notifier.dart';
 import '../controllers/user_notifier.dart';
 import '../models/course_data_model.dart';
 import '../utils/firebase_data_management.dart';
+
 
 class MyCourses extends StatefulWidget {
   const MyCourses({Key? key}) : super(key: key);
@@ -34,13 +36,13 @@ class _MyCoursesState extends State<MyCourses> with SingleTickerProviderStateMix
         false,
         'assets/images/html.jpg'),
     Course('Business', 'Intermediate', 'BUS504', 'Marketing Management', 4, 12,
-        ['BUS501'],false, 'assets/images/img1.jpg'),
+        ['BUS501'],false, 'assets/images/html.jpg'),
     Course('Mathematics', 'Master', 'MATH201', 'Calculus I', 4, 16, ['MATH101'],false,
-        'assets/images/img2.jpg'),
+        'assets/images/html.jpg'),
     Course('History', 'Beginner', 'HIST101', 'Introduction to World History', 3,
-        12, ['None'], false,'assets/images/img3.jpg'),
+        12, ['None'], false,'assets/images/html.jpg'),
     Course('Chemistry', 'Master', 'CHEM601', 'Advanced Organic Chemistry', 5,
-        16, ['CHEM501'], false,'assets/images/img4.jpg')
+        16, ['CHEM501'], false,'assets/images/html.jpg')
   ];
 
   List<Course> displayList = List.from(courses);
@@ -59,7 +61,6 @@ class _MyCoursesState extends State<MyCourses> with SingleTickerProviderStateMix
     db.getUsers(userController);
     return db.getCourses(courseController);
   }
-  bool _isSaveTapped = false;
   late final AnimationController _animationController;
 
   @override
@@ -74,8 +75,6 @@ class _MyCoursesState extends State<MyCourses> with SingleTickerProviderStateMix
     _animationController.dispose();
     super.dispose();
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -202,6 +201,7 @@ class _MyCoursesState extends State<MyCourses> with SingleTickerProviderStateMix
                                         right: 10,
                                         child: GestureDetector(
                                           onTap: (){
+                                            HapticFeedback.heavyImpact();
                                             setState(() {
                                               displayList[index].isSaved = !displayList[index].isSaved;
                                             });
