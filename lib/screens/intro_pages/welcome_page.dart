@@ -1,11 +1,11 @@
-import 'package:course_select/screens/home_page.dart';
+import 'package:course_select/screens/app_main_navigation.dart';
 import 'package:course_select/screens/intro_pages/intro_page1.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../routes/routes.dart';
-import '../auth.dart';
+import '../../utils/auth.dart';
 import 'intro_page2.dart';
 import 'intro_page3.dart';
 
@@ -19,7 +19,7 @@ class WelcomePage extends StatelessWidget {
         stream: Auth().authStateChanges,
         builder: (context, snapshot){
           if(snapshot.hasData){
-            return HomePage();
+            return AppMainNav();
           }else{
             return const Onboarding();
           }

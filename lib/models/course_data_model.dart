@@ -7,6 +7,11 @@ class Course{
   int hoursPerWeek = 0;
   int duration = 0;
   List prereqs = [];
+  String courseImage = '';
+
+
+  Course(this.subjectArea, this.level, this.courseId, this.courseName,
+      this.hoursPerWeek, this.duration, this.prereqs, this.courseImage);
 
   ///Receives a map which matches class attributes
   ///This is useful for storing, persisting and fetching data from firestore

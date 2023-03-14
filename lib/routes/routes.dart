@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import '../screens/forgot_password.dart';
-import '../screens/home_page.dart';
+import '../screens/app_main_navigation.dart';
 import '../screens/login_register_page.dart';
 import '../screens/user_profile_page.dart';
 import '../screens/intro_pages/welcome_page.dart';
@@ -19,7 +19,7 @@ class PageRoutes{
     return{
       welcome: (context) => const WelcomePage(),
       loginRegister: (context) => const LoginRegisterPage(),
-      home: (context) => const HomePage(),
+      home: (context) => const AppMainNav(),
       userProfile: (context) => UserProfilePage(),
       forgotPassword: (context) => const ForgotPasswordPage(),
     };
