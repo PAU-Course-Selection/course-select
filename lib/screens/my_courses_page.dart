@@ -1,10 +1,9 @@
+import 'package:course_select/controllers/home_page_notifier.dart';
 import 'package:course_select/shared_widgets/constants.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-
 import '../controllers/course_notifier.dart';
 import '../controllers/user_notifier.dart';
 import '../models/course_data_model.dart';
@@ -17,10 +16,11 @@ class MyCourses extends StatefulWidget {
   State<MyCourses> createState() => _MyCoursesState();
 }
 
-class _MyCoursesState extends State<MyCourses> {
+class _MyCoursesState extends State<MyCourses> with SingleTickerProviderStateMixin{
   DatabaseManager db = DatabaseManager();
   final userController = Get.put(UserNotifier());
   final courseController = Get.put(CourseNotifier());
+  HomePageNotifier homePageNotifier = HomePageNotifier();
 
   static List<Course> courses = [
     Course(
@@ -31,15 +31,16 @@ class _MyCoursesState extends State<MyCourses> {
         3,
         16,
         ['None'],
+        false,
         'assets/images/html.jpg'),
     Course('Business', 'Intermediate', 'BUS504', 'Marketing Management', 4, 12,
-        ['BUS501'], 'assets/images/img1.jpg'),
-    Course('Mathematics', 'Master', 'MATH201', 'Calculus I', 4, 16, ['MATH101'],
+        ['BUS501'],false, 'assets/images/img1.jpg'),
+    Course('Mathematics', 'Master', 'MATH201', 'Calculus I', 4, 16, ['MATH101'],false,
         'assets/images/img2.jpg'),
     Course('History', 'Beginner', 'HIST101', 'Introduction to World History', 3,
-        12, ['None'], 'assets/images/img3.jpg'),
+        12, ['None'], false,'assets/images/img3.jpg'),
     Course('Chemistry', 'Master', 'CHEM601', 'Advanced Organic Chemistry', 5,
-        16, ['CHEM501'], 'assets/images/img4.jpg')
+        16, ['CHEM501'], false,'assets/images/img4.jpg')
   ];
 
   List<Course> displayList = List.from(courses);
@@ -58,12 +59,23 @@ class _MyCoursesState extends State<MyCourses> {
     db.getUsers(userController);
     return db.getCourses(courseController);
   }
+  bool _isSaveTapped = false;
+  late final AnimationController _animationController;
 
   @override
   void initState() {
-    super.initState();
     getModels();
+    _animationController = AnimationController(vsync: this);
+    super.initState();
   }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -188,11 +200,27 @@ class _MyCoursesState extends State<MyCourses> {
                                     ),
                                     Positioned(
                                         right: 10,
-                                        child: Container(
-                                          padding: const EdgeInsets.all(15),
-                                          child: const Icon(
-                                            Icons.bookmark_border_rounded,
-                                            color: Colors.orange,
+                                        child: GestureDetector(
+                                          onTap: (){
+                                            setState(() {
+                                              displayList[index].isSaved = !displayList[index].isSaved;
+                                            });
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.all(15),
+                                            child: displayList[index].isSaved? Animate(
+                                              child: Icon(
+                                                Icons.bookmark_added,
+                                                color: kPrimaryColour
+                                              ),
+                                            ).animate()
+                                                .shake(hz: 1, curve: Curves.easeInOutCubic, duration: 500.ms)
+                                                .shimmer(delay: 10.ms, duration: 1000.ms)
+                                                .scaleXY(end: 1.2, duration: 100.ms).then(delay: 1.ms).scaleXY(end: 1/1.2,curve: Curves.bounceInOut)
+                                                : Icon(
+                                              Icons.bookmark_border_rounded,
+                                              color: Colors.orange.withOpacity(0.5),
+                                            ),
                                           ),
                                         )),
                                     Positioned(

@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:course_select/controllers/home_page_notifier.dart';
 import 'package:course_select/controllers/user_notifier.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -176,7 +177,9 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             Visibility(
                                 visible: homePageNotifier.isFilterVisible,
-                                child: const CoursesFilter()), //Course Filters
+                                child: Animate(
+                                  effects: const [FadeEffect(), SlideEffect(duration: Duration(milliseconds: 50))],
+                                    child: const CoursesFilter())), //Course Filters
                             const CategoryTitle(text: 'Currently Active'),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 25.0),

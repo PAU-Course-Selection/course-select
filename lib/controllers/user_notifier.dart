@@ -11,7 +11,7 @@ class UserNotifier extends ChangeNotifier {
   final User? user = Auth().currentUser;
   final DatabaseManager db = DatabaseManager();
 
-  var _userName = 'user';
+  var _userName = '';
   var _avatar = '';
   var _email = 'example@gmail.com';
   var _joinDate = '00-00-0000';
