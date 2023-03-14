@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:course_select/controllers/home_page_notifier.dart';
 import 'package:course_select/controllers/user_notifier.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -166,7 +167,9 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Expanded(
                     child: RefreshIndicator(
+                      color: kPrimaryColour,
                       onRefresh: () {
+                        HapticFeedback.heavyImpact();
                         setState(() {
                           futureData = getModels();
                         });
