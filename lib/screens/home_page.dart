@@ -50,7 +50,6 @@ class _HomePageState extends State<HomePage> {
     return _db.getCourses(courseNotifier);
   }
 
-
   @override
   Widget build(BuildContext context) {
     //final Size _size = MediaQuery.of(context).size;
@@ -240,12 +239,15 @@ class _HomePageState extends State<HomePage> {
                                     scrollDirection: Axis.horizontal,
                                     itemCount: courseNotifier.courseList.length,
                                     itemBuilder: (context, index) {
-                                      var course = courseNotifier
+                                      var courseName = courseNotifier
                                           .courseList[index].courseName;
                                       return GestureDetector(
-                                        onTap: _courseInfoTap(index),
+                                        onTap: (){
+                                          courseNotifier.currentCourse = courseNotifier.courseList[index];
+                                          Navigator.pushNamed(context, PageRoutes.courseInfo);
+                                        },
                                         child: CourseCard(
-                                          courseTitle: course.length > 30? course.substring(0,30) +'...': course,
+                                          courseTitle: courseName.length > 30? courseName.substring(0,30) +'...': courseName,
                                           courseImage: 'assets/images/c2.jpg',
                                         ),
                                       );
@@ -278,10 +280,6 @@ class _HomePageState extends State<HomePage> {
             return const Center(child: Text('No data'));
           }),
     );
-  }
-  _courseInfoTap(int index) {
-    courseNotifier.currentCourse = courseNotifier.courseList[index];
-    Navigator.pushNamed(context, PageRoutes.courseInfo);
   }
 }
 
