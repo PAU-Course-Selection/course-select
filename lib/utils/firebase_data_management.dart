@@ -1,4 +1,4 @@
-import 'package:course_select/controllers/course_notifier.dart';
+import 'package:course_select/controllers/course_list_notifier.dart';
 import 'package:course_select/models/course_data_model.dart';
 import 'package:course_select/models/user_data_model.dart' as student;
 import 'package:firebase_auth/firebase_auth.dart';

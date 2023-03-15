@@ -1,3 +1,4 @@
+import 'package:course_select/screens/course_info_page.dart';
 import 'package:flutter/cupertino.dart';
 import '../screens/forgot_password.dart';
 import '../screens/app_main_navigation.dart';
@@ -13,6 +14,7 @@ class PageRoutes{
   static const String home = 'home';
   static const String userProfile = 'user_profile';
   static const String forgotPassword = 'forgot_password';
+  static const String courseInfo = 'course_info';
 
   ///Builds screen widgets and maps them to class attributes
   Map<String, WidgetBuilder> routes() {
@@ -20,6 +22,7 @@ class PageRoutes{
       welcome: (context) => const WelcomePage(),
       loginRegister: (context) => const LoginRegisterPage(),
       home: (context) => const AppMainNav(),
+      courseInfo: (context) => const CourseInfoPage(),
       userProfile: (context) => UserProfilePage(),
       forgotPassword: (context) => const ForgotPasswordPage(),
     };
