@@ -47,8 +47,6 @@ class _MyCoursesState extends State<MyCourses>
   //       16, ['CHEM501'], false, 'assets/images/html.jpg',[])
   // ];
 
-
-
   late List<Course> displayList;
 
   void updateList(String value) {
@@ -70,7 +68,6 @@ class _MyCoursesState extends State<MyCourses>
 
   @override
   void initState() {
-
     _animationController = AnimationController(vsync: this);
     courseNotifier = Provider.of<CourseNotifier>(context, listen: false);
     userNotifier = Provider.of<UserNotifier>(context, listen: false);
@@ -89,205 +86,220 @@ class _MyCoursesState extends State<MyCourses>
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-        future: futureData,
-        builder:  (BuildContext context, AsyncSnapshot<dynamic> snapshot){
-          return Padding(
-            padding: const EdgeInsets.all(25),
-            child: SafeArea(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Search for a course',
-                    style: TextStyle(
-                        fontSize: 22.0,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Roboto'),
-                  ),
-                  const SizedBox(
-                    height: 20.0,
-                  ),
-                  TextField(
-                    onChanged: (value) {
-                      updateList(value);
-                    },
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        hintText: 'eg. Data Science',
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius:
-                            const BorderRadius.all(Radius.circular(8.0)),
-                            borderSide:
-                            BorderSide(width: 1, color: kPrimaryColour)),
-                        prefixIcon: const Icon(
-                          Icons.search,
-                          color: Colors.grey,
-                        ),
-                        focusColor: kPrimaryColour),
-                  ),
-                  const SizedBox(
-                    height: 20.0,
-                  ),
-                  Expanded(
-                      child: displayList.isEmpty
-                          ? const Center(
-                        child: Text('No results found...'),
-                      )
-                          : ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          itemCount: displayList.length,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 10.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  color: kLightBackground.withOpacity(0.2),
-                                ),
-                                child: Stack(
-                                  children: [
-                                    Container(
-                                        padding: const EdgeInsets.all(15),
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                            BorderRadius.circular(10)),
-                                        height: 100,
-                                        width: 100,
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                            BorderRadius.circular(10),
-                                            image: DecorationImage(
-                                                image: NetworkImage(
+          future: futureData,
+          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            return Padding(
+              padding: const EdgeInsets.all(25),
+              child: SafeArea(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Search for a course',
+                      style: TextStyle(
+                          fontSize: 22.0,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Roboto'),
+                    ),
+                    const SizedBox(
+                      height: 20.0,
+                    ),
+                    TextField(
+                      onChanged: (value) {
+                        updateList(value);
+                      },
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          hintText: 'eg. Data Science',
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(8.0)),
+                              borderSide:
+                                  BorderSide(width: 1, color: kPrimaryColour)),
+                          prefixIcon: const Icon(
+                            Icons.search,
+                            color: Colors.grey,
+                          ),
+                          focusColor: kPrimaryColour),
+                    ),
+                    const SizedBox(
+                      height: 20.0,
+                    ),
+                    Expanded(
+                        child: displayList.isEmpty
+                            ? const Center(
+                                child: Text('No results found...'),
+                              )
+                            : ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                itemCount: displayList.length,
+                                itemBuilder: (context, index) {
+                                  return Padding(
+                                    padding:
+                                        const EdgeInsets.only(bottom: 10.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15),
+                                        color:
+                                            kLightBackground.withOpacity(0.2),
+                                      ),
+                                      child: Stack(
+                                        children: [
+                                          Container(
+                                              padding: const EdgeInsets.all(15),
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10)),
+                                              height: 100,
+                                              width: 100,
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  image: DecorationImage(
+                                                    image: NetworkImage(
+                                                        displayList[index]
+                                                            .media[1]),
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                              )),
+                                          Positioned(
+                                            left: 80.w,
+                                            child: Container(
+                                              padding: const EdgeInsets.all(15),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
                                                     displayList[index]
-                                                        .media[1]),
-                                                fit: BoxFit.cover),
+                                                                .courseName
+                                                                .length >
+                                                            20
+                                                        ? displayList[index]
+                                                                .courseName
+                                                                .substring(
+                                                                    0, 20) +
+                                                            '...'
+                                                        : displayList[index]
+                                                            .courseName,
+                                                    style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 18,
+                                                    ),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  Text(
+                                                    displayList[index]
+                                                        .subjectArea,
+                                                    style: const TextStyle(
+                                                        fontSize: 16),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            top: 5.0),
+                                                    child: Text(
+                                                      '${displayList[index].duration} weeks',
+                                                      style: const TextStyle(
+                                                          color: Colors.grey),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
                                           ),
-                                        )),
-                                    Positioned(
-                                      left: 80.w,
-                                      child: Container(
-                                        padding: const EdgeInsets.all(15),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              displayList[index]
-                                                  .courseName
-                                                  .length >
-                                                  20
-                                                  ? displayList[index]
-                                                  .courseName
-                                                  .substring(0, 20) +
-                                                  '...'
-                                                  : displayList[index]
-                                                  .courseName,
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 18,
-                                              ),
-                                              overflow: TextOverflow.ellipsis,
+                                          Positioned(
+                                              right: 10,
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  HapticFeedback.heavyImpact();
+                                                  setState(() {
+                                                    displayList[index].isSaved =
+                                                        !displayList[index]
+                                                            .isSaved;
+                                                  });
+                                                },
+                                                child: Container(
+                                                  padding:
+                                                      const EdgeInsets.all(15),
+                                                  child: displayList[index]
+                                                          .isSaved
+                                                      ? Animate(
+                                                          child: Icon(
+                                                              Icons
+                                                                  .bookmark_added,
+                                                              color:
+                                                                  kPrimaryColour),
+                                                        )
+                                                          .animate()
+                                                          .shake(
+                                                              hz: 1,
+                                                              curve: Curves
+                                                                  .easeInOutCubic,
+                                                              duration: 500.ms)
+                                                          .shimmer(
+                                                              delay: 10.ms,
+                                                              duration: 1000.ms)
+                                                          .scaleXY(
+                                                              end: 1.2,
+                                                              duration: 100.ms)
+                                                          .then(delay: 1.ms)
+                                                          .scaleXY(
+                                                              end: 1 / 1.2,
+                                                              curve: Curves
+                                                                  .bounceInOut)
+                                                      : Icon(
+                                                          Icons
+                                                              .bookmark_border_rounded,
+                                                          color: Colors.orange
+                                                              .withOpacity(0.5),
+                                                        ),
+                                                ),
+                                              )),
+                                          Positioned(
+                                            right: 0,
+                                            bottom: 0,
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  color: kPrimaryColour
+                                                      .withOpacity(0.2),
+                                                  borderRadius:
+                                                      const BorderRadius.only(
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                  10),
+                                                          bottomRight:
+                                                              Radius.circular(
+                                                                  10))),
+                                              height: 30,
+                                              width: 100.w,
+                                              child: Center(
+                                                  child: Text(displayList[index]
+                                                      .level)),
                                             ),
-                                            const SizedBox(
-                                              height: 5,
-                                            ),
-                                            Text(
-                                              displayList[index].subjectArea,
-                                              style:
-                                              const TextStyle(fontSize: 16),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 5.0),
-                                              child: Text(
-                                                '${displayList[index].duration} weeks',
-                                                style: const TextStyle(
-                                                    color: Colors.grey),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                                          )
+                                        ],
                                       ),
+                                      width: double.infinity,
                                     ),
-                                    Positioned(
-                                        right: 10,
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            HapticFeedback.heavyImpact();
-                                            setState(() {
-                                              displayList[index].isSaved =
-                                              !displayList[index].isSaved;
-                                            });
-                                          },
-                                          child: Container(
-                                            padding: const EdgeInsets.all(15),
-                                            child: displayList[index].isSaved
-                                                ? Animate(
-                                              child: Icon(
-                                                  Icons.bookmark_added,
-                                                  color: kPrimaryColour),
-                                            )
-                                                .animate()
-                                                .shake(
-                                                hz: 1,
-                                                curve: Curves
-                                                    .easeInOutCubic,
-                                                duration: 500.ms)
-                                                .shimmer(
-                                                delay: 10.ms,
-                                                duration: 1000.ms)
-                                                .scaleXY(
-                                                end: 1.2,
-                                                duration: 100.ms)
-                                                .then(delay: 1.ms)
-                                                .scaleXY(
-                                                end: 1 / 1.2,
-                                                curve:
-                                                Curves.bounceInOut)
-                                                : Icon(
-                                              Icons
-                                                  .bookmark_border_rounded,
-                                              color: Colors.orange
-                                                  .withOpacity(0.5),
-                                            ),
-                                          ),
-                                        )),
-                                    Positioned(
-                                      right: 0,
-                                      bottom: 0,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color:
-                                            kPrimaryColour.withOpacity(0.2),
-                                            borderRadius:
-                                            const BorderRadius.only(
-                                                topLeft:
-                                                Radius.circular(10),
-                                                bottomRight:
-                                                Radius.circular(10))),
-                                        height: 30,
-                                        width: 100.w,
-                                        child: Center(
-                                            child:
-                                            Text(displayList[index].level)),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                width: double.infinity,
-                              ),
-                            );
-                          })),
-                ],
+                                  );
+                                })),
+                  ],
+                ),
               ),
-            ),
-          );
-        }
-      ),
+            );
+          }),
     );
   }
 }
