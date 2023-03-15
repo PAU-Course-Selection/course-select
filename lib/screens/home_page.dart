@@ -242,9 +242,12 @@ class _HomePageState extends State<HomePage> {
                                     itemBuilder: (context, index) {
                                       var course = courseNotifier
                                           .courseList[index].courseName;
-                                      return CourseCard(
-                                        courseTitle: course.length > 30? course.substring(0,30) +'...': course,
-                                        courseImage: 'assets/images/c2.jpg',
+                                      return GestureDetector(
+                                        onTap: _courseInfoTap(index),
+                                        child: CourseCard(
+                                          courseTitle: course.length > 30? course.substring(0,30) +'...': course,
+                                          courseImage: 'assets/images/c2.jpg',
+                                        ),
                                       );
                                     }),
                               ),
@@ -276,7 +279,12 @@ class _HomePageState extends State<HomePage> {
           }),
     );
   }
+  _courseInfoTap(int index) {
+    courseNotifier.currentCourse = courseNotifier.courseList[index];
+    Navigator.pushNamed(context, PageRoutes.courseInfo);
+  }
 }
+
 
 class FilterButton extends StatefulWidget {
   final Function onPressed;
