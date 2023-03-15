@@ -234,18 +234,16 @@ class _HomePageState extends State<HomePage> {
                             Padding(
                               padding: const EdgeInsets.only(left: 25.0),
                               child: SizedBox(
-                                height: 300,
+                                height: 280,
                                 width: double.infinity,
                                 child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
                                     itemCount: courseNotifier.courseList.length,
                                     itemBuilder: (context, index) {
-                                      return Card(
-                                        child: CourseCard(
-                                          courseTitle: courseNotifier
-                                              .courseList[index].courseName,
-                                          courseImage: 'assets/images/course_image.png',
-                                        ),
+                                      return CourseCard(
+                                        courseTitle: courseNotifier
+                                            .courseList[index].courseName,
+                                        courseImage: 'assets/images/c2.jpg',
                                       );
                                     }),
                               ),
