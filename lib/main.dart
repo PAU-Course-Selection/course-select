@@ -15,6 +15,7 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'internationalization/app_internalization.dart';
 
 
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
