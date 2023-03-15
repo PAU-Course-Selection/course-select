@@ -42,148 +42,129 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
-  Future getModels() async {
+
+  Future getModels() async{
     await _db.getUsers(userNotifier);
     userNotifier.updateUserName();
     userNotifier.updateAvatar();
     return _db.getCourses(courseNotifier);
   }
 
+
   @override
   Widget build(BuildContext context) {
     //final Size _size = MediaQuery.of(context).size;
     valueNotifier.value = 80.0;
-    HomePageNotifier homePageNotifier =
-        Provider.of<HomePageNotifier>(context, listen: true);
+    HomePageNotifier homePageNotifier = Provider.of<HomePageNotifier>(context, listen: true);
 
     return Scaffold(
       body: FutureBuilder(
           future: futureData,
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             double screenWidth = MediaQuery.of(context).size.width;
-
             /// The snapshot data type have to be same of the result of your web service method
-            if (snapshot.connectionState == ConnectionState.done ||
-                snapshot.connectionState == ConnectionState.waiting) {
+            if (snapshot.connectionState == ConnectionState.done || snapshot.connectionState == ConnectionState.waiting) {
               /// When the result of the future call respond and has data show that data
               return Column(
                 children: [
                   SafeArea(
                       child: Container(
-                    padding: const EdgeInsets.only(bottom: 25),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 100.h,
-                          width: double.infinity,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 25),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                        padding: const EdgeInsets.only(bottom: 25),
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 100.h,
+                              width: double.infinity,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 25),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    const Text(
-                                      'Hello,',
-                                      style: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 16,
-                                          fontFamily: 'Roboto'),
-                                    ),
-                                    Text(userNotifier.userName,
-                                        style: kHeadlineMedium.copyWith(
-                                            fontSize: 30)),
-                                  ],
-                                ),
-                                GestureDetector(
-                                  onTap: () => Navigator.pushNamed(
-                                      context, PageRoutes.userProfile),
-                                  child: CircleAvatar(
-                                      radius: 30,
-                                      backgroundColor: Colors.white,
-                                      child: ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(75.0),
-                                        child: CachedNetworkImage(
-                                          height: 100.0,
-                                          width: 100.0,
-                                          fit: BoxFit.cover,
-                                          imageUrl: userNotifier.avatar ?? '',
-                                          placeholder: (context, url) {
-                                            return CircularProgressIndicator(
-                                              strokeWidth: 2,
-                                              color: kPrimaryColour,
-                                            );
-                                          },
-                                          errorWidget: (context, url, error) =>
-                                              const Icon(
-                                            Icons.person,
-                                            color: Colors.grey,
-                                          ),
-                                        ),
-                                      )),
-                                )
-                              ],
-                            ),
-                          ), //Name and Avatar
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  showCupertinoModalBottomSheet(
-                                    duration: const Duration(milliseconds: 100),
-                                    topRadius: const Radius.circular(20),
-                                    barrierColor: Colors.black54,
-                                    elevation: 8,
-                                    context: context,
-                                    builder: (context) =>
-                                        const Material(child: MyCourses()),
-                                  );
-                                },
-                                child: RaisedContainer(
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text('Search',
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          'Hello,',
                                           style: TextStyle(
                                               color: Colors.grey,
                                               fontSize: 16,
-                                              fontFamily: 'Roboto')),
-                                      Icon(
-                                        Icons.search,
-                                        color: const Color(0xff0DAB76)
-                                            .withOpacity(0.7),
-                                      )
-                                    ],
+                                              fontFamily: 'Roboto'),
+                                        ),
+                                        Text(userNotifier.userName,
+                                            style:
+                                            kHeadlineMedium.copyWith(fontSize: 30)),
+                                      ],
+                                    ),
+                                    GestureDetector(
+                                      onTap: () => Navigator.pushNamed(context, PageRoutes.userProfile),
+                                      child:  CircleAvatar(
+                                          radius: 30,
+                                          backgroundColor: Colors.white,
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(75.0),
+                                            child: CachedNetworkImage(
+                                              height: 100.0,
+                                              width: 100.0,
+                                              fit: BoxFit.cover,
+                                              imageUrl: userNotifier.avatar ?? '',
+                                              placeholder: (context, url){
+                                                return  CircularProgressIndicator(strokeWidth: 2, color: kPrimaryColour,);
+                                              },
+                                              errorWidget: (context, url, error) => const Icon(Icons.person, color: Colors.grey,),
+                                            ),
+                                          )),
+                                    )
+                                  ],
+                                ),
+                              ),//Name and Avatar
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  GestureDetector(
+                                    onTap:(){
+                                      showCupertinoModalBottomSheet(
+                                        duration: const Duration(milliseconds: 100),
+                                        topRadius: const Radius.circular(20) ,
+                                        barrierColor: Colors.black54,
+                                        elevation: 8,
+                                        context: context,
+                                        builder: (context) => const Material(child: MyCourses()),
+                                      );
+                                    },
+                                    child: RaisedContainer(child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text('Search',
+                                            style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 16,
+                                                fontFamily: 'Roboto')),
+                                        Icon(
+                                          Icons.search,
+                                          color: const Color(0xff0DAB76).withOpacity(0.7),
+                                        )
+                                      ],
+                                    ), width: screenWidth * 0.73, bgColour: Colors.white,),
                                   ),
-                                  width: screenWidth * 0.73,
-                                  bgColour: Colors.white,
-                                ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 5.0),
+                                    child: FilterButton(
+                                        isFilterVisible: homePageNotifier.isFilterVisible,
+                                      onPressed: (){
+                                          homePageNotifier.isFilterVisible =!homePageNotifier.isFilterVisible;
+                                      },
+                                    ),
+                                  )],
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 5.0),
-                                child: FilterButton(
-                                  isFilterVisible:
-                                      homePageNotifier.isFilterVisible,
-                                  onPressed: () {
-                                    homePageNotifier.isFilterVisible =
-                                        !homePageNotifier.isFilterVisible;
-                                  },
-                                ),
-                              )
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  )),
+                      )
+                  ),
                   Expanded(
                     child: RefreshIndicator(
                       color: kPrimaryColour,
@@ -200,63 +181,42 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             Visibility(
                                 visible: homePageNotifier.isFilterVisible,
-                                child: Animate(effects: const [
-                                  FadeEffect(),
-                                  SlideEffect(
-                                      duration: Duration(milliseconds: 50))
-                                ], child: const CoursesFilter())),
-                            //Course Filters
+                                child: Animate(
+                                  effects: const [FadeEffect(), SlideEffect(duration: Duration(milliseconds: 50))],
+                                    child: const CoursesFilter())), //Course Filters
                             const CategoryTitle(text: 'Currently Active'),
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 25.0),
+                              padding: const EdgeInsets.symmetric(horizontal: 25.0),
                               child: Container(
                                 padding: const EdgeInsets.all(15),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(15),
-                                  color: kLightBackground.withOpacity(0.2),
+                                  color:  kLightBackground.withOpacity(0.2),
                                 ),
                                 child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Container(
                                       padding: const EdgeInsets.all(10),
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          image: const DecorationImage(
-                                              image: AssetImage(
-                                                  'assets/images/html.jpg'))),
+                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),
+                                          image: const DecorationImage(image: AssetImage('assets/images/html.jpg'))),
                                       height: 70,
                                       width: 70,
                                     ),
                                     Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: const [
-                                        Text(
-                                          'Symmetry Theory',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18),
-                                        ),
+                                        Text('Symmetry Theory', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
                                         SizedBox(
                                           height: 5,
                                         ),
-                                        Text(
-                                          '2 lessons left',
-                                          style: TextStyle(color: Colors.grey),
-                                        )
+                                        Text('2 lessons left', style: TextStyle(color: Colors.grey),)
                                       ],
                                     ),
                                     SimpleCircularProgressBar(
                                       animationDuration: 1,
                                       backColor: const Color(0xffD9D9D9),
-                                      progressColors: [
-                                        kSelected,
-                                        kPrimaryColour
-                                      ],
+                                      progressColors: [kSelected,kPrimaryColour],
                                       progressStrokeWidth: 8,
                                       backStrokeWidth: 8,
                                       size: 50,
@@ -268,12 +228,9 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ],
                                 ),
-                                width: double.infinity,
-                              ),
-                            ),
-                            //Courses Title
-                            const CategoryTitle(text: 'Top Picks'),
-                            //Courses Title
+                                width: double.infinity,),
+                            ),//Courses Title
+                            const CategoryTitle(text: 'Top Picks'), //Courses Title
                             Padding(
                               padding: const EdgeInsets.only(left: 25.0),
                               child: SizedBox(
@@ -283,13 +240,11 @@ class _HomePageState extends State<HomePage> {
                                     scrollDirection: Axis.horizontal,
                                     itemCount: courseNotifier.courseList.length,
                                     itemBuilder: (context, index) {
-                                      return GestureDetector(
-                                        onTap: () => _courseInfoTap(index),
-                                        child: CourseCard(
-                                          courseTitle: courseNotifier
-                                              .courseList[index].courseName,
-                                          courseImage: 'assets/images/c2.jpg',
-                                        ),
+                                      var course = courseNotifier
+                                          .courseList[index].courseName;
+                                      return CourseCard(
+                                        courseTitle: course.length > 30? course.substring(0,30) +'...': course,
+                                        courseImage: 'assets/images/c2.jpg',
                                       );
                                     }),
                               ),
@@ -321,22 +276,14 @@ class _HomePageState extends State<HomePage> {
           }),
     );
   }
-
-  _courseInfoTap(int index) {
-    courseNotifier.currentCourse = courseNotifier.courseList[index];
-    Navigator.pushNamed(context, PageRoutes.courseInfo);
-  }
 }
 
 class FilterButton extends StatefulWidget {
   final Function onPressed;
-
   const FilterButton({
     Key? key,
-    required bool isFilterVisible,
-    required this.onPressed,
-  })  : _isFilterVisible = isFilterVisible,
-        super(key: key);
+    required bool isFilterVisible, required this.onPressed,
+  }) : _isFilterVisible = isFilterVisible, super(key: key);
 
   final bool _isFilterVisible;
 
@@ -349,11 +296,9 @@ class _FilterButtonState extends State<FilterButton> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => widget.onPressed.call(),
-      child: RaisedContainer(
-        width: 50,
-        bgColour: widget._isFilterVisible ? kPrimaryColour : Colors.white,
-        child: ImageIcon(const AssetImage('assets/icons/setting.png'),
-            color: widget._isFilterVisible ? Colors.white : kPrimaryColour),
+      child: RaisedContainer(width: 50, bgColour: widget._isFilterVisible?kPrimaryColour:Colors.white,
+        child: ImageIcon(const AssetImage('assets/icons/setting.png'), color: widget._isFilterVisible? Colors.white: kPrimaryColour),
+
       ),
     );
   }
