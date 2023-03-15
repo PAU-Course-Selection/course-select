@@ -8,11 +8,11 @@ class Course{
   int duration = 0;
   List prereqs = [];
   bool isSaved=false;
-  String courseImage = '';
+  List media = [];
 
 
   Course(this.subjectArea, this.level, this.courseId, this.courseName,
-      this.hoursPerWeek, this.duration, this.prereqs,this.isSaved, this.courseImage,);
+      this.hoursPerWeek, this.duration, this.prereqs, this.isSaved, this.media);
 
   ///Receives a map which matches class attributes
   ///This is useful for storing, persisting and fetching data from firestore
@@ -24,5 +24,7 @@ class Course{
     hoursPerWeek = data['hoursPerWeek'];
     duration = data['duration'];
     prereqs = data['prereqs'];
+    isSaved = data['isSaved'];
+    media = data['media'];
   }
 }

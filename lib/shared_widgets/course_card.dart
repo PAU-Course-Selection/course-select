@@ -8,7 +8,12 @@ import 'constants.dart';
 class CourseCard extends StatefulWidget {
   final String courseTitle;
   final String courseImage;
-  const CourseCard({Key? key, required this.courseTitle, required this.courseImage}) : super(key: key);
+  final String subjectArea;
+  final int hoursPerWeek;
+
+  const CourseCard({Key? key, required this.courseTitle,
+    required this.courseImage, required this.subjectArea,
+    required this.hoursPerWeek}) : super(key: key);
 
   @override
   State<CourseCard> createState() => _CourseCardState();
@@ -23,7 +28,7 @@ class _CourseCardState extends State<CourseCard> {
       child: Container(
         decoration: BoxDecoration(
             color: const Color(0xffa7fcd1),
-            image: const DecorationImage(image: AssetImage('assets/images/c2.jpg'), fit: BoxFit.cover),
+            image:  DecorationImage(image: NetworkImage(widget.courseImage), fit: BoxFit.cover),
             borderRadius: BorderRadius.circular(20),
             boxShadow: const [
               BoxShadow(
@@ -55,9 +60,9 @@ class _CourseCardState extends State<CourseCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(widget.courseTitle, style: kHeadlineMedium.copyWith(fontSize: 18),
-                        maxLines: 2, overflow: TextOverflow.ellipsis,),
+                        maxLines: 1, overflow: TextOverflow.ellipsis,),
                       const SizedBox(height: 5,),
-                      Text('Software Architecture', style: kHeadlineMedium.copyWith(fontSize: 16, fontWeight: FontWeight.normal),
+                      Text(widget.subjectArea, style: kHeadlineMedium.copyWith(fontSize: 16, fontWeight: FontWeight.normal),
                         maxLines: 2, overflow: TextOverflow.ellipsis,),
                       Padding(
                         padding: const EdgeInsets.only(top: 10.0),
@@ -67,15 +72,15 @@ class _CourseCardState extends State<CourseCard> {
                             const SizedBox(
                               width: 5,
                             ),
-                            const Text('10 weeks'),
+                            Text('${widget.hoursPerWeek} weeks'),
                             const SizedBox(
                               width: 25,
                             ),
-                            ImageIcon(const AssetImage('assets/icons/teamwork.png'), color: kPrimaryColour,),
+                            ImageIcon(const AssetImage('assets/icons/book3.png'), color: kPrimaryColour,),
                             const SizedBox(
                               width: 5,
                             ),
-                            const Text('500+ enrolled')
+                            const Text('20 lessons')
                         ],),
                       )
                     ],

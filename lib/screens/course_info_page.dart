@@ -29,7 +29,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
         title:  Text(_courseNotifier.currentCourse.courseName),
       ),
       body: CourseInfo(
-        courseImage: _courseNotifier.currentCourse.courseImage,
+        courseImage: _courseNotifier.currentCourse.media[1],
         courseTitle: _courseNotifier.currentCourse.courseName,
         //courseLessons: _courseNotifier.currentCourse.numOfLessons,
         weeks: _courseNotifier.currentCourse.duration,

@@ -98,7 +98,7 @@ class _HomePageState extends State<HomePage> {
                                     GestureDetector(
                                       onTap: () => Navigator.pushNamed(context, PageRoutes.userProfile),
                                       child:  CircleAvatar(
-                                          radius: 30,
+                                          radius: 20,
                                           backgroundColor: Colors.white,
                                           child: ClipRRect(
                                             borderRadius: BorderRadius.circular(75.0),
@@ -243,12 +243,13 @@ class _HomePageState extends State<HomePage> {
                                           .courseList[index].courseName;
                                       return GestureDetector(
                                         onTap: (){
-                                          courseNotifier.currentCourse = courseNotifier.courseList[index];
+                                        courseNotifier.currentCourse = courseNotifier.courseList[index];
                                           Navigator.pushNamed(context, PageRoutes.courseInfo);
                                         },
                                         child: CourseCard(
                                           courseTitle: courseName.length > 30? courseName.substring(0,30) +'...': courseName,
-                                          courseImage: 'assets/images/c2.jpg',
+                                          courseImage: courseNotifier.courseList[index].media[1],
+                                          subjectArea: courseNotifier.courseList[index].subjectArea, hoursPerWeek: courseNotifier.courseList[index].duration,
                                         ),
                                       );
                                     }),
