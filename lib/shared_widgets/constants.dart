@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 Color kPrimaryColour = const Color(0xff0DAB76);
 Color kSelected = const Color(0xffF2F3D9);
+Color kLightGreen = const Color(0xffa7fcd1);
 Color kLightBackground = const Color(0xffD9D9D9);
 TextStyle kHeadlineMedium = const TextStyle(
     color: Colors.black,

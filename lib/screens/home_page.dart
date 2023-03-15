@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:course_select/controllers/home_page_notifier.dart';
 import 'package:course_select/controllers/user_notifier.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -101,10 +102,12 @@ class _HomePageState extends State<HomePage> {
                                           radius: 30,
                                           backgroundColor: Colors.white,
                                           child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(45),
+                                            borderRadius: BorderRadius.circular(75.0),
                                             child: CachedNetworkImage(
-                                              fit: BoxFit.fill,
-                                              imageUrl: userNotifier.avatar??'',
+                                              height: 100.0,
+                                              width: 100.0,
+                                              fit: BoxFit.cover,
+                                              imageUrl: userNotifier.avatar ?? '',
                                               placeholder: (context, url){
                                                 return  CircularProgressIndicator(strokeWidth: 2, color: kPrimaryColour,);
                                               },
@@ -164,10 +167,11 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Expanded(
                     child: RefreshIndicator(
+                      color: kPrimaryColour,
                       onRefresh: () {
+                        HapticFeedback.heavyImpact();
                         setState(() {
                           futureData = getModels();
-
                         });
                         return futureData;
                       },
@@ -230,18 +234,16 @@ class _HomePageState extends State<HomePage> {
                             Padding(
                               padding: const EdgeInsets.only(left: 25.0),
                               child: SizedBox(
-                                height: 300,
+                                height: 280,
                                 width: double.infinity,
                                 child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
                                     itemCount: courseNotifier.courseList.length,
                                     itemBuilder: (context, index) {
-                                      return Card(
-                                        child: CourseCard(
-                                          courseTitle: courseNotifier
-                                              .courseList[index].courseName,
-                                          courseImage: 'assets/images/course_image.png',
-                                        ),
+                                      return CourseCard(
+                                        courseTitle: courseNotifier
+                                            .courseList[index].courseName,
+                                        courseImage: 'assets/images/c2.jpg',
                                       );
                                     }),
                               ),
