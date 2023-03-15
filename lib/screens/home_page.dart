@@ -240,9 +240,10 @@ class _HomePageState extends State<HomePage> {
                                     scrollDirection: Axis.horizontal,
                                     itemCount: courseNotifier.courseList.length,
                                     itemBuilder: (context, index) {
+                                      var course = courseNotifier
+                                          .courseList[index].courseName;
                                       return CourseCard(
-                                        courseTitle: courseNotifier
-                                            .courseList[index].courseName,
+                                        courseTitle: course.length > 30? course.substring(0,30) +'...': course,
                                         courseImage: 'assets/images/c2.jpg',
                                       );
                                     }),
