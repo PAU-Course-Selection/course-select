@@ -27,14 +27,14 @@ class _CourseCardState extends State<CourseCard> {
             borderRadius: BorderRadius.circular(20),
             boxShadow: const [
               BoxShadow(
-                  color: Color.fromRGBO(143, 148, 251, .2),
+                  color: Color.fromRGBO(143, 148, 251, .1),
                   blurRadius: 10.0,
-                  offset: Offset(0, 5)
+                  offset: Offset(0, 1)
               ),
               BoxShadow(
                   color: Color.fromRGBO(143, 148, 251, .1),
                   blurRadius: 10.0,
-                  offset: Offset(0, 5)
+                  offset: Offset(0, 1)
               )
             ]
         ),
