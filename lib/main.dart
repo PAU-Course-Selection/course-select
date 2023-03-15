@@ -1,5 +1,4 @@
-import 'package:course_select/controllers/course_info_notifier.dart';
-import 'package:course_select/controllers/course_list_notifier.dart';
+import 'package:course_select/controllers/course_notifier.dart';
 import 'package:course_select/controllers/home_page_notifier.dart';
 import 'package:course_select/controllers/user_notifier.dart';
 import 'package:course_select/screens/course_info_page.dart';
@@ -38,9 +37,6 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
             create: (context) => CourseNotifier()
-        ),
-        ChangeNotifierProvider(
-            create: (context) => CourseInfoNotifier()
         ),
       ],
       child: ScreenUtilInit(

@@ -5,7 +5,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:flutter/services.dart';
-import '../controllers/course_list_notifier.dart';
+import '../controllers/course_notifier.dart';
 import '../controllers/user_notifier.dart';
 import '../models/course_data_model.dart';
 import '../utils/firebase_data_management.dart';

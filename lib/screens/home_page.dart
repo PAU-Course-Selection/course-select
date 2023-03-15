@@ -8,7 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
-import '../controllers/course_list_notifier.dart';
+import '../controllers/course_notifier.dart';
 import '../routes/routes.dart';
 import '../shared_widgets/constants.dart';
 import '../shared_widgets/course_card.dart';

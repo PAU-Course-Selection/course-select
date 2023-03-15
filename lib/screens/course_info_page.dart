@@ -1,4 +1,4 @@
-import 'package:course_select/controllers/course_list_notifier.dart';
+import 'package:course_select/controllers/course_notifier.dart';
 import 'package:course_select/screens/course_info.dart';
 import 'package:course_select/utils/firebase_data_management.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +19,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
   @override
   void initState() {
     _courseNotifier = Provider.of<CourseNotifier>(context, listen: false);
+
     super.initState();
   }
 
