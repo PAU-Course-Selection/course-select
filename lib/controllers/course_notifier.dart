@@ -8,14 +8,18 @@ import '../utils/firebase_data_management.dart';
 
 ///Creates a controller class with attributes which notify all widgets of changes
 class CourseNotifier extends ChangeNotifier {
-
   List<Course> _courseList = <Course>[];
-  Course? _currentCourse;
+  late Course _currentCourse;
+
+  Course get currentCourse => _currentCourse;
+
 
   set currentCourse(Course course) {
     _currentCourse = course;
     notifyListeners();
   }
+
+
 
   ///A getter for the list of courses
   UnmodifiableListView<Course> get courseList =>
@@ -26,8 +30,4 @@ class CourseNotifier extends ChangeNotifier {
     _courseList = list;
     notifyListeners();
   }
-
-
-
-
 }

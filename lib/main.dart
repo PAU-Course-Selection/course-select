@@ -1,6 +1,7 @@
 import 'package:course_select/controllers/course_notifier.dart';
 import 'package:course_select/controllers/home_page_notifier.dart';
 import 'package:course_select/controllers/user_notifier.dart';
+import 'package:course_select/screens/course_info_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:course_select/routes/routes.dart';
 import 'package:get/get.dart';
@@ -12,6 +13,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 
 import 'internationalization/app_internalization.dart';
+
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
