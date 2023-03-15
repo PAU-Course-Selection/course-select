@@ -242,6 +242,8 @@ class _HomePageState extends State<HomePage> {
                                     itemBuilder: (context, index) {
                                       return CourseCard(
                                         courseTitle: courseNotifier
+                                            .courseList[index].courseName.length > 30? courseNotifier
+                                            .courseList[index].courseName.substring(0,30) +'...': courseNotifier
                                             .courseList[index].courseName,
                                         courseImage: 'assets/images/c2.jpg',
                                       );
