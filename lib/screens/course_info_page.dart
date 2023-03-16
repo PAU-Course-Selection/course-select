@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:course_select/controllers/course_notifier.dart';
-import 'package:course_select/shared_widgets/constants.dart';
+import 'package:course_select/constants/constants.dart';
 import 'package:course_select/shared_widgets/video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -52,6 +52,7 @@ class _CourseInfoState extends State<CourseInfo> {
             _courseNotifier.currentCourse.courseName,
             style: const TextStyle(
               fontSize: 24.00,
+              fontFamily: "Roboto"
             ),
             textAlign: TextAlign.left,
           ),
@@ -61,8 +62,9 @@ class _CourseInfoState extends State<CourseInfo> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(
-            decoration:
-                BoxDecoration(borderRadius: BorderRadius.circular(16.0)),
+            decoration: BoxDecoration(
+                //borderRadius: BorderRadius.circular(16.0),
+                ),
             height: 300.h,
             width: double.infinity,
             child: ListView.builder(
@@ -82,21 +84,24 @@ class _CourseInfoState extends State<CourseInfo> {
             Padding(
               padding: const EdgeInsets.fromLTRB(
                 4.0,
-                8.0,
-                8.0,
+                4.0,
+                4.0,
                 4.0,
               ),
               child: Container(
                 padding: const EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
                     boxShadow: kSomeShadow,
-                    color: const Color(0xffE1F0EC),
+                    color: kLightGreen,
                     borderRadius:
                         const BorderRadius.all(Radius.circular(32.0))),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: const [
-                    Icon(Icons.book),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(0.0,0.0,8.0,4.0),
+                      child: Icon(Icons.book),
+                    ),
                     Text("22 Lessons"),
                   ],
                 ),
@@ -106,20 +111,24 @@ class _CourseInfoState extends State<CourseInfo> {
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
                 boxShadow: kSomeShadow,
-                color: const Color(0xffE1F0EC),
+                color: kLightGreen,
                 borderRadius: const BorderRadius.all(
                   Radius.circular(32.0),
                 ),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.timelapse),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(0.0,0.0,8.0,4.0),
+                    child: const Icon(Icons.timelapse),
+                  ),
                   Text(_hoursPerWeek()),
                 ],
               ),
             ),
             ElevatedButton(
-              onPressed: () => Share.share("Check out the ${_courseNotifier.currentCourse.courseName} course in the Study Sprint app."),
+              onPressed: () => Share.share(
+                  "Check out the ${_courseNotifier.currentCourse.courseName} course in the Study Sprint app."),
               child: const Icon(Icons.share),
               style: ButtonStyle(
                   padding: const MaterialStatePropertyAll<EdgeInsetsGeometry>(
@@ -127,7 +136,7 @@ class _CourseInfoState extends State<CourseInfo> {
                   shape: const MaterialStatePropertyAll<OutlinedBorder>(
                       CircleBorder()),
                   backgroundColor:
-                      const MaterialStatePropertyAll<Color>(Color(0xffE1F0EC)),
+                       MaterialStatePropertyAll<Color>(kPrimaryColour),
                   foregroundColor:
                       const MaterialStatePropertyAll<Color>(Colors.black),
                   elevation: MaterialStateProperty.all(8.0)),
@@ -242,7 +251,11 @@ class _CourseInfoState extends State<CourseInfo> {
       child: AspectRatio(
         aspectRatio: 300 / 220,
         child: Material(
-          elevation: 20,
+          borderRadius: BorderRadius.circular(16.0),
+          elevation: 10,
+          clipBehavior: Clip.hardEdge,
+          // elevation: 20,
+
           child: CachedNetworkImage(
             imageUrl: current.media[index],
           ),
@@ -254,12 +267,17 @@ class _CourseInfoState extends State<CourseInfo> {
 
   Widget _courseVideo() {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: AspectRatio(
+        padding: const EdgeInsets.all(16.0),
+        child: AspectRatio(
           aspectRatio: 370 / 250,
           child: Material(
-              elevation: 20, child: CourseVideoPlayer(videoPath: videoUrl))),
-    );
+            borderRadius: BorderRadius.circular(16.0),
+            clipBehavior: Clip.hardEdge,
+            elevation: 5,
+
+            child: CourseVideoPlayer(videoPath: videoUrl),
+          ),
+        ));
   }
 
   String _hoursPerWeek() {
