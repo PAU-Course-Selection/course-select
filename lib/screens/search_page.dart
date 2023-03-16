@@ -1,27 +1,22 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:course_select/controllers/home_page_notifier.dart';
-import 'package:course_select/shared_widgets/category_button.dart';
 import 'package:course_select/shared_widgets/constants.dart';
 import 'package:course_select/shared_widgets/courses_filter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../controllers/course_notifier.dart';
-import '../controllers/user_notifier.dart';
 import '../models/course_data_model.dart';
 import '../shared_widgets/mini_course_card.dart';
 import '../utils/firebase_data_management.dart';
 
-class MyCourses extends StatefulWidget {
-  const MyCourses({Key? key}) : super(key: key);
+class SearchPage extends StatefulWidget {
+  const SearchPage({Key? key}) : super(key: key);
 
   @override
-  State<MyCourses> createState() => _MyCoursesState();
+  State<SearchPage> createState() => _SearchPageState();
 }
 
-class _MyCoursesState extends State<MyCourses>
+class _SearchPageState extends State<SearchPage>
     with SingleTickerProviderStateMixin {
   DatabaseManager db = DatabaseManager();
   HomePageNotifier homePageNotifier = HomePageNotifier();
@@ -81,7 +76,7 @@ class _MyCoursesState extends State<MyCourses>
                     const Padding(
                       padding: EdgeInsets.only(left: 25.0, top: 25),
                       child: Text(
-                        'Learn without limits!',
+                        'Search for a course',
                         style: TextStyle(
                             fontSize: 22.0,
                             fontWeight: FontWeight.bold,
@@ -101,7 +96,7 @@ class _MyCoursesState extends State<MyCourses>
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8.0),
                             ),
-                            hintText: 'eg. Introduction to HTML',
+                            hintText: 'eg. Data Science',
                             focusedBorder: OutlineInputBorder(
                                 borderRadius:
                                 const BorderRadius.all(Radius.circular(8.0)),
@@ -143,8 +138,8 @@ class _MyCoursesState extends State<MyCourses>
                           child: Text('No results found...'),
                         )
                             : Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                              child: ListView.builder(
+                          padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                          child: ListView.builder(
                               scrollDirection: Axis.vertical,
                               itemCount: displayList.length,
                               itemBuilder: (context, index) {
@@ -159,7 +154,7 @@ class _MyCoursesState extends State<MyCourses>
                                     });
                                   },);
                               }),
-                            )),
+                        )),
                   ],
                 ),
               ),

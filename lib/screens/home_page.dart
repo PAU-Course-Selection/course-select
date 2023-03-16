@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:course_select/controllers/home_page_notifier.dart';
 import 'package:course_select/controllers/user_notifier.dart';
+import 'package:course_select/screens/search_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -131,7 +132,7 @@ class _HomePageState extends State<HomePage> {
                                         barrierColor: Colors.black54,
                                         elevation: 8,
                                         context: context,
-                                        builder: (context) => const Material(child: MyCourses()),
+                                        builder: (context) => const Material(child: SearchPage()),
                                       );
                                     },
                                     child: RaisedContainer(child: Row(
@@ -182,7 +183,7 @@ class _HomePageState extends State<HomePage> {
                                 visible: homePageNotifier.isFilterVisible,
                                 child: Animate(
                                   effects: const [FadeEffect(), SlideEffect(duration: Duration(milliseconds: 50))],
-                                    child: const CoursesFilter())), //Course Filters
+                                    child:  const CoursesFilter(isListView: false))), //Course Filters
                             const CategoryTitle(text: 'Currently Active'),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 25.0),
