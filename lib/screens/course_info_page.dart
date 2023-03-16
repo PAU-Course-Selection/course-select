@@ -5,6 +5,7 @@ import 'package:course_select/shared_widgets/video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 class CourseInfo extends StatefulWidget {
   const CourseInfo({
@@ -44,6 +45,7 @@ class _CourseInfoState extends State<CourseInfo> {
     Column infoPage = Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
+        //COURSE NAME
         Padding(
           padding: const EdgeInsets.all(4.0),
           child: Text(
@@ -54,6 +56,8 @@ class _CourseInfoState extends State<CourseInfo> {
             textAlign: TextAlign.left,
           ),
         ),
+
+        //MEDIA LIST
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(
@@ -70,6 +74,8 @@ class _CourseInfoState extends State<CourseInfo> {
             ),
           ),
         ),
+
+        //ROW WITH SHARE BUTTON
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -82,9 +88,11 @@ class _CourseInfoState extends State<CourseInfo> {
               ),
               child: Container(
                 padding: const EdgeInsets.all(16.0),
-                decoration: const BoxDecoration(
-                    color: Color(0xffE1F0EC),
-                    borderRadius: BorderRadius.all(Radius.circular(32.0))),
+                decoration: BoxDecoration(
+                    boxShadow: kSomeShadow,
+                    color: const Color(0xffE1F0EC),
+                    borderRadius:
+                        const BorderRadius.all(Radius.circular(32.0))),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [
@@ -96,9 +104,10 @@ class _CourseInfoState extends State<CourseInfo> {
             ),
             Container(
               padding: const EdgeInsets.all(16.0),
-              decoration: const BoxDecoration(
-                color: Color(0xffE1F0EC),
-                borderRadius: BorderRadius.all(
+              decoration: BoxDecoration(
+                boxShadow: kSomeShadow,
+                color: const Color(0xffE1F0EC),
+                borderRadius: const BorderRadius.all(
                   Radius.circular(32.0),
                 ),
               ),
@@ -110,7 +119,7 @@ class _CourseInfoState extends State<CourseInfo> {
               ),
             ),
             ElevatedButton(
-              onPressed: _shareCourse(),
+              onPressed: () => Share.share("Check out the ${_courseNotifier.currentCourse.courseName} course in the Study Sprint app."),
               child: const Icon(Icons.share),
               style: ButtonStyle(
                   padding: const MaterialStatePropertyAll<EdgeInsetsGeometry>(
@@ -119,6 +128,8 @@ class _CourseInfoState extends State<CourseInfo> {
                       CircleBorder()),
                   backgroundColor:
                       const MaterialStatePropertyAll<Color>(Color(0xffE1F0EC)),
+                  foregroundColor:
+                      const MaterialStatePropertyAll<Color>(Colors.black),
                   elevation: MaterialStateProperty.all(8.0)),
             ),
           ],
@@ -250,8 +261,6 @@ class _CourseInfoState extends State<CourseInfo> {
               elevation: 20, child: CourseVideoPlayer(videoPath: videoUrl))),
     );
   }
-
-  _shareCourse() {}
 
   String _hoursPerWeek() {
     String hpw = _courseNotifier.currentCourse.hoursPerWeek.toString();

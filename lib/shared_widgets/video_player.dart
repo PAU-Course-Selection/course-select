@@ -22,14 +22,14 @@ class _CourseVideoPlayerState extends State<CourseVideoPlayer> {
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.network(widget.videoPath ?? 'none');
+    _controller = VideoPlayerController.network(widget.videoPath);
     _timer = Timer.periodic(
-        const Duration(milliseconds: 1000), (_) {
+        const Duration(milliseconds: 100), (_) {
       setState(() {
-        _onTouch = false;
+        _onTouch = _onTouch;
       });
     });
-    _controller.setLooping(true);
+   // _controller.setLooping(true);
     _controller.initialize().then((_) {
       setState(() {});
     });
@@ -38,7 +38,7 @@ class _CourseVideoPlayerState extends State<CourseVideoPlayer> {
   @override
   void dispose() {
     _controller.dispose();
-    _timer?.cancel();
+    _timer.cancel();
     super.dispose();
   }
 
@@ -67,7 +67,7 @@ class _CourseVideoPlayerState extends State<CourseVideoPlayer> {
                       color: Colors.white,
                     ),
                     onPressed: () {
-                      _timer?.cancel();
+                      _timer.cancel();
 
                       // pause while video is playing, play while video is pausing
                       setState(() {
