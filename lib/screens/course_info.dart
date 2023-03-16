@@ -1,11 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:course_select/controllers/course_notifier.dart';
-import 'package:course_select/shared_widgets/constants.dart';
 import 'package:course_select/shared_widgets/video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:video_player/video_player.dart';
 
 class CourseInfo extends StatefulWidget {
   final String courseTitle;
@@ -32,7 +30,6 @@ class _CourseInfoState extends State<CourseInfo> {
   late CourseNotifier _courseNotifier;
   Image img = Image.asset('assets/images/c2.jpg');
   String videoUrl = '';
-  late VideoPlayerController _controller;
 
   @override
   Widget build(BuildContext context) {
@@ -45,11 +42,6 @@ class _CourseInfoState extends State<CourseInfo> {
     print(_courseNotifier.currentCourse.media[0]);
     videoUrl = _courseNotifier.currentCourse.media[0];
     print(videoUrl);
-    _controller = VideoPlayerController.network(videoUrl)
-      ..initialize().then((_) {
-        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-        setState(() {});
-      });
     super.initState();
   }
 
@@ -258,7 +250,7 @@ class _CourseInfoState extends State<CourseInfo> {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: AspectRatio(
-          aspectRatio: _controller.value.aspectRatio,
+          aspectRatio: 370/250,
           child: Material(
             elevation: 20,
             child: CourseVideoPlayer(videoPath: videoUrl)
