@@ -1,11 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:course_select/controllers/course_notifier.dart';
 import 'package:course_select/constants/constants.dart';
+import 'package:course_select/shared_widgets/classmates.dart';
+import 'package:course_select/shared_widgets/course_info_and_sharing.dart';
 import 'package:course_select/shared_widgets/video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:share_plus/share_plus.dart';
 
 class CourseInfo extends StatefulWidget {
   const CourseInfo({
@@ -41,6 +42,12 @@ class _CourseInfoState extends State<CourseInfo> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    _courseNotifier.dispose();
+    super.dispose();
+  }
+
   Widget _courseInfo() {
     Column infoPage = Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -50,10 +57,7 @@ class _CourseInfoState extends State<CourseInfo> {
           padding: const EdgeInsets.all(4.0),
           child: Text(
             _courseNotifier.currentCourse.courseName,
-            style: const TextStyle(
-              fontSize: 24.00,
-              fontFamily: "Roboto"
-            ),
+            style: const TextStyle(fontSize: 24.00, fontFamily: "Roboto"),
             textAlign: TextAlign.left,
           ),
         ),
@@ -78,71 +82,72 @@ class _CourseInfoState extends State<CourseInfo> {
         ),
 
         //ROW WITH SHARE BUTTON
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                4.0,
-                4.0,
-                4.0,
-                4.0,
-              ),
-              child: Container(
-                padding: const EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                    boxShadow: kSomeShadow,
-                    color: kLightGreen,
-                    borderRadius:
-                        const BorderRadius.all(Radius.circular(32.0))),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: const [
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(0.0,0.0,8.0,4.0),
-                      child: Icon(Icons.book),
-                    ),
-                    Text("22 Lessons"),
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-                boxShadow: kSomeShadow,
-                color: kLightGreen,
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(32.0),
-                ),
-              ),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(0.0,0.0,8.0,4.0),
-                    child: const Icon(Icons.timelapse),
-                  ),
-                  Text(_hoursPerWeek()),
-                ],
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () => Share.share(
-                  "Check out the ${_courseNotifier.currentCourse.courseName} course in the Study Sprint app."),
-              child: const Icon(Icons.share),
-              style: ButtonStyle(
-                  padding: const MaterialStatePropertyAll<EdgeInsetsGeometry>(
-                      EdgeInsets.all(16.0)),
-                  shape: const MaterialStatePropertyAll<OutlinedBorder>(
-                      CircleBorder()),
-                  backgroundColor:
-                       MaterialStatePropertyAll<Color>(kPrimaryColour),
-                  foregroundColor:
-                      const MaterialStatePropertyAll<Color>(Colors.black),
-                  elevation: MaterialStateProperty.all(8.0)),
-            ),
-          ],
-        ),
+        MiniCourseInfoAndShare(),
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        //   children: [
+        //     Padding(
+        //       padding: const EdgeInsets.fromLTRB(
+        //         4.0,
+        //         4.0,
+        //         4.0,
+        //         4.0,
+        //       ),
+        //       child: Container(
+        //         padding: const EdgeInsets.all(16.0),
+        //         decoration: BoxDecoration(
+        //             boxShadow: kSomeShadow,
+        //             color: kLightGreen,
+        //             borderRadius:
+        //                 const BorderRadius.all(Radius.circular(32.0))),
+        //         child: Row(
+        //           mainAxisAlignment: MainAxisAlignment.spaceAround,
+        //           children: const [
+        //             Padding(
+        //               padding: EdgeInsets.fromLTRB(0.0,0.0,8.0,4.0),
+        //               child: Icon(Icons.book),
+        //             ),
+        //             Text("22 Lessons"),
+        //           ],
+        //         ),
+        //       ),
+        //     ),
+        //     Container(
+        //       padding: const EdgeInsets.all(16.0),
+        //       decoration: BoxDecoration(
+        //         boxShadow: kSomeShadow,
+        //         color: kLightGreen,
+        //         borderRadius: const BorderRadius.all(
+        //           Radius.circular(32.0),
+        //         ),
+        //       ),
+        //       child: Row(
+        //         children: [
+        //           Padding(
+        //             padding: EdgeInsets.fromLTRB(0.0,0.0,8.0,4.0),
+        //             child: const Icon(Icons.timelapse),
+        //           ),
+        //           Text(_hoursPerWeek()),
+        //         ],
+        //       ),
+        //     ),
+        //     ElevatedButton(
+        //       onPressed: () => Share.share(
+        //           "Check out the ${_courseNotifier.currentCourse.courseName} course in the Study Sprint app."),
+        //       child: const Icon(Icons.share),
+        //       style: ButtonStyle(
+        //           padding: const MaterialStatePropertyAll<EdgeInsetsGeometry>(
+        //               EdgeInsets.all(16.0)),
+        //           shape: const MaterialStatePropertyAll<OutlinedBorder>(
+        //               CircleBorder()),
+        //           backgroundColor:
+        //                MaterialStatePropertyAll<Color>(kPrimaryColour),
+        //           foregroundColor:
+        //               const MaterialStatePropertyAll<Color>(Colors.black),
+        //           elevation: MaterialStateProperty.all(8.0)),
+        //     ),
+        //   ],
+        // ),
         Padding(
           padding: const EdgeInsets.fromLTRB(
             16.0,
@@ -159,6 +164,7 @@ class _CourseInfoState extends State<CourseInfo> {
                 "Course Description Course Description Course Description Course Description Course Description Course Description "),
           ),
         ),
+        //Classmates Heading
         const Text(
           "Classmates",
           style: TextStyle(
@@ -166,52 +172,8 @@ class _CourseInfoState extends State<CourseInfo> {
               fontSize: 16.0,
               fontWeight: FontWeight.bold),
         ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(
-            16.0,
-            8.0,
-            16.0,
-            4.0,
-          ),
-          child: Container(
-            height: 100.h,
-            width: double.infinity,
-            padding: const EdgeInsets.all(4.0),
-            decoration: BoxDecoration(
-              color: const Color(0xffE1F0EC),
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: const [
-                CircleAvatar(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black,
-                  radius: 30,
-                  child: ImageIcon(AssetImage("assets/images/female.png")),
-                ),
-                CircleAvatar(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black,
-                  radius: 30,
-                  child: ImageIcon(AssetImage("assets/images/male.png")),
-                ),
-                CircleAvatar(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black,
-                  radius: 30,
-                  child: ImageIcon(AssetImage("assets/images/female.png")),
-                ),
-                CircleAvatar(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black,
-                  radius: 30,
-                  child: ImageIcon(AssetImage("assets/images/male.png")),
-                ),
-              ],
-            ),
-          ),
-        )
+        //Classmates Box
+        Classmates(),
       ],
     );
 
@@ -274,15 +236,8 @@ class _CourseInfoState extends State<CourseInfo> {
             borderRadius: BorderRadius.circular(16.0),
             clipBehavior: Clip.hardEdge,
             elevation: 5,
-
             child: CourseVideoPlayer(videoPath: videoUrl),
           ),
         ));
-  }
-
-  String _hoursPerWeek() {
-    String hpw = _courseNotifier.currentCourse.hoursPerWeek.toString();
-
-    return "$hpw Weeks ";
   }
 }
