@@ -1,5 +1,6 @@
 import 'package:course_select/controllers/course_notifier.dart';
 import 'package:course_select/screens/course_info.dart';
+import 'package:course_select/shared_widgets/constants.dart';
 import 'package:course_select/utils/firebase_data_management.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -27,6 +28,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     return Scaffold(
       appBar: AppBar(
         title:  Text(_courseNotifier.currentCourse.courseName),
+        backgroundColor: kPrimaryColour,
       ),
       body: CourseInfo(
         courseImage: _courseNotifier.currentCourse.media[1],
