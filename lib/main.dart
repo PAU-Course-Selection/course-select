@@ -1,7 +1,6 @@
 import 'package:course_select/controllers/course_notifier.dart';
 import 'package:course_select/controllers/home_page_notifier.dart';
 import 'package:course_select/controllers/user_notifier.dart';
-import 'package:course_select/screens/course_info_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:course_select/routes/routes.dart';
 import 'package:get/get.dart';

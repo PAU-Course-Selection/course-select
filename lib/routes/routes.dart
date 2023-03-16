@@ -1,9 +1,9 @@
 import 'package:course_select/screens/course_info_page.dart';
 import 'package:course_select/screens/search_page.dart';
 import 'package:flutter/cupertino.dart';
-import '../screens/forgot_password.dart';
+import '../screens/auth_pages/forgot_password_page.dart';
 import '../screens/app_main_navigation.dart';
-import '../screens/login_register_page.dart';
+import '../screens/auth_pages/login_register_page.dart';
 import '../screens/user_profile_page.dart';
 import '../screens/intro_pages/welcome_page.dart';
 
@@ -24,7 +24,7 @@ class PageRoutes{
       welcome: (context) => const WelcomePage(),
       loginRegister: (context) => const LoginRegisterPage(),
       home: (context) => const AppMainNav(),
-      courseInfo: (context) => const CourseInfoPage(),
+      courseInfo: (context) => const CourseInfo(),
       userProfile: (context) => UserProfilePage(),
       forgotPassword: (context) => const ForgotPasswordPage(),
       searchPage: (context) => const SearchPage(),
