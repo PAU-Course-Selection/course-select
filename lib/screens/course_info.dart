@@ -45,6 +45,7 @@ class _CourseInfoState extends State<CourseInfo> {
     super.initState();
   }
 
+
   Widget _courseInfo() {
     Column infoPage = Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
