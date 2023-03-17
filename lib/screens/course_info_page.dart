@@ -106,15 +106,19 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
 
   Widget _photoVideoView(int index) {
     var type = '';
-    index == 0? type = 'video': 'photo';
+    if (index == 0) {
+      type = "video";
+    } else {
+      type = "photo";
+    }
 
     switch (type) {
       case "video":
-          return _courseVideo();
+        return _courseVideo();
       case "photo":
-          return _courseImage(index);
+        return _courseImage(index);
       default:
-          return Container();
+        return Container();
     }
   }
 
