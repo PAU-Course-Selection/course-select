@@ -24,7 +24,7 @@ class PageRoutes{
       welcome: (context) => const WelcomePage(),
       loginRegister: (context) => const LoginRegisterPage(),
       home: (context) => const AppMainNav(),
-      courseInfo: (context) => const CourseInfo(),
+      courseInfo: (context) => const CourseInfoPage(),
       userProfile: (context) => UserProfilePage(),
       forgotPassword: (context) => const ForgotPasswordPage(),
       searchPage: (context) => const SearchPage(),

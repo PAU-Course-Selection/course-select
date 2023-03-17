@@ -8,16 +8,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-class CourseInfo extends StatefulWidget {
-  const CourseInfo({
+class CourseInfoPage extends StatefulWidget {
+  const CourseInfoPage({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<CourseInfo> createState() => _CourseInfoState();
+  State<CourseInfoPage> createState() => _CourseInfoPageState();
 }
 
-class _CourseInfoState extends State<CourseInfo> {
+class _CourseInfoPageState extends State<CourseInfoPage> {
   late CourseNotifier _courseNotifier;
   Image img = Image.asset('assets/images/c2.jpg');
   String videoUrl = '';
@@ -40,12 +40,6 @@ class _CourseInfoState extends State<CourseInfo> {
     videoUrl = _courseNotifier.currentCourse.media[0];
     //print(videoUrl);
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    _courseNotifier.dispose();
-    super.dispose();
   }
 
   Widget _courseInfo() {

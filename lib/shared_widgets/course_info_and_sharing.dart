@@ -20,10 +20,6 @@ class _MiniCourseInfoAndShareState extends State<MiniCourseInfoAndShare> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    _courseNotifier.dispose(); super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
