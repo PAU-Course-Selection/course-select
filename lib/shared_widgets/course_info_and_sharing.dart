@@ -62,9 +62,9 @@ class _MiniCourseInfoAndShareState extends State<MiniCourseInfoAndShare> {
           ),
           child: Row(
             children: [
-              Padding(
+              const Padding(
                 padding: EdgeInsets.fromLTRB(0.0, 0.0, 8.0, 4.0),
-                child: const Icon(Icons.timelapse),
+                child: Icon(Icons.timelapse),
               ),
               Text(_hoursPerWeek()),
             ],

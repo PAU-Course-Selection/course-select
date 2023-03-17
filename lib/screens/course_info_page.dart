@@ -36,9 +36,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
   @override
   void initState() {
     _courseNotifier = Provider.of<CourseNotifier>(context, listen: false);
-    //print(_courseNotifier.currentCourse.media[0]);
     videoUrl = _courseNotifier.currentCourse.media[0];
-    //print(videoUrl);
     super.initState();
   }
 
@@ -59,10 +57,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
         //MEDIA LIST
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Container(
-            decoration: BoxDecoration(
-                //borderRadius: BorderRadius.circular(16.0),
-                ),
+          child: SizedBox(
             height: 300.h,
             width: double.infinity,
             child: ListView.builder(
@@ -76,72 +71,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
         ),
 
         //ROW WITH SHARE BUTTON
-        MiniCourseInfoAndShare(),
-        // Row(
-        //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        //   children: [
-        //     Padding(
-        //       padding: const EdgeInsets.fromLTRB(
-        //         4.0,
-        //         4.0,
-        //         4.0,
-        //         4.0,
-        //       ),
-        //       child: Container(
-        //         padding: const EdgeInsets.all(16.0),
-        //         decoration: BoxDecoration(
-        //             boxShadow: kSomeShadow,
-        //             color: kLightGreen,
-        //             borderRadius:
-        //                 const BorderRadius.all(Radius.circular(32.0))),
-        //         child: Row(
-        //           mainAxisAlignment: MainAxisAlignment.spaceAround,
-        //           children: const [
-        //             Padding(
-        //               padding: EdgeInsets.fromLTRB(0.0,0.0,8.0,4.0),
-        //               child: Icon(Icons.book),
-        //             ),
-        //             Text("22 Lessons"),
-        //           ],
-        //         ),
-        //       ),
-        //     ),
-        //     Container(
-        //       padding: const EdgeInsets.all(16.0),
-        //       decoration: BoxDecoration(
-        //         boxShadow: kSomeShadow,
-        //         color: kLightGreen,
-        //         borderRadius: const BorderRadius.all(
-        //           Radius.circular(32.0),
-        //         ),
-        //       ),
-        //       child: Row(
-        //         children: [
-        //           Padding(
-        //             padding: EdgeInsets.fromLTRB(0.0,0.0,8.0,4.0),
-        //             child: const Icon(Icons.timelapse),
-        //           ),
-        //           Text(_hoursPerWeek()),
-        //         ],
-        //       ),
-        //     ),
-        //     ElevatedButton(
-        //       onPressed: () => Share.share(
-        //           "Check out the ${_courseNotifier.currentCourse.courseName} course in the Study Sprint app."),
-        //       child: const Icon(Icons.share),
-        //       style: ButtonStyle(
-        //           padding: const MaterialStatePropertyAll<EdgeInsetsGeometry>(
-        //               EdgeInsets.all(16.0)),
-        //           shape: const MaterialStatePropertyAll<OutlinedBorder>(
-        //               CircleBorder()),
-        //           backgroundColor:
-        //                MaterialStatePropertyAll<Color>(kPrimaryColour),
-        //           foregroundColor:
-        //               const MaterialStatePropertyAll<Color>(Colors.black),
-        //           elevation: MaterialStateProperty.all(8.0)),
-        //     ),
-        //   ],
-        // ),
+        const MiniCourseInfoAndShare(),
         Padding(
           padding: const EdgeInsets.fromLTRB(
             16.0,
@@ -167,7 +97,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
               fontWeight: FontWeight.bold),
         ),
         //Classmates Box
-        Classmates(),
+        const Classmates(),
       ],
     );
 
@@ -176,26 +106,15 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
 
   Widget _photoVideoView(int index) {
     var type = '';
-    if (index == 0) {
-      type = "video";
-    } else {
-      type = "photo";
-    }
+    index == 0? type = 'video': 'photo';
 
     switch (type) {
       case "video":
-        {
           return _courseVideo();
-        }
-
       case "photo":
-        {
           return _courseImage(index);
-        }
       default:
-        {
           return Container();
-        }
     }
   }
 
