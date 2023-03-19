@@ -41,7 +41,7 @@ class _AppMainNavState extends State<AppMainNav> {
             textAlign: TextAlign.center,
           ),
           BottomNavyBarItem(
-            icon: const ImageIcon(AssetImage('assets/icons/courses.png')),
+            icon: const ImageIcon(AssetImage('assets/icons/book2.png')),
             title: const Text('Courses'),
             activeColor: kPrimaryColour,
             textAlign: TextAlign.center,

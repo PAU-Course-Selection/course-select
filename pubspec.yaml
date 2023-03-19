@@ -50,6 +50,7 @@ dependencies:
   firebase_storage: ^11.0.15
   provider: ^6.0.2
   flutter_animate: ^4.1.0
+  flutter_native_splash: ^2.2.19
 
 
 dev_dependencies:
