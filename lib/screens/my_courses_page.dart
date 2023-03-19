@@ -5,12 +5,14 @@ import 'package:course_select/shared_widgets/constants.dart';
 import 'package:course_select/shared_widgets/courses_filter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import '../controllers/course_notifier.dart';
 import '../models/course_data_model.dart';
 import '../shared_widgets/filter_button.dart';
 import '../shared_widgets/mini_course_card.dart';
 import '../utils/firebase_data_management.dart';
+import 'filter_sheet.dart';
 
 class MyCourses extends StatefulWidget {
   const MyCourses({Key? key}) : super(key: key);
@@ -126,6 +128,18 @@ class _MyCoursesState extends State<MyCourses>
                             onPressed: () {
                               homePageNotifier.isFilterVisible =
                                   !homePageNotifier.isFilterVisible;
+
+                              showCupertinoModalBottomSheet(
+                                duration: const Duration(milliseconds: 100),
+                                topRadius: const Radius.circular(20) ,
+                                barrierColor: Colors.black54,
+                                elevation: 8,
+                                context: context,
+                                builder: (context) => SizedBox(
+                                  height: MediaQuery.of(context).size.height * 0.7,
+                                    child: const Material(child: FilterSheet())),
+                              ).whenComplete(() => homePageNotifier.isFilterVisible = false);
+
                             },
                           ),
                         ),

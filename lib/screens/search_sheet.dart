@@ -9,14 +9,15 @@ import '../models/course_data_model.dart';
 import '../shared_widgets/mini_course_card.dart';
 import '../utils/firebase_data_management.dart';
 
-class SearchPage extends StatefulWidget {
-  const SearchPage({Key? key}) : super(key: key);
+class SearchSheet extends StatefulWidget {
+  final String filter;
+  const SearchSheet({Key? key,required this.filter}) : super(key: key);
 
   @override
-  State<SearchPage> createState() => _SearchPageState();
+  State<SearchSheet> createState() => _SearchSheetState();
 }
 
-class _SearchPageState extends State<SearchPage>
+class _SearchSheetState extends State<SearchSheet>
     with SingleTickerProviderStateMixin {
   DatabaseManager db = DatabaseManager();
   HomePageNotifier homePageNotifier = HomePageNotifier();
@@ -73,11 +74,11 @@ class _SearchPageState extends State<SearchPage>
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.only(left: 25.0, top: 25),
+                     Padding(
+                      padding: const EdgeInsets.only(left: 25.0, top: 25),
                       child: Text(
-                        'Search for a course',
-                        style: TextStyle(
+                        'Search for ${widget.filter} courses',
+                        style: const TextStyle(
                             fontSize: 22.0,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'Roboto'),

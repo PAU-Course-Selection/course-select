@@ -1,6 +1,8 @@
+import 'package:course_select/screens/search_sheet.dart';
 import 'package:course_select/shared_widgets/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import 'category_button.dart';
 
@@ -18,6 +20,19 @@ class _CoursesFilterState extends State<CoursesFilter> {
   bool b3 = false;
   bool b4 = false;
 
+   Future _showSearchSheet(filter){
+    return showCupertinoModalBottomSheet(
+      expand: true,
+      duration: const Duration(milliseconds: 100),
+      topRadius: const Radius.circular(20) ,
+      barrierColor: Colors.black54,
+      elevation: 8,
+      context: context,
+      builder: (context) => SizedBox(
+          height: MediaQuery.of(context).size.height * 0.7,
+          child: Material(child: SearchSheet(filter: filter))),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +70,8 @@ class _CoursesFilterState extends State<CoursesFilter> {
               b3 = false;
               b4 = false;
             });
+
+
           },
         ),
       ),
@@ -106,6 +123,11 @@ class _CoursesFilterState extends State<CoursesFilter> {
                   b3 = false;
                   b4 = false;
                 });
+                _showSearchSheet('all').whenComplete(() {
+                  setState(() {
+                    b1 = false;
+                  });
+                });
               },
             ),
             CategoryButton(
@@ -120,6 +142,12 @@ class _CoursesFilterState extends State<CoursesFilter> {
                   b2 = !b2 ;
                   b3 = false;
                   b4 = false;
+                });
+                _showSearchSheet('beginner').whenComplete(() {
+                  setState(() {
+                    b2 = false;
+                  });
+
                 });
               },
             ),
@@ -144,6 +172,12 @@ class _CoursesFilterState extends State<CoursesFilter> {
                   b3 = !b3 ;
                   b4 = false;
                 });
+                _showSearchSheet('intermediate').whenComplete(() {
+                  setState(() {
+                    b3 = false;
+                  });
+
+                });
               },
             ),
             CategoryButton(
@@ -158,6 +192,12 @@ class _CoursesFilterState extends State<CoursesFilter> {
                   b2 = false;
                   b3 = false;
                   b4 = !b4 ;
+                });
+                _showSearchSheet('advanced').whenComplete(() {
+                  setState(() {
+                    b4 = false;
+                  });
+
                 });
               },
             ),

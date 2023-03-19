@@ -1,6 +1,7 @@
 import 'package:course_select/screens/course_info_page.dart';
-import 'package:course_select/screens/search_page.dart';
+import 'package:course_select/screens/search_sheet.dart';
 import 'package:flutter/cupertino.dart';
+import '../screens/filter_sheet.dart';
 import '../screens/forgot_password.dart';
 import '../screens/app_main_navigation.dart';
 import '../screens/login_register_page.dart';
@@ -16,7 +17,8 @@ class PageRoutes{
   static const String userProfile = 'user_profile';
   static const String forgotPassword = 'forgot_password';
   static const String courseInfo = 'course_info';
-  static const String searchPage = 'search_page';
+  static const String searchSheet = 'search_sheet';
+  static const String filterSheet = 'filter_sheet';
 
   ///Builds screen widgets and maps them to class attributes
   Map<String, WidgetBuilder> routes() {
@@ -27,7 +29,8 @@ class PageRoutes{
       courseInfo: (context) => const CourseInfoPage(),
       userProfile: (context) => UserProfilePage(),
       forgotPassword: (context) => const ForgotPasswordPage(),
-      searchPage: (context) => const SearchPage(),
+      searchSheet: (context) => const SearchSheet(filter: '',),
+      filterSheet: (context) => const FilterSheet(),
     };
   }
 
