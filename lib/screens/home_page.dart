@@ -11,9 +11,11 @@ import 'package:provider/provider.dart';
 import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 import '../controllers/course_notifier.dart';
 import '../routes/routes.dart';
+import '../shared_widgets/category_title.dart';
 import '../shared_widgets/constants.dart';
 import '../shared_widgets/course_card.dart';
 import '../shared_widgets/courses_filter.dart';
+import '../shared_widgets/filter_button.dart';
 import '../utils/firebase_data_management.dart';
 import 'app_main_navigation.dart';
 import 'my_courses_page.dart';
@@ -281,33 +283,6 @@ class _HomePageState extends State<HomePage> {
             /// While there is no data or error show some shimmer
             return const Center(child: Text('No data'));
           }),
-    );
-  }
-}
-
-
-class FilterButton extends StatefulWidget {
-  final Function onPressed;
-  const FilterButton({
-    Key? key,
-    required bool isFilterVisible, required this.onPressed,
-  }) : _isFilterVisible = isFilterVisible, super(key: key);
-
-  final bool _isFilterVisible;
-
-  @override
-  State<FilterButton> createState() => _FilterButtonState();
-}
-
-class _FilterButtonState extends State<FilterButton> {
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => widget.onPressed.call(),
-      child: RaisedContainer(width: 50, bgColour: widget._isFilterVisible?kPrimaryColour:Colors.white,
-        child: ImageIcon(const AssetImage('assets/icons/setting.png'), color: widget._isFilterVisible? Colors.white: kPrimaryColour),
-
-      ),
     );
   }
 }

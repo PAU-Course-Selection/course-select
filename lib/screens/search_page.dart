@@ -115,7 +115,7 @@ class _SearchPageState extends State<SearchPage>
                     const Padding(
                       padding: EdgeInsets.only(left: 25.0),
                       child: Text(
-                        'Skill level',
+                        'Categories',
                         style: TextStyle(
                             fontSize: 18.0,
                             fontWeight: FontWeight.bold,
@@ -124,10 +124,6 @@ class _SearchPageState extends State<SearchPage>
                     ),
                     const SizedBox(
                       height: 8.0,
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 25.0),
-                      child: CoursesFilter(isListView: true),
                     ),
                     const SizedBox(
                       height: 20.0,

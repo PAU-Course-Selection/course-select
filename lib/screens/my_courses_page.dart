@@ -4,13 +4,11 @@ import 'package:course_select/shared_widgets/category_button.dart';
 import 'package:course_select/shared_widgets/constants.dart';
 import 'package:course_select/shared_widgets/courses_filter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../controllers/course_notifier.dart';
-import '../controllers/user_notifier.dart';
 import '../models/course_data_model.dart';
+import '../shared_widgets/filter_button.dart';
 import '../shared_widgets/mini_course_card.dart';
 import '../utils/firebase_data_management.dart';
 
@@ -24,7 +22,6 @@ class MyCourses extends StatefulWidget {
 class _MyCoursesState extends State<MyCourses>
     with SingleTickerProviderStateMixin {
   DatabaseManager db = DatabaseManager();
-  HomePageNotifier homePageNotifier = HomePageNotifier();
   late final CourseNotifier courseNotifier;
 
   //late final UserNotifier userNotifier;
@@ -37,7 +34,7 @@ class _MyCoursesState extends State<MyCourses>
     setState(() {
       displayList = courseNotifier.courseList
           .where((element) =>
-          element.courseName!.toLowerCase().contains(value.toLowerCase()))
+              element.courseName!.toLowerCase().contains(value.toLowerCase()))
           .toList();
     });
   }
@@ -67,6 +64,7 @@ class _MyCoursesState extends State<MyCourses>
 
   @override
   Widget build(BuildContext context) {
+    HomePageNotifier homePageNotifier = Provider.of<HomePageNotifier>(context, listen: true);
     return Scaffold(
       body: FutureBuilder(
           future: futureData,
@@ -91,41 +89,60 @@ class _MyCoursesState extends State<MyCourses>
                     const SizedBox(
                       height: 20.0,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                      child: TextField(
-                        onChanged: (value) {
-                          updateList(value);
-                        },
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.0),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: SizedBox(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 25.0, right: 20),
+                              child: TextField(
+                                onChanged: (value) {
+                                  updateList(value);
+                                },
+                                decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                    ),
+                                    hintText: 'eg. Introduction to HTML',
+                                    focusedBorder: OutlineInputBorder(
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(8.0)),
+                                        borderSide: BorderSide(
+                                            width: 1, color: kPrimaryColour)),
+                                    prefixIcon: const Icon(
+                                      Icons.search,
+                                      color: Colors.grey,
+                                    ),
+                                    focusColor: kPrimaryColour),
+                              ),
                             ),
-                            hintText: 'eg. Introduction to HTML',
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius:
-                                const BorderRadius.all(Radius.circular(8.0)),
-                                borderSide:
-                                BorderSide(width: 1, color: kPrimaryColour)),
-                            prefixIcon: const Icon(
-                              Icons.search,
-                              color: Colors.grey,
-                            ),
-                            focusColor: kPrimaryColour),
-                      ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 25.0),
+                          child: FilterButton(
+                            isFilterVisible: homePageNotifier.isFilterVisible,
+                            onPressed: () {
+                              homePageNotifier.isFilterVisible =
+                                  !homePageNotifier.isFilterVisible;
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(
                       height: 15.0,
                     ),
                     const Padding(
                       padding: EdgeInsets.only(left: 25.0),
-                      child: Text(
-                        'Skill level',
-                        style: TextStyle(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Roboto'),
-                      ),
+                      // child: Text(
+                      //   'Skill level',
+                      //   style: TextStyle(
+                      //       fontSize: 18.0,
+                      //       fontWeight: FontWeight.bold,
+                      //       fontFamily: 'Roboto'),
+                      // ),
                     ),
                     const SizedBox(
                       height: 8.0,
@@ -140,36 +157,51 @@ class _MyCoursesState extends State<MyCourses>
                     Expanded(
                         child: displayList.isEmpty
                             ? const Center(
-                          child: Text('No results found...'),
-                        )
+                                child: Text('No results found...'),
+                              )
                             : Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                              child: ListView.builder(
-                              scrollDirection: Axis.vertical,
-                              itemCount: displayList.length,
-                              itemBuilder: (context, index) {
-                                return MiniCourseCard(
-                                  displayList: displayList,
-                                  index: index,
-                                  onBookmarkTapped: () {
-                                    setState(() {
-                                      HapticFeedback.heavyImpact();
-                                      displayList[index].isSaved =
-                                      !displayList[index].isSaved;
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                         SnackBar(
-                                           elevation: 1,
-                                          behavior: SnackBarBehavior.floating,
-                                          backgroundColor: Colors.white,
-                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                                          content: const Center(child: Text('Added to saved', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)),
-                                          duration: const Duration(seconds: 3),
-                                        ),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 25.0),
+                                child: ListView.builder(
+                                    scrollDirection: Axis.vertical,
+                                    itemCount: displayList.length,
+                                    itemBuilder: (context, index) {
+                                      return MiniCourseCard(
+                                        displayList: displayList,
+                                        index: index,
+                                        onBookmarkTapped: () {
+                                          setState(() {
+                                            HapticFeedback.heavyImpact();
+                                            displayList[index].isSaved =
+                                                !displayList[index].isSaved;
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                elevation: 1,
+                                                behavior:
+                                                    SnackBarBehavior.floating,
+                                                backgroundColor: Colors.white,
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5)),
+                                                content: const Center(
+                                                    child: Text(
+                                                  'Added to saved',
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                )),
+                                                duration:
+                                                    const Duration(seconds: 3),
+                                              ),
+                                            );
+                                          });
+                                        },
                                       );
-                                    });
-                                  },);
-                              }),
-                            )),
+                                    }),
+                              )),
                   ],
                 ),
               ),

@@ -26,8 +26,8 @@ class _CoursesFilterState extends State<CoursesFilter> {
         padding: const EdgeInsets.only(right: 5.0),
         child: CategoryButton(
           bgColour: b1? kSelected:Colors.white,
-          iconBgColour: Colors.blue,
-          icon: Icons.school_rounded,
+          iconBgColour: kPrimaryColour,
+          icon: Icons.library_books,
           iconColour: Colors.white,
           text: 'All courses',
           onTap: (){
@@ -44,10 +44,10 @@ class _CoursesFilterState extends State<CoursesFilter> {
         padding: const EdgeInsets.only(right: 5.0),
         child: CategoryButton(
           bgColour: b2? kSelected: Colors.white,
-          iconBgColour: Colors.orange,
-          icon: Icons.child_care,
+          iconBgColour: Colors.blueGrey,
+          icon: Icons.class_rounded,
           iconColour: Colors.white,
-          text: 'Beginner',
+          text: 'Ongoing',
           onTap: (){
             setState(() {
               b1 = false;
@@ -62,10 +62,10 @@ class _CoursesFilterState extends State<CoursesFilter> {
         padding: const EdgeInsets.only(right: 5.0),
         child: CategoryButton(
           bgColour: b3? kSelected: Colors.white,
-          iconBgColour: Colors.pinkAccent,
-          icon: Icons.sports_gymnastics,
+          iconBgColour: Colors.blueAccent,
+          icon: Icons.check_circle_rounded,
           iconColour: Colors.white,
-          text: 'Intermediate',
+          text: 'Completed',
           onTap: (){
             setState(() {
               b1 = false;
@@ -76,29 +76,11 @@ class _CoursesFilterState extends State<CoursesFilter> {
           },
         ),
       ),
-      Padding(
-        padding: const EdgeInsets.only(right: 5.0),
-        child: CategoryButton(
-          bgColour: b4? kSelected: Colors.white,
-          iconBgColour: Colors.green,
-          icon: Icons.celebration,
-          iconColour: Colors.white,
-          text: 'Advanced',
-          onTap: (){
-            setState(() {
-              b1 = false;
-              b2 = false;
-              b3 = false;
-              b4 = !b4 ;
-            });
-          },
-        ),
-      ),
     ];
 
     return widget.isListView ? SizedBox(
       width: double.infinity,
-      height: 55.h,
+      height: 58.h,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: cats.length,

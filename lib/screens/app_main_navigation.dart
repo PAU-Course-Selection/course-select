@@ -41,7 +41,7 @@ class _AppMainNavState extends State<AppMainNav> {
             textAlign: TextAlign.center,
           ),
           BottomNavyBarItem(
-            icon: const ImageIcon(AssetImage('assets/icons/book2.png')),
+            icon: const ImageIcon(AssetImage('assets/icons/book.png')),
             title: const Text('Courses'),
             activeColor: kPrimaryColour,
             textAlign: TextAlign.center,
@@ -63,33 +63,6 @@ class _AppMainNavState extends State<AppMainNav> {
         ],
       ),
       body: _widgetOptions.elementAt(_currentIndex),
-    );
-  }
-}
-
-class CategoryTitle extends StatelessWidget {
-  final String text;
-  const CategoryTitle({
-    Key? key, required this.text,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Container(
-          padding: const EdgeInsets.only(top: 30, bottom: 20,left: 25),
-          child: Text(
-            text,
-            style: kHeadlineMedium,
-          ),
-        ),
-        TextButton(onPressed: (){}, child:  Padding(
-          padding: const EdgeInsets.only(right: 25.0),
-          child: Text('View all', style: TextStyle(fontSize: 18, fontFamily: 'Roboto', color: kPrimaryColour),),
-        ))
-      ],
     );
   }
 }
