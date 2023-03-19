@@ -188,27 +188,28 @@ class _MyCoursesState extends State<MyCourses>
                                             HapticFeedback.heavyImpact();
                                             displayList[index].isSaved =
                                                 !displayList[index].isSaved;
+
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(
                                               SnackBar(
                                                 elevation: 1,
                                                 behavior:
-                                                    SnackBarBehavior.floating,
-                                                backgroundColor: Colors.white,
+                                                    SnackBarBehavior.fixed,
+                                                backgroundColor: kKindaGreen,
                                                 shape: RoundedRectangleBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             5)),
-                                                content: const Center(
+                                                content: Center(
                                                     child: Text(
-                                                  'Added to saved',
-                                                  style: TextStyle(
+                                                      displayList[index].isSaved? 'Added to saved courses': 'Removed from saved courses',
+                                                  style: const TextStyle(
                                                       color: Colors.black,
                                                       fontWeight:
                                                           FontWeight.bold),
                                                 )),
                                                 duration:
-                                                    const Duration(seconds: 3),
+                                                    const Duration(seconds: 1),
                                               ),
                                             );
                                           });

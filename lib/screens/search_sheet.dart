@@ -148,6 +148,30 @@ class _SearchSheetState extends State<SearchSheet>
                                       HapticFeedback.heavyImpact();
                                       displayList[index].isSaved =
                                       !displayList[index].isSaved;
+
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          elevation: 1,
+                                          behavior:
+                                          SnackBarBehavior.fixed,
+                                          backgroundColor: kKindaGreen,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                              BorderRadius.circular(
+                                                  5)),
+                                          content: Center(
+                                              child: Text(
+                                                displayList[index].isSaved? 'Added to saved courses': 'Removed from saved courses',
+                                                style: const TextStyle(
+                                                    color: Colors.black,
+                                                    fontWeight:
+                                                    FontWeight.bold),
+                                              )),
+                                          duration:
+                                          const Duration(seconds: 1),
+                                        ),
+                                      );
                                     });
                                   },);
                               }),
