@@ -1,10 +1,10 @@
 import 'package:course_select/controllers/home_page_notifier.dart';
-import 'package:course_select/shared_widgets/constants.dart';
 import 'package:course_select/shared_widgets/courses_filter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
+import '../constants/constants.dart';
 import '../controllers/course_notifier.dart';
 import '../models/course_data_model.dart';
 import '../shared_widgets/active_course_tile.dart';

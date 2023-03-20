@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 
-import 'constants.dart';
+import '../constants/constants.dart';
+
 
 class ActiveCourseTile extends StatelessWidget {
   final String courseName;

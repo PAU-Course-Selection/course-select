@@ -1,10 +1,10 @@
 import 'package:course_select/screens/course_info_page.dart';
 import 'package:course_select/screens/search_sheet.dart';
 import 'package:flutter/cupertino.dart';
+import '../screens/auth_pages/forgot_password_page.dart';
+import '../screens/auth_pages/login_register_page.dart';
 import '../screens/filter_sheet.dart';
-import '../screens/forgot_password.dart';
 import '../screens/app_main_navigation.dart';
-import '../screens/login_register_page.dart';
 import '../screens/user_profile_page.dart';
 import '../screens/intro_pages/welcome_page.dart';
 
