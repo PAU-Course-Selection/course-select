@@ -1,10 +1,6 @@
 import 'dart:collection';
-import 'package:course_select/controllers/user_notifier.dart';
 import 'package:course_select/models/course_data_model.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:get/get.dart';
-
-import '../utils/firebase_data_management.dart';
 
 ///Creates a controller class with attributes which notify all widgets of changes
 class CourseNotifier extends ChangeNotifier {
@@ -18,8 +14,6 @@ class CourseNotifier extends ChangeNotifier {
     _currentCourse = course;
     notifyListeners();
   }
-
-
 
   ///A getter for the list of courses
   UnmodifiableListView<Course> get courseList =>

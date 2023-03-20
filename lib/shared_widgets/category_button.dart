@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CategoryButton extends StatefulWidget {
   final Color bgColour;
@@ -40,7 +41,7 @@ class _CategoryButtonState extends State<CategoryButton> {
             ]
         ),
         padding: const EdgeInsets.all(10),
-        width: screenWidth * 0.42,
+        width: screenWidth * 0.38,
         child: Row(
           children:  [
             Container(
@@ -51,9 +52,11 @@ class _CategoryButtonState extends State<CategoryButton> {
                     borderRadius: BorderRadius.circular(50)
                 ),
                 child: Icon(widget.icon, color: widget.iconColour,)),
-            Padding(
-              padding: const EdgeInsets.only(left: 20.0),
-              child: Text(widget.text, style: const TextStyle( fontSize: 16, fontFamily: 'Roboto')),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(left: 10.h),
+                child: Text(widget.text, style: const TextStyle( fontSize: 16, fontFamily: 'Roboto')),
+              ),
             )
           ],
         ),
