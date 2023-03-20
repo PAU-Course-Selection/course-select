@@ -12,7 +12,7 @@ class UserNotifier extends ChangeNotifier {
   final DatabaseManager db = DatabaseManager();
 
   var _userName = '';
-  var _avatar = '';
+  var _avatar = 'https://firebasestorage.googleapis.com/v0/b/agileproject-76bf9.appspot.com/o/User%20Data%2Fuser.png?alt=media&token=0b4c347c-e8d9-456c-b76a-b02f2e4080a0';
   var _email = 'example@gmail.com';
   var _joinDate = '00-00-0000';
 

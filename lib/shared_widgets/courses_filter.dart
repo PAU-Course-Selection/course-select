@@ -3,7 +3,9 @@ import 'package:course_select/shared_widgets/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:provider/provider.dart';
 
+import '../controllers/home_page_notifier.dart';
 import 'category_button.dart';
 
 class CoursesFilter extends StatefulWidget {
@@ -19,6 +21,9 @@ class _CoursesFilterState extends State<CoursesFilter> {
   bool b2 = false;
   bool b3 = false;
   bool b4 = false;
+  bool isAllSelected = false;
+  bool isOngoingSelected = false;
+  bool isCompletedSelected = false;
 
    Future _showSearchSheet(filter){
     return showCupertinoModalBottomSheet(
@@ -36,6 +41,7 @@ class _CoursesFilterState extends State<CoursesFilter> {
 
   @override
   Widget build(BuildContext context) {
+    HomePageNotifier homePageNotifier = Provider.of<HomePageNotifier>(context, listen: false);
     List<Widget> cats = [
       Padding(
         padding: const EdgeInsets.only(right: 5.0),
@@ -51,6 +57,8 @@ class _CoursesFilterState extends State<CoursesFilter> {
               b2 = false;
               b3 = false;
               b4 = false;
+              isAllSelected = true;
+              homePageNotifier.tabIndex = 0;
             });
           },
         ),
@@ -69,6 +77,8 @@ class _CoursesFilterState extends State<CoursesFilter> {
               b2 = !b2 ;
               b3 = false;
               b4 = false;
+              isOngoingSelected = true;
+              homePageNotifier.tabIndex = 1;
             });
 
 
@@ -89,6 +99,8 @@ class _CoursesFilterState extends State<CoursesFilter> {
               b2 = false;
               b3 = !b3 ;
               b4 = false;
+              isCompletedSelected = true;
+              homePageNotifier.tabIndex = 2;
             });
           },
         ),
