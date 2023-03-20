@@ -5,7 +5,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../models/course_data_model.dart';
-import 'constants.dart';
+import '../constants/constants.dart';
 
 class MiniCourseCard extends StatefulWidget {
   const MiniCourseCard({

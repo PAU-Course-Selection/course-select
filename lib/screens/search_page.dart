@@ -1,5 +1,5 @@
 import 'package:course_select/controllers/home_page_notifier.dart';
-import 'package:course_select/shared_widgets/constants.dart';
+import 'package:course_select/constants/constants.dart';
 import 'package:course_select/shared_widgets/courses_filter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

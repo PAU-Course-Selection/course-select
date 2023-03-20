@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 import '../controllers/course_notifier.dart';
 import '../routes/routes.dart';
-import '../shared_widgets/constants.dart';
+import '../constants/constants.dart';
 import '../shared_widgets/course_card.dart';
 import '../shared_widgets/courses_filter.dart';
 import '../utils/firebase_data_management.dart';

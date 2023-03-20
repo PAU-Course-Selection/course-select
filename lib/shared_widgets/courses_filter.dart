@@ -1,4 +1,4 @@
-import 'package:course_select/shared_widgets/constants.dart';
+import 'package:course_select/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
