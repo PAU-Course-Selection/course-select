@@ -140,7 +140,7 @@ class _MyCoursesState extends State<MyCourses>
                   itemCount: displayOngoingList.length,
                   itemBuilder: (context, index) {
                     return ActiveCourseTile(
-                      valueNotifier: _valueNotifier,
+                      valueNotifier: _setValueNotifier(displayOngoingList[index]),
                       courseName: displayOngoingList[index].courseName,
                       courseImage: displayOngoingList[index].courseImage,
                       remainingLessons: displayOngoingList[index].remainingLessons,
@@ -316,7 +316,7 @@ class _MyCoursesState extends State<MyCourses>
                       child: CoursesFilter(isListView: true),
                     ),
                     const SizedBox(
-                      height: 20.0,
+                      height: 25.0,
                     ),
                      Padding(
                       padding: const EdgeInsets.only(left: 25.0, bottom: 10),
