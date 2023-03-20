@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 
 /// The [SavedCourses] class holds a list of favorite items saved by the user.
 class SavedCourses extends ChangeNotifier {
-  final List<int> _savedCourses = [];
+  final List<String> _savedCourses = [];
 
-  List<int> get savedCourses => _savedCourses;
+  List<String> get savedCourses => _savedCourses;
 
-  void add(int courseId) {
+  void add(String courseId) {
     _savedCourses.add(courseId);
     notifyListeners();
   }
 
-  void remove(int courseId) {
+  void remove(String courseId) {
     _savedCourses.remove(courseId);
     notifyListeners();
   }

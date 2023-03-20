@@ -7,13 +7,13 @@ void main() {
     var courses = SavedCourses();
 
     test('A new course should be added', () {
-      var id = 35;
+      var id = 'CM35';
       courses.add(id);
       expect(courses.savedCourses.contains(id), true);
     });
 
     test('An course should be removed', () {
-      var id = 45;
+      var id = 'CM45';
       courses.add(id);
       expect(courses.savedCourses.contains(id), true);
       courses.remove(id);
