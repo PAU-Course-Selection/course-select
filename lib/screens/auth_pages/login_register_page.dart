@@ -4,9 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import '../routes/routes.dart';
-import '../shared_widgets/gradient_button.dart';
-import '../utils/auth.dart';
+import '../../routes/routes.dart';
+import '../../shared_widgets/gradient_button.dart';
+import '../../utils/auth.dart';
 
 class LoginRegisterPage extends StatefulWidget {
   static const screenId = 'login_screen';

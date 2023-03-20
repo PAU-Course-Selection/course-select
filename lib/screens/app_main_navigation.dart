@@ -2,7 +2,7 @@ import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:course_select/screens/home_page.dart';
 import 'package:course_select/screens/notifications_page.dart';
 import 'package:course_select/screens/timetable_page.dart';
-import 'package:course_select/shared_widgets/constants.dart';
+import 'package:course_select/constants/constants.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'my_courses_page.dart';
 

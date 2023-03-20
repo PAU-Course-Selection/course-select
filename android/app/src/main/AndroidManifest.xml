@@ -1,7 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="pau.agile.aber.course_select">
     <uses-permission android:name="android.permission.VIBRATE" />
-   <application
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <application
         android:label="Study Sprint"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
