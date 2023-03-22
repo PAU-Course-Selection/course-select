@@ -1,18 +1,17 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../constants/constants.dart';
 
 class CategoryTitle extends StatelessWidget {
   final String text;
+  final Function onPressed;
   const CategoryTitle({
-    Key? key, required this.text,
+    Key? key, required this.text, required this.onPressed,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
@@ -22,8 +21,11 @@ class CategoryTitle extends StatelessWidget {
             style: kHeadlineMedium,
           ),
         ),
-        Expanded(
-          child: TextButton(onPressed: (){}, child:  Padding(
+        Flexible(
+          child: TextButton(
+            style: TextButton.styleFrom(minimumSize: Size.zero, padding: EdgeInsets.zero,  tapTargetSize: MaterialTapTargetSize.shrinkWrap,),
+              onPressed: ()=> onPressed.call(),
+              child:  Padding(
             padding: const EdgeInsets.only(right: 25.0),
             child: Text('View all', style: TextStyle(fontSize: 18, fontFamily: 'Roboto', color: kPrimaryColour),),
           )),

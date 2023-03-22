@@ -188,12 +188,20 @@ class _HomePageState extends State<HomePage> {
                                 child: Animate(
                                   effects: const [FadeEffect(), SlideEffect(duration: Duration(milliseconds: 50))],
                                     child:  const CoursesFilter(isListView: false))), //Course Filters
-                            const CategoryTitle(text: 'Currently Active'),
+                             CategoryTitle(text: 'Currently Active', onPressed: (){
+                               homePageNotifier.isOngoingSelected = true;
+                               homePageNotifier.tabIndex = 1;
+                               Navigator.pushNamed(context, PageRoutes.courses);
+                            },),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 25.0),
                               child: ActiveCourseTile(valueNotifier: valueNotifier, courseImage: 'assets/images/html.jpg', courseName: 'Symmetry Theory', remainingLessons: 10,),
                             ),
-                            const CategoryTitle(text: 'Top Picks'), //Courses Title
+                             CategoryTitle(text: 'Top Picks', onPressed: (){
+                               homePageNotifier.isAllSelected = true;
+                               homePageNotifier.tabIndex = 0;
+                               Navigator.pushNamed(context, PageRoutes.courses);
+                            },), //Courses Title
                             Padding(
                               padding: const EdgeInsets.only(left: 25.0),
                               child: SizedBox(

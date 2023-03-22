@@ -5,6 +5,7 @@ import '../screens/auth_pages/forgot_password_page.dart';
 import '../screens/auth_pages/login_register_page.dart';
 import '../screens/filter_sheet.dart';
 import '../screens/app_main_navigation.dart';
+import '../screens/my_courses_page.dart';
 import '../screens/user_profile_page.dart';
 import '../screens/intro_pages/welcome_page.dart';
 
@@ -19,6 +20,7 @@ class PageRoutes{
   static const String courseInfo = 'course_info';
   static const String searchSheet = 'search_sheet';
   static const String filterSheet = 'filter_sheet';
+  static const String courses = 'courses_page';
 
   ///Builds screen widgets and maps them to class attributes
   Map<String, WidgetBuilder> routes() {
@@ -27,10 +29,11 @@ class PageRoutes{
       loginRegister: (context) => const LoginRegisterPage(),
       home: (context) => const AppMainNav(),
       courseInfo: (context) => const CourseInfoPage(),
-      userProfile: (context) => UserProfilePage(),
+      userProfile: (context) => const UserProfilePage(),
       forgotPassword: (context) => const ForgotPasswordPage(),
       searchSheet: (context) => const SearchSheet(filter: '',),
       filterSheet: (context) => const FilterSheet(),
+      courses: (context) => const MyCourses()
     };
   }
 
