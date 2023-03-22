@@ -12,7 +12,8 @@ class CategoryTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
           padding: const EdgeInsets.only(top: 30, bottom: 20,left: 25),
@@ -21,10 +22,12 @@ class CategoryTitle extends StatelessWidget {
             style: kHeadlineMedium,
           ),
         ),
-        TextButton(onPressed: (){}, child:  Padding(
-          padding: const EdgeInsets.only(right: 25.0),
-          child: Text('View all', style: TextStyle(fontSize: 18, fontFamily: 'Roboto', color: kPrimaryColour),),
-        ))
+        Expanded(
+          child: TextButton(onPressed: (){}, child:  Padding(
+            padding: const EdgeInsets.only(right: 25.0),
+            child: Text('View all', style: TextStyle(fontSize: 18, fontFamily: 'Roboto', color: kPrimaryColour),),
+          )),
+        )
       ],
     );
   }

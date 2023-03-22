@@ -17,7 +17,7 @@ import '../utils/auth.dart';
 import '../utils/firebase_data_management.dart';
 
 class UserProfilePage extends StatefulWidget {
-  UserProfilePage({Key? key}) : super(key: key);
+  const UserProfilePage({Key? key}) : super(key: key);
 
   @override
   State<UserProfilePage> createState() => _UserProfilePageState();
@@ -125,7 +125,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     return Scaffold(
       appBar: AppBar(
         title: _title(),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         foregroundColor: Colors.black,
         elevation: 0,
         actions: const [

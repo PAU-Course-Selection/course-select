@@ -46,7 +46,7 @@ class _CoursesFilterState extends State<CoursesFilter> {
       Padding(
         padding: const EdgeInsets.only(right: 5.0),
         child: CategoryButton(
-          bgColour: b1? kSelected:Colors.white,
+          bgColour: homePageNotifier.tabIndex ==0? kSelected:Colors.white,
           iconBgColour: kPrimaryColour,
           icon: Icons.library_books,
           iconColour: Colors.white,
@@ -66,7 +66,7 @@ class _CoursesFilterState extends State<CoursesFilter> {
       Padding(
         padding: const EdgeInsets.only(right: 5.0),
         child: CategoryButton(
-          bgColour: b2? kSelected: Colors.white,
+          bgColour: homePageNotifier.tabIndex ==1? kSelected: Colors.white,
           iconBgColour: Colors.blueGrey,
           icon: Icons.class_rounded,
           iconColour: Colors.white,
@@ -88,7 +88,7 @@ class _CoursesFilterState extends State<CoursesFilter> {
       Padding(
         padding: const EdgeInsets.only(right: 5.0),
         child: CategoryButton(
-          bgColour: b3? kSelected: Colors.white,
+          bgColour: homePageNotifier.tabIndex ==2? kSelected: Colors.white,
           iconBgColour: Colors.blueAccent,
           icon: Icons.check_circle_rounded,
           iconColour: Colors.white,
