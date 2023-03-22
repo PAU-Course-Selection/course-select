@@ -2,8 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:lottie/lottie.dart';
-
 import '../constants/constants.dart';
 
 class CourseCard extends StatefulWidget {
@@ -67,24 +65,26 @@ class _CourseCardState extends State<CourseCard> {
                         const SizedBox(height: 5,),
                         Text(widget.subjectArea, style: kHeadlineMedium.copyWith(fontSize: 16, fontWeight: FontWeight.normal),
                           maxLines: 2, overflow: TextOverflow.ellipsis,),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10.0),
-                          child: Row(
-                            children:  [
-                              ImageIcon(const AssetImage('assets/icons/calendar.png'), color: kPrimaryColour,),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              Text('${widget.hoursPerWeek} weeks'),
-                              const SizedBox(
-                                width: 25,
-                              ),
-                              ImageIcon(const AssetImage('assets/icons/book3.png'), color: kPrimaryColour,),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              const Text('20 lessons')
-                            ],),
+                        Flexible(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 10.0),
+                            child: Row(
+                              children:  [
+                                ImageIcon(const AssetImage('assets/icons/calendar.png'), color: kPrimaryColour,),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                Text('${widget.hoursPerWeek} weeks'),
+                                const SizedBox(
+                                  width: 25,
+                                ),
+                                ImageIcon(const AssetImage('assets/icons/book3.png'), color: kPrimaryColour,),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                const Text('20 lessons')
+                              ],),
+                          ),
                         )
                       ],
                     ),

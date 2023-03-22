@@ -8,7 +8,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
-import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 import '../constants/constants.dart';
 import '../controllers/course_notifier.dart';
 import '../routes/routes.dart';
@@ -19,7 +18,6 @@ import '../shared_widgets/courses_filter.dart';
 import '../shared_widgets/filter_button.dart';
 import '../utils/firebase_data_management.dart';
 import 'app_main_navigation.dart';
-import 'my_courses_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
