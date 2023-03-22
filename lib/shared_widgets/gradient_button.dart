@@ -21,8 +21,9 @@ class _GradientButtonState extends State<GradientButton> {
             borderRadius: BorderRadius.circular(10),
             gradient: const LinearGradient(
                 colors: [
-                  Color.fromRGBO(143, 148, 251, 1),
-                  Color(0xffEF514C),
+                  Color(0xff0DAB76),
+                  Color(0xff408E91),
+
                 ]
             )
         ),

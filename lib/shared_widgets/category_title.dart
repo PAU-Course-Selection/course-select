@@ -23,7 +23,7 @@ class CategoryTitle extends StatelessWidget {
         ),
         Flexible(
           child: TextButton(
-            style: TextButton.styleFrom(minimumSize: Size.zero, padding: EdgeInsets.zero,  tapTargetSize: MaterialTapTargetSize.shrinkWrap,),
+            style: TextButton.styleFrom(foregroundColor: kLightGreen, minimumSize: Size.zero, padding: EdgeInsets.zero,  tapTargetSize: MaterialTapTargetSize.shrinkWrap,),
               onPressed: ()=> onPressed.call(),
               child:  Padding(
             padding: const EdgeInsets.only(right: 25.0),

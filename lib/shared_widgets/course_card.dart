@@ -55,7 +55,7 @@ class _CourseCardState extends State<CourseCard> {
                   decoration: const BoxDecoration(
                       color: Color(0xffE1F0EC),
                       borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20))),
-                  height: 110,
+                  height: 110.h,
                   width: screenWidth * 0.70,
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
