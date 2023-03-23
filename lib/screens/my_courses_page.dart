@@ -226,6 +226,12 @@ class _MyCoursesState extends State<MyCourses>
     tabIndex = homePageNotifier.tabIndex;
 
     return Scaffold(
+      appBar: AppBar(
+        title:  Text('Courses', style: kHeadlineMedium,),
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.black,
+        elevation: 0,
+      ),
       body: FutureBuilder(
           future: futureData,
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -236,16 +242,6 @@ class _MyCoursesState extends State<MyCourses>
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.only(left: 25.0, top: 25),
-                      child: Text(
-                        'Learn without limits!',
-                        style: TextStyle(
-                            fontSize: 22.0,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Roboto'),
-                      ),
-                    ),
                     const SizedBox(
                       height: 20.0,
                     ),
