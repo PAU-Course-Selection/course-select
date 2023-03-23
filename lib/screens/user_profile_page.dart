@@ -131,253 +131,261 @@ class _UserProfilePageState extends State<UserProfilePage> {
       body: FutureBuilder(
           future: futureData,
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-            return Container(
-              padding: const EdgeInsets.only(top: 20),
-              width: double.infinity,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: GestureDetector(
-                          onTap: () {
-                            showCupertinoModalBottomSheet(
-                              isDismissible: true,
-                              topRadius: const Radius.circular(20),
-                              barrierColor: Colors.black54,
-                              elevation: 8,
-                              context: context,
-                              builder: (context) => Material(
-                                  child: SizedBox(
-                                height: screenHeight * 0.25,
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    EditImageOptionsItem(
-                                      text: 'Take Photo',
-                                      onPressed: () async {
-                                        await loadAvatar(true);
-                                        setState(() {
-                                          imgChanged = true;
-                                        });
-                                      },
-                                    ),
-                                    const Divider(
-                                      height: 0,
-                                    ),
-                                    EditImageOptionsItem(
-                                      text: 'Choose Image',
-                                      onPressed: () async {
-                                        await loadAvatar(false);
-                                        setState(() {
-                                          imgChanged = true;
-                                        });
-                                      },
-                                    ),
-                                    const Divider(
-                                      height: 0,
-                                    ),
-                                    EditImageOptionsItem(
-                                      text: 'Cancel',
-                                      onPressed: () {
-                                        setState(() {
-                                          futureData = getData();
-                                        });
-                                        Navigator.pop(context);
-                                      },
-                                    )
-                                  ],
-                                ),
-                              )),
-                            ).whenComplete(() {
-                              setState(() {
-                                futureData = getData();
-                              });
-                            });
-                          },
-                          child: Stack(children: [
-                            CircleAvatar(
-                                radius: 45,
-                                backgroundColor: Colors.white,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(75.0),
-                                  child: CachedNetworkImage(
-                                    height: 100.0,
-                                    width: 100.0,
-                                    fit: BoxFit.cover,
-                                    imageUrl: userNotifier.avatar,
-                                    placeholder: (context, url) {
-                                      return const CircularProgressIndicator();
-                                    },
-                                    errorWidget: (context, url, error) =>
-                                        const Icon(
-                                      Icons.person,
-                                      color: Colors.grey,
-                                    ),
+            return SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.only(top: 20),
+                width: double.infinity,
+                height: 810,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: GestureDetector(
+                            onTap: () {
+                              showCupertinoModalBottomSheet(
+                                isDismissible: true,
+                                topRadius: const Radius.circular(20),
+                                barrierColor: Colors.black54,
+                                elevation: 8,
+                                context: context,
+                                builder: (context) => Material(
+                                    child: SizedBox(
+                                  height: screenHeight * 0.25,
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      EditImageOptionsItem(
+                                        text: 'Take Photo',
+                                        onPressed: () async {
+                                          await loadAvatar(true);
+                                          setState(() {
+                                            imgChanged = true;
+                                          });
+                                        },
+                                      ),
+                                      const Divider(
+                                        height: 0,
+                                      ),
+                                      EditImageOptionsItem(
+                                        text: 'Choose Image',
+                                        onPressed: () async {
+                                          await loadAvatar(false);
+                                          setState(() {
+                                            imgChanged = true;
+                                          });
+                                        },
+                                      ),
+                                      const Divider(
+                                        height: 0,
+                                      ),
+                                      EditImageOptionsItem(
+                                        text: 'Cancel',
+                                        onPressed: () {
+                                          setState(() {
+                                            futureData = getData();
+                                          });
+                                          Navigator.pop(context);
+                                        },
+                                      )
+                                    ],
                                   ),
                                 )),
-                            Positioned(
-                                bottom: 0,
-                                right: 5,
-                                child: CircleAvatar(
-                                    backgroundColor: Colors.white,
-                                    radius: 15,
-                                    child: Icon(
-                                      Icons.camera_alt,
-                                      size: 20,
-                                      color: kPrimaryColour,
-                                    )))
-                          ]))),
-                  Text(
-                    userNotifier.userName,
-                    style: kHeadlineMedium,
-                  ),
-                  Text(userNotifier.email ?? 'User email'),
-                  Text(userNotifier.joinDate),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  const Divider(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Column(
-                        children: [
-                          Text(
-                            '3',
-                            style: kHeadlineMedium.copyWith(color: kTeal),
-                          ),
-                          const Text('Enrolled'),
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          Text('2', style: kHeadlineMedium.copyWith(color: kTeal)),
-                          const Text('Active'),
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          Text('1', style: kHeadlineMedium.copyWith(color: kTeal)),
-                          const Text('Completed'),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 10),
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.1),
-                              spreadRadius: 5,
-                              blurRadius: 7,
-                              offset: const Offset(
-                                  0, 3), // changes position of shadow
-                            ),
-                          ],
-                          borderRadius: BorderRadius.circular(30),
-                          color: const Color(0xfffafafa),
-                        ),
-                        child: Column(
+                              ).whenComplete(() {
+                                setState(() {
+                                  futureData = getData();
+                                });
+                              });
+                            },
+                            child: Stack(children: [
+                              CircleAvatar(
+                                  radius: 45,
+                                  backgroundColor: Colors.white,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(75.0),
+                                    child: CachedNetworkImage(
+                                      height: 100.0,
+                                      width: 100.0,
+                                      fit: BoxFit.cover,
+                                      imageUrl: userNotifier.avatar,
+                                      placeholder: (context, url) {
+                                        return const CircularProgressIndicator();
+                                      },
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(
+                                        Icons.person,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  )),
+                              Positioned(
+                                  bottom: 0,
+                                  right: 5,
+                                  child: CircleAvatar(
+                                      backgroundColor: Colors.white,
+                                      radius: 15,
+                                      child: Icon(
+                                        Icons.camera_alt,
+                                        size: 20,
+                                        color: kPrimaryColour,
+                                      )))
+                            ]))),
+                    Text(
+                      userNotifier.userName,
+                      style: kHeadlineMedium,
+                    ),
+                    Text(userNotifier.email ?? 'User email'),
+                    Text(userNotifier.joinDate),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    const Divider(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Column(
                           children: [
-                            Expanded(
-                              child: SettingsList(
-                                lightTheme: const SettingsThemeData(
-                                    settingsListBackground: Colors.transparent),
-                                sections: [
-                                  SettingsSection(
-                                    title: const Text('Common'),
-                                    tiles: <SettingsTile>[
-                                      SettingsTile.navigation(
-                                        leading: const Icon(Icons.language),
-                                        title: const Text('Language'),
-                                        value: const Text('English'),
-                                      ),
-                                      SettingsTile.switchTile(
-                                        onToggle: (value) {},
-                                        initialValue: false,
-                                        leading: const Icon(Icons.dark_mode),
-                                        title: const Text('Enable dark mode'),
-                                      ),
-                                    ],
-                                  ),
-                                  SettingsSection(
-                                    title: const Text('Security & Privacy'),
-                                    tiles: <SettingsTile>[
-                                      SettingsTile(
-                                        leading:
-                                            const Icon(Icons.delete_forever),
-                                        title: const Text('Delete Account'),
-                                      ),
-                                      SettingsTile.switchTile(
-                                        onToggle: (value) {},
-                                        initialValue: true,
-                                        leading: const Icon(Icons.security),
-                                        title: const Text(
-                                            'Allow activity sharing'),
-                                      ),
-                                    ],
-                                  ),
-                                  SettingsSection(
-                                    tiles: <SettingsTile>[
-                                      SettingsTile(
-                                        leading: const Icon(Icons.logout),
-                                        title: const Text('Log out'),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                            Text(
+                              '3',
+                              style: kHeadlineMedium.copyWith(color: kTeal),
                             ),
-                            SafeArea(
-                                child: Column(
-                              children: [
-                                SizedBox(
-                                  width: 300.w,
-                                    child: Center(
-                                      child: RichText(
-                                        textAlign: TextAlign.center,
-                                        text: const TextSpan(
-                                          text: 'Study Sprint\'s ',
-                                          style: TextStyle(color: Colors.black),
-                                          children: [
-                                            TextSpan(
-                                              text: 'GDPR Privacy',
-                                              style: TextStyle(color: Colors.black, decoration: TextDecoration.underline,),
-                                            ),
-                                            TextSpan(
-                                              text: ' and '
-                                            ),
-                                            TextSpan(
-                                              text: 'Open Source Software',
-                                              style: TextStyle(color: Colors.black, decoration: TextDecoration.underline,),
-                                            ),
-                                          ]
-                                            ),
-
-
-                                      ),
-                                    ),),
-                                SizedBox(height: 10,),
-                                const Text('App version 1.0.0', style: TextStyle(color: Colors.grey),),
-                              ],
-                            ))
+                            const Text('Enrolled'),
                           ],
                         ),
-                        width: double.infinity,
+                        Column(
+                          children: [
+                            Text('2', style: kHeadlineMedium.copyWith(color: kTeal)),
+                            const Text('Active'),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Text('1', style: kHeadlineMedium.copyWith(color: kTeal)),
+                            const Text('Completed'),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10),
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.1),
+                                spreadRadius: 5,
+                                blurRadius: 7,
+                                offset: const Offset(
+                                    0, 3), // changes position of shadow
+                              ),
+                            ],
+                            borderRadius: BorderRadius.circular(30),
+                            color: const Color(0xfffafafa),
+                          ),
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: SettingsList(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  platform: DevicePlatform.device,
+                                  lightTheme: const SettingsThemeData(
+                                      settingsListBackground: Colors.transparent),
+                                  sections: [
+                                    SettingsSection(
+                                      title: const Text('Common'),
+                                      tiles: <SettingsTile>[
+                                        SettingsTile.navigation(
+                                          leading: const Icon(Icons.language),
+                                          title: const Text('Language'),
+                                          value: const Text('English'),
+                                        ),
+                                        SettingsTile.switchTile(
+                                          onToggle: (value) {},
+                                          initialValue: false,
+                                          leading: const Icon(Icons.dark_mode),
+                                          title: const Text('Enable dark mode'),
+                                        ),
+                                      ],
+                                    ),
+                                    SettingsSection(
+                                      title: const Text('Security & Privacy'),
+                                      tiles: <SettingsTile>[
+                                        SettingsTile(
+                                          leading:
+                                              const Icon(Icons.delete_forever),
+                                          title: const Text('Delete Account'),
+                                        ),
+                                        SettingsTile.switchTile(
+                                          onToggle: (value) {},
+                                          initialValue: true,
+                                          leading: const Icon(Icons.security),
+                                          title: const Text(
+                                              'Allow activity sharing'),
+                                        ),
+                                      ],
+                                    ),
+                                    SettingsSection(
+                                      tiles: <SettingsTile>[
+                                        SettingsTile(
+                                          leading: const Icon(Icons.logout),
+                                          title: const Text('Log out'),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SafeArea(
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                        width: 300.w,
+                                        child: Center(
+                                          child: RichText(
+                                            textAlign: TextAlign.center,
+                                            text: const TextSpan(
+                                                text: 'Study Sprint\'s ',
+                                                style: TextStyle(color: Colors.black),
+                                                children: [
+                                                  TextSpan(
+                                                    text: 'GDPR Privacy',
+                                                    style: TextStyle(color: Colors.black, decoration: TextDecoration.underline,),
+                                                  ),
+                                                  TextSpan(
+                                                      text: ' and '
+                                                  ),
+                                                  TextSpan(
+                                                    text: 'Open Source Software',
+                                                    style: TextStyle(color: Colors.black, decoration: TextDecoration.underline,),
+                                                  ),
+                                                ]
+                                            ),
+
+
+                                          ),
+                                        ),),
+                                      SizedBox(height: 10,),
+                                      const Text('App version 1.0.0', style: TextStyle(color: Colors.grey),),
+                                    ],
+                                  ))
+
+                            ],
+                          ),
+                          width: double.infinity,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+
+                  ],
+                ),
               ),
             );
           }),
