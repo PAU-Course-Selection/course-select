@@ -39,7 +39,10 @@ class _MyCoursesState extends State<MyCourses>
     setState(() {
       displayList = courseNotifier.courseList
           .where((element) =>
-              element.courseName!.toLowerCase().contains(value.toLowerCase()))
+              element.courseName!.toLowerCase().contains(value.toLowerCase())
+          || element.subjectArea!.toLowerCase().contains(value.toLowerCase())
+          || element.level!.toLowerCase().contains(value.toLowerCase())
+      )
           .toList();
     });
   }

@@ -60,7 +60,7 @@ class _MiniCourseCardState extends State<MiniCourseCard> {
             Positioned(
               left: 80.w,
               child: Container(
-                padding: const EdgeInsets.all(15),
+                padding:  EdgeInsets.symmetric(horizontal: 25.w, vertical: 20.h),
                 child: Column(
                   crossAxisAlignment:
                   CrossAxisAlignment.start,

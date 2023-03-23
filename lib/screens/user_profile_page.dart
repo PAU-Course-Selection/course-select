@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:course_select/routes/routes.dart';
 import 'package:course_select/constants/constants.dart';
+import 'package:course_select/screens/auth_pages/login_register_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -337,6 +338,13 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                         SettingsTile(
                                           leading: const Icon(Icons.logout),
                                           title: const Text('Log out'),
+                                          onPressed: (context){
+                                            Navigator.pushAndRemoveUntil<void>(
+                                              context,
+                                              MaterialPageRoute<void>(builder: (BuildContext context) => const LoginRegisterPage()),
+                                              ModalRoute.withName(PageRoutes.loginRegister)
+                                            );
+                                          },
                                         ),
                                       ],
                                     ),
