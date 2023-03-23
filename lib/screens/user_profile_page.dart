@@ -32,7 +32,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
   late Future futureData;
 
   Widget _title() {
-    return const Text('My Profile');
+    return Text('Profile', style: kHeadlineMedium,);
   }
 
   Widget _signOutButton() {
@@ -138,138 +138,153 @@ class _UserProfilePageState extends State<UserProfilePage> {
       body: FutureBuilder(
         future: futureData,
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          return Column(
-            children: [
-              Container(
-                height: 160,
-                width: double.infinity,
-                padding: const EdgeInsets.all(20),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: GestureDetector(
-                            onTap: () {
-
-                              showCupertinoModalBottomSheet(
-                                isDismissible: true,
-                                topRadius: const Radius.circular(20),
-                                barrierColor: Colors.black54,
-                                elevation: 8,
-                                context: context,
-                                builder: (context) => Material(
-                                    child: SizedBox(
-                                      height: screenHeight * 0.25,
-                                      child: Column(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          EditImageOptionsItem(
-                                            text: 'Take Photo',
-                                            onPressed: () async{
-                                              await loadAvatar(true);
-                                              setState(() {
-                                                imgChanged = true;
-                                              });
-                                            },
-                                          ),
-                                          const Divider(
-                                            height: 0,
-                                          ),
-                                          EditImageOptionsItem(
-                                            text: 'Choose Image',
-                                            onPressed: () async{
-                                              await loadAvatar(false);
-                                              setState(() {
-                                                imgChanged = true;
-                                              });
-                                            },
-                                          ),
-                                          const Divider(
-                                            height: 0,
-                                          ),
-                                          EditImageOptionsItem(
-                                            text: 'Cancel',
-                                            onPressed: () {
-                                              setState(() {
-                                                futureData = getData();
-                                              });
-                                              Navigator.pop(context);
-                                            },
-                                          )
-                                        ],
+          return Container(
+            padding: const EdgeInsets.only(top: 20),
+            width: double.infinity,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: GestureDetector(
+                        onTap: () {
+                          showCupertinoModalBottomSheet(
+                            isDismissible: true,
+                            topRadius: const Radius.circular(20),
+                            barrierColor: Colors.black54,
+                            elevation: 8,
+                            context: context,
+                            builder: (context) => Material(
+                                child: SizedBox(
+                                  height: screenHeight * 0.25,
+                                  child: Column(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      EditImageOptionsItem(
+                                        text: 'Take Photo',
+                                        onPressed: () async{
+                                          await loadAvatar(true);
+                                          setState(() {
+                                            imgChanged = true;
+                                          });
+                                        },
                                       ),
-                                    )),
-                              ).whenComplete((){
-                                setState(() {
-                                  futureData = getData();
-                                });
-                              } );
-                            },
-                            child: Stack(children: [
-                              CircleAvatar(
-                                  radius: 45,
+                                      const Divider(
+                                        height: 0,
+                                      ),
+                                      EditImageOptionsItem(
+                                        text: 'Choose Image',
+                                        onPressed: () async{
+                                          await loadAvatar(false);
+                                          setState(() {
+                                            imgChanged = true;
+                                          });
+                                        },
+                                      ),
+                                      const Divider(
+                                        height: 0,
+                                      ),
+                                      EditImageOptionsItem(
+                                        text: 'Cancel',
+                                        onPressed: () {
+                                          setState(() {
+                                            futureData = getData();
+                                          });
+                                          Navigator.pop(context);
+                                        },
+                                      )
+                                    ],
+                                  ),
+                                )),
+                          ).whenComplete((){
+                            setState(() {
+                              futureData = getData();
+                            });
+                          } );
+                        },
+                        child: Stack(children: [
+                          CircleAvatar(
+                              radius: 45,
+                              backgroundColor: Colors.white,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(75.0),
+                                child: CachedNetworkImage(
+                                  height: 100.0,
+                                  width: 100.0,
+                                  fit: BoxFit.cover,
+                                  imageUrl: userNotifier.avatar,
+                                  placeholder: (context, url) {
+                                    return const CircularProgressIndicator();
+                                  },
+                                  errorWidget: (context, url, error) => const Icon(
+                                    Icons.person,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              )),
+                          Positioned(
+                              bottom: 0,
+                              right: 5,
+                              child: CircleAvatar(
                                   backgroundColor: Colors.white,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(75.0),
-                                    child: CachedNetworkImage(
-                                      height: 100.0,
-                                      width: 100.0,
-                                      fit: BoxFit.cover,
-                                      imageUrl: userNotifier.avatar,
-                                      placeholder: (context, url) {
-                                        return const CircularProgressIndicator();
-                                      },
-                                      errorWidget: (context, url, error) => const Icon(
-                                        Icons.person,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  )),
-                              Positioned(
-                                  bottom: 0,
-                                  right: 5,
-                                  child: CircleAvatar(
-                                      backgroundColor: Colors.white,
-                                      radius: 15,
-                                      child: Icon(
-                                        Icons.camera_alt,
-                                        size: 20,
-                                        color: kPrimaryColour,
-                                      )))
-                            ]))),
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            userNotifier.userName,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          Text(userNotifier.email?? 'User email'),
-                          Text(userNotifier.joinDate),
-                          _signOutButton(),
-                        ],
-                      ),
-                    ),
+                                  radius: 15,
+                                  child: Icon(
+                                    Icons.camera_alt,
+                                    size: 20,
+                                    color: kPrimaryColour,
+                                  )))
+                        ]))),
+                Text(
+                  userNotifier.userName,
+                  style: kHeadlineMedium,
+                ),
+                Text(userNotifier.email?? 'User email'),
+                Text(userNotifier.joinDate),
+                const SizedBox(height: 15,),
+                const Divider(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Column(children: [
+                      Text('3', style: kHeadlineMedium,),
+                      Text('Enrolled'),
+                    ],),
+                    Column(children: [
+                      Text('2', style: kHeadlineMedium),
+                      Text('Active'),
+                    ],),
+                    Column(children: [
+                      Text('1', style: kHeadlineMedium),
+                      const Text('Completed'),
+                    ],),
                   ],
                 ),
-              ),
-              //TODO create list tiles for settings and options according to design
-              Text("Language"),
-              Text("Clear Schedule"),
-              Text("Manage Courses"),
-              Text("Allow Activity Sharing"),
-              Text("Log Out"),
-              Text("Delete Account"),
-              const Expanded(
-                  child: Text(
-                    "App version 1.0.1",
-                    style: TextStyle(color: Colors.grey),
-                  ))
-            ],
+                const SizedBox(height: 20,),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    child: Container(
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.1),
+                            spreadRadius: 5,
+                            blurRadius: 7,
+                            offset: const Offset(0, 3), // changes position of shadow
+                          ),
+                        ],
+                        borderRadius: BorderRadius.circular(30),
+                        color:  Colors.white,
+                      ),
+                      child: Text('hey'),
+                      width: double.infinity,),
+                  ),
+                ),
+
+              ],
+            ),
           );
         }
       ),
@@ -346,3 +361,16 @@ class PhotoAvatar extends StatelessWidget {
     ]);
   }
 }
+// _signOutButton(),
+// //TODO create list tiles for settings and options according to design
+// Text("Language"),
+// Text("Clear Schedule"),
+// Text("Manage Courses"),
+// Text("Allow Activity Sharing"),
+// Text("Log Out"),
+// Text("Delete Account"),
+// const Expanded(
+// child: Text(
+// "App version 1.0.1",
+// style: TextStyle(color: Colors.grey),
+// ))
