@@ -23,11 +23,11 @@ class Timetable extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 20),
           child: SizedBox(
             width: double.infinity,
-            height: MediaQuery.of(context).size.height * 0.85,
+            height: MediaQuery.of(context).size.height * 0.85.h,
             child: Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.only(bottom: 10.0),
+                  padding: const EdgeInsets.only(bottom: 10.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -44,8 +44,8 @@ class Timetable extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(
-                    bottom: 10.0,
+                  padding:  EdgeInsets.only(
+                    bottom: 10.0.h,
                   ),
                   child: Container(
                     height: 160.h,

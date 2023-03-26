@@ -1,12 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:course_select/controllers/home_page_notifier.dart';
 import 'package:course_select/shared_widgets/courses_filter.dart';
+import 'package:course_select/utils/auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import '../constants/constants.dart';
 import '../controllers/course_notifier.dart';
+import '../controllers/user_notifier.dart';
 import '../models/course_data_model.dart';
+import '../models/saved_course_data_model.dart';
 import '../shared_widgets/active_course_tile.dart';
 import '../shared_widgets/filter_button.dart';
 import '../shared_widgets/mini_course_card.dart';
@@ -24,10 +29,19 @@ class _MyCoursesState extends State<MyCourses>
     with SingleTickerProviderStateMixin {
   DatabaseManager db = DatabaseManager();
   late final CourseNotifier courseNotifier;
+  late final SavedCourses savedCourses;
+  final User? user = Auth().currentUser;
   late ValueNotifier<double> _valueNotifier;
   late int tabIndex;
 
-  //late final UserNotifier userNotifier;
+  // Get the current user's ID
+  final userId = Auth().currentUser!.uid;
+   late String id;
+
+// Get a reference to the user's document in the "users" collection
+  late final DocumentReference<Map<String, dynamic>> userRef;
+
+  late final UserNotifier userNotifier;
   late Future futureData;
   late final AnimationController _animationController;
 
@@ -62,6 +76,40 @@ class _MyCoursesState extends State<MyCourses>
     return db.getCourses(courseNotifier);
   }
 
+  Future<String?> addSubCollection({required int index})async{
+    CollectionReference users = FirebaseFirestore.instance.collection('Users');
+
+    var myUser = await FirebaseFirestore.instance
+        .collection('Users')
+        .where('uid', isEqualTo: user?.uid)
+        .get();
+    if (myUser.docs.isNotEmpty) {
+      var docId = myUser.docs.first.id;
+      print(docId);
+
+      await users.doc(docId).collection('Favourites').add({
+        'courseName': displayList[index].courseName,
+        'subjectArea': displayList[index].subjectArea,
+        'courseImage': displayList[index].media[1],
+        'skillLevel': displayList[index].level,
+        'duration': displayList[index].duration,
+        'savedAt': FieldValue.serverTimestamp(),
+      })
+          .then((value) {
+        courseNotifier.currentCourse = courseNotifier.courseList[index];
+        savedCourses.add(courseNotifier.currentCourse);
+        print(savedCourses.savedCourses.length);
+        print('Course saved as a favourite');
+      })
+          .catchError((error) {
+        print('Error saving course as a favourite: $error');
+      });
+      return null;
+    }
+    return null;
+
+  }
+
   Widget _showList(int index) {
     switch (index) {
       case 0:
@@ -85,6 +133,8 @@ class _MyCoursesState extends State<MyCourses>
                                 displayList[index].isSaved =
                                     !displayList[index].isSaved;
 
+                                // Add the course as a favorite
+                                addSubCollection(index: index);
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     elevation: 1,
@@ -199,11 +249,21 @@ class _MyCoursesState extends State<MyCourses>
 
   }
 
+  Future<String> get_data(DocumentReference doc_ref) async {
+    DocumentSnapshot docSnap = await doc_ref.get();
+    var doc_id2 = docSnap.reference.id;
+    return doc_id2;
+  }
+
+
   @override
   void initState() {
+
     _animationController = AnimationController(vsync: this);
     courseNotifier = Provider.of<CourseNotifier>(context, listen: false);
-    //userNotifier = Provider.of<UserNotifier>(context, listen: false);
+    savedCourses = Provider.of<SavedCourses>(context, listen: false);
+    userRef = FirebaseFirestore.instance.collection('Users').doc(userId);
+    userNotifier = Provider.of<UserNotifier>(context, listen: false);
     futureData = getModels();
     displayOngoingList = List.from(_myCourses);
     displayList = List.from(courseNotifier.courseList);

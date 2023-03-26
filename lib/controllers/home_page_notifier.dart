@@ -6,6 +6,14 @@ class HomePageNotifier extends ChangeNotifier{
   bool _isOngoingSelected = false;
   bool _isCompletedSelected = false;
   int _tabIndex = 0;
+  late String _docId;
+
+  String get docId => _docId;
+
+  set docId(String value) {
+    _docId = value;
+    notifyListeners();
+  }
 
   int get tabIndex => _tabIndex;
 
