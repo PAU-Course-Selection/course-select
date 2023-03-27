@@ -8,7 +8,8 @@ import '../screens/search_sheet.dart';
 import 'gradient_button.dart';
 
 class Empty extends StatefulWidget {
-  const Empty({Key? key}) : super(key: key);
+  final Function onAdd;
+  const Empty({Key? key, required this.onAdd}) : super(key: key);
 
   @override
   State<Empty> createState() => _EmptyState();
@@ -54,7 +55,7 @@ class _EmptyState extends State<Empty> {
               elevation: 8,
               context: context,
               builder: (context) => const Material(child: SearchSheet(filter: 'all',)),
-            );
+            ).whenComplete(() => widget.onAdd.call());
           },),
         ))
       ],

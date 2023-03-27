@@ -9,8 +9,7 @@ class SavedCoursesNotifier extends ChangeNotifier {
   late List<Course> _savedCourses = [];
 
   ///A getter for the list of courses
-  UnmodifiableListView<Course> get savedCourses =>
-      UnmodifiableListView(_savedCourses);
+  List<Course> get savedCourses => (_savedCourses);
 
   ///Sets or updates list downloaded from the database using the model api
   set savedCourses(List<Course> list) {
