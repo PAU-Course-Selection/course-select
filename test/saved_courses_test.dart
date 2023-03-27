@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('Testing App Provider', () {
-    var courses = SavedCourses();
+    var courses = SavedCoursesNotifier();
 
     test('A new course should be added', () {
       var id = 'CM35';

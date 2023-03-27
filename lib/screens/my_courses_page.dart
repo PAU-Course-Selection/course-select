@@ -29,7 +29,7 @@ class _MyCoursesState extends State<MyCourses>
     with SingleTickerProviderStateMixin {
   DatabaseManager db = DatabaseManager();
   late final CourseNotifier courseNotifier;
-  late final SavedCourses savedCourses;
+  late final SavedCoursesNotifier savedCoursesNotifier;
   final User? user = Auth().currentUser;
   late ValueNotifier<double> _valueNotifier;
   late int tabIndex;
@@ -76,39 +76,52 @@ class _MyCoursesState extends State<MyCourses>
     return db.getCourses(courseNotifier);
   }
 
-  Future<String?> addSubCollection({required int index})async{
-    CollectionReference users = FirebaseFirestore.instance.collection('Users');
+  int duplicateCount = 0;
 
-    var myUser = await FirebaseFirestore.instance
-        .collection('Users')
-        .where('uid', isEqualTo: user?.uid)
-        .get();
-    if (myUser.docs.isNotEmpty) {
-      var docId = myUser.docs.first.id;
-      print(docId);
 
-      await users.doc(docId).collection('Favourites').add({
-        'courseName': displayList[index].courseName,
-        'subjectArea': displayList[index].subjectArea,
-        'courseImage': displayList[index].media[1],
-        'skillLevel': displayList[index].level,
-        'duration': displayList[index].duration,
-        'savedAt': FieldValue.serverTimestamp(),
-      })
-          .then((value) {
-        courseNotifier.currentCourse = courseNotifier.courseList[index];
-        savedCourses.add(courseNotifier.currentCourse);
-        print(savedCourses.savedCourses.length);
-        print('Course saved as a favourite');
-      })
-          .catchError((error) {
-        print('Error saving course as a favourite: $error');
-      });
-      return null;
-    }
-    return null;
 
-  }
+  // Future<String?> addSavedCourseSubCollection({required int index}) async {
+  //   CollectionReference users = FirebaseFirestore.instance.collection('Users');
+  //
+  //   var myUser = await FirebaseFirestore.instance
+  //       .collection('Users')
+  //       .where('uid', isEqualTo: user?.uid)
+  //       .get();
+  //   if (myUser.docs.isNotEmpty) {
+  //     var docId = myUser.docs.first.id;
+  //
+  //     for(int i = 0; i <savedCourses.savedCourses.length;) {
+  //       if (courseNotifier.currentCourse.courseName == savedCourses.savedCourses[i].courseName) {
+  //         duplicateCount++;
+  //         i++;
+  //       } else {
+  //         i++;
+  //       }
+  //     }
+  //     if(duplicateCount < 1) {
+  //       await users.doc(docId).collection('Favourites').add({
+  //         'courseName': displayList[index].courseName,
+  //         'courseId': displayList[index].courseId,
+  //         'subjectArea': displayList[index].subjectArea,
+  //         'courseImage': displayList[index].media[1],
+  //         'level': displayList[index].level,
+  //         'duration': displayList[index].duration,
+  //         'hoursPerWeek': displayList[index].hoursPerWeek,
+  //         'isSaved': displayList[index].isSaved,
+  //         'prereqs': displayList[index].prereqs,
+  //         'media': displayList[index].media,
+  //         'savedAt': FieldValue.serverTimestamp(),
+  //       });
+  //       // add the course to savedCourses
+  //       savedCourses.add(courseNotifier.currentCourse);
+  //     } else {
+  //       print('duplicate');
+  //     }
+  //     return null;
+  //   }
+  //   return null;
+  // }
+
 
   Widget _showList(int index) {
     switch (index) {
@@ -132,9 +145,11 @@ class _MyCoursesState extends State<MyCourses>
                                 HapticFeedback.heavyImpact();
                                 displayList[index].isSaved =
                                     !displayList[index].isSaved;
+                                courseNotifier.currentCourse = courseNotifier.courseList[index];
 
                                 // Add the course as a favorite
-                                addSubCollection(index: index);
+                                db.addSavedCourseSubCollection(index: index, displayList: displayList,
+                                    duplicateCount: duplicateCount, savedCourses: savedCoursesNotifier, courseNotifier: courseNotifier);
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     elevation: 1,
@@ -249,11 +264,11 @@ class _MyCoursesState extends State<MyCourses>
 
   }
 
-  Future<String> get_data(DocumentReference doc_ref) async {
-    DocumentSnapshot docSnap = await doc_ref.get();
-    var doc_id2 = docSnap.reference.id;
-    return doc_id2;
-  }
+  // Future<String> getData(DocumentReference docRef) async {
+  //   DocumentSnapshot docSnap = await docRef.get();
+  //   var docId2 = docSnap.reference.id;
+  //   return docId2;
+  // }
 
 
   @override
@@ -261,7 +276,7 @@ class _MyCoursesState extends State<MyCourses>
 
     _animationController = AnimationController(vsync: this);
     courseNotifier = Provider.of<CourseNotifier>(context, listen: false);
-    savedCourses = Provider.of<SavedCourses>(context, listen: false);
+    savedCoursesNotifier = Provider.of<SavedCoursesNotifier>(context, listen: false);
     userRef = FirebaseFirestore.instance.collection('Users').doc(userId);
     userNotifier = Provider.of<UserNotifier>(context, listen: false);
     futureData = getModels();

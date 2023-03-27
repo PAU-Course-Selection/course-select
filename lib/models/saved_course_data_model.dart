@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 
 import 'course_data_model.dart';
 
-/// The [SavedCourses] class holds a list of favorite items saved by the user.
-class SavedCourses extends ChangeNotifier {
+/// The [SavedCoursesNotifier] class holds a list of favorite items saved by the user.
+class SavedCoursesNotifier extends ChangeNotifier {
   late List<Course> _savedCourses = [];
 
   ///A getter for the list of courses

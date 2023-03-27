@@ -57,6 +57,8 @@ dependencies:
   syncfusion_flutter_calendar: ^20.4.54
   syncfusion_localizations: ^20.4.54
   settings_ui: ^2.0.2
+  flutter_slidable: ^2.0.0
+  shimmer: ^2.0.0
 
 
 dev_dependencies:

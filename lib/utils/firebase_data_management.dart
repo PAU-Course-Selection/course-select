@@ -11,6 +11,8 @@ import 'auth.dart';
 
 class DatabaseManager {
   final data = FirebaseFirestore.instance;
+  late final CourseNotifier courseNotifier;
+  late final SavedCoursesNotifier savedCourses;
 
   late final UserNotifier userNotifier;
   final User? user = Auth().currentUser;
@@ -74,12 +76,14 @@ class DatabaseManager {
     courseNotifier.courseList = _courses;
   }
 
-  getSavedCourses(SavedCourses savedCourses, String docId) async {
+  getSavedCourses(SavedCoursesNotifier savedCourses, String docId) async {
     FirebaseFirestore rootRef = FirebaseFirestore.instance;
     rootRef.settings = const Settings(persistenceEnabled: true);
     rootRef.snapshotsInSync();
     QuerySnapshot snapshot = await rootRef.collection('Users')
-        .doc(docId).collection('Favourites').orderBy('savedAt', descending: true).get();
+        .doc(docId).collection('Favourites').get();
+
+    //.orderBy('savedAt', descending: true).
 
       List<Course> _savedCourses = [];
 
@@ -94,5 +98,47 @@ class DatabaseManager {
         print('YES! YES! I AM FROM CACHE');
       }
       savedCourses.savedCourses = _savedCourses;
+  }
+
+  Future<String?> addSavedCourseSubCollection({required SavedCoursesNotifier savedCourses, required CourseNotifier courseNotifier, required List displayList, required int index, required duplicateCount}) async {
+    CollectionReference users = FirebaseFirestore.instance.collection('Users');
+
+    var myUser = await FirebaseFirestore.instance
+        .collection('Users')
+        .where('uid', isEqualTo: user?.uid)
+        .get();
+    if (myUser.docs.isNotEmpty) {
+      var docId = myUser.docs.first.id;
+
+      for(int i = 0; i <savedCourses.savedCourses.length;) {
+        if (courseNotifier.currentCourse.courseName == savedCourses.savedCourses[i].courseName) {
+          duplicateCount++;
+          i++;
+        } else {
+          i++;
+        }
+      }
+      if(duplicateCount < 1) {
+        await users.doc(docId).collection('Favourites').add({
+          'courseName': displayList[index].courseName,
+          'courseId': displayList[index].courseId,
+          'subjectArea': displayList[index].subjectArea,
+          'courseImage': displayList[index].media[1],
+          'level': displayList[index].level,
+          'duration': displayList[index].duration,
+          'hoursPerWeek': displayList[index].hoursPerWeek,
+          'isSaved': displayList[index].isSaved,
+          'prereqs': displayList[index].prereqs,
+          'media': displayList[index].media,
+          'savedAt': FieldValue.serverTimestamp(),
+        });
+        // add the course to savedCourses
+        savedCourses.add(courseNotifier.currentCourse);
+      } else {
+        print('duplicate');
+      }
+      return null;
+    }
+    return null;
   }
 }

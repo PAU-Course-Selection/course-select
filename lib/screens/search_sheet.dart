@@ -1,5 +1,6 @@
 import 'package:course_select/controllers/home_page_notifier.dart';
 import 'package:course_select/constants/constants.dart';
+import 'package:course_select/models/saved_course_data_model.dart';
 import 'package:course_select/shared_widgets/courses_filter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,11 +23,14 @@ class _SearchSheetState extends State<SearchSheet>
   DatabaseManager db = DatabaseManager();
   HomePageNotifier homePageNotifier = HomePageNotifier();
   late final CourseNotifier courseNotifier;
+  late final SavedCoursesNotifier savedCoursesNotifier;
+  //late List<Course> savedList = [];
 
   //late final UserNotifier userNotifier;
   late Future futureData;
 
   late List<Course> displayList;
+  int duplicateCount = 0;
 
   void updateList(String value) {
     /// filter courses list
@@ -50,6 +54,7 @@ class _SearchSheetState extends State<SearchSheet>
 
   @override
   void initState() {
+    savedCoursesNotifier = Provider.of<SavedCoursesNotifier>(context, listen: false);
     _animationController = AnimationController(vsync: this);
     courseNotifier = Provider.of<CourseNotifier>(context, listen: false);
     //userNotifier = Provider.of<UserNotifier>(context, listen: false);
@@ -151,6 +156,10 @@ class _SearchSheetState extends State<SearchSheet>
                                       HapticFeedback.heavyImpact();
                                       displayList[index].isSaved =
                                       !displayList[index].isSaved;
+
+                                      courseNotifier.currentCourse = courseNotifier.courseList[index];
+                                      db.addSavedCourseSubCollection(index: index, displayList: displayList,
+                                          duplicateCount: duplicateCount, savedCourses: savedCoursesNotifier, courseNotifier: courseNotifier);
 
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(

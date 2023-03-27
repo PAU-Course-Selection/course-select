@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
             create: (context) => CourseNotifier()
         ),
         ChangeNotifierProvider(
-            create: (context) => SavedCourses()
+            create: (context) => SavedCoursesNotifier()
         ),
       ],
       child: ScreenUtilInit(
