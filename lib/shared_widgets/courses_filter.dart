@@ -22,6 +22,7 @@ class _CoursesFilterState extends State<CoursesFilter> {
   bool b3 = false;
   bool b4 = false;
   bool isAllSelected = false;
+  bool isMySelected = false;
   bool isOngoingSelected = false;
   bool isCompletedSelected = false;
 
@@ -66,7 +67,27 @@ class _CoursesFilterState extends State<CoursesFilter> {
       Padding(
         padding: const EdgeInsets.only(right: 5.0),
         child: CategoryButton(
-          bgColour: homePageNotifier.tabIndex ==1? kSelected: Colors.white,
+          bgColour: homePageNotifier.tabIndex ==1? kSelected:Colors.white,
+          iconBgColour: kTeal,
+          icon: Icons.person_add_alt_1_rounded,
+          iconColour: Colors.white,
+          text: 'Enrolled',
+          onTap: (){
+            setState(() {
+              b1 = false;
+              b2 = !b2;
+              b3 = false;
+              b4 = false;
+              isMySelected = true;
+              homePageNotifier.tabIndex = 1;
+            });
+          },
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.only(right: 5.0),
+        child: CategoryButton(
+          bgColour: homePageNotifier.tabIndex ==2? kSelected: Colors.white,
           iconBgColour: Colors.blueGrey,
           icon: Icons.class_rounded,
           iconColour: Colors.white,
@@ -74,11 +95,11 @@ class _CoursesFilterState extends State<CoursesFilter> {
           onTap: (){
             setState(() {
               b1 = false;
-              b2 = !b2 ;
-              b3 = false;
+              b2 = false  ;
+              b3 = !b3;
               b4 = false;
               isOngoingSelected = true;
-              homePageNotifier.tabIndex = 1;
+              homePageNotifier.tabIndex = 2;
             });
 
 
@@ -88,7 +109,7 @@ class _CoursesFilterState extends State<CoursesFilter> {
       Padding(
         padding: const EdgeInsets.only(right: 5.0),
         child: CategoryButton(
-          bgColour: homePageNotifier.tabIndex ==2? kSelected: Colors.white,
+          bgColour: homePageNotifier.tabIndex == 3? kSelected: Colors.white,
           iconBgColour: Colors.blueAccent,
           icon: Icons.check_circle_rounded,
           iconColour: Colors.white,
@@ -97,10 +118,10 @@ class _CoursesFilterState extends State<CoursesFilter> {
             setState(() {
               b1 = false;
               b2 = false;
-              b3 = !b3 ;
-              b4 = false;
+              b3 = false;
+              b4 = !b4;
               isCompletedSelected = true;
-              homePageNotifier.tabIndex = 2;
+              homePageNotifier.tabIndex = 3;
             });
           },
         ),

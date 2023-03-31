@@ -47,6 +47,7 @@ class _MyCoursesState extends State<MyCourses>
 
   late List<Course> displayList;
   late List<MyCourse> displayOngoingList;
+  late List<Course> myList;
 
   void updateList(String value) {
     /// filter courses list
@@ -77,50 +78,6 @@ class _MyCoursesState extends State<MyCourses>
   }
 
   int duplicateCount = 0;
-
-
-
-  // Future<String?> addSavedCourseSubCollection({required int index}) async {
-  //   CollectionReference users = FirebaseFirestore.instance.collection('Users');
-  //
-  //   var myUser = await FirebaseFirestore.instance
-  //       .collection('Users')
-  //       .where('uid', isEqualTo: user?.uid)
-  //       .get();
-  //   if (myUser.docs.isNotEmpty) {
-  //     var docId = myUser.docs.first.id;
-  //
-  //     for(int i = 0; i <savedCourses.savedCourses.length;) {
-  //       if (courseNotifier.currentCourse.courseName == savedCourses.savedCourses[i].courseName) {
-  //         duplicateCount++;
-  //         i++;
-  //       } else {
-  //         i++;
-  //       }
-  //     }
-  //     if(duplicateCount < 1) {
-  //       await users.doc(docId).collection('Favourites').add({
-  //         'courseName': displayList[index].courseName,
-  //         'courseId': displayList[index].courseId,
-  //         'subjectArea': displayList[index].subjectArea,
-  //         'courseImage': displayList[index].media[1],
-  //         'level': displayList[index].level,
-  //         'duration': displayList[index].duration,
-  //         'hoursPerWeek': displayList[index].hoursPerWeek,
-  //         'isSaved': displayList[index].isSaved,
-  //         'prereqs': displayList[index].prereqs,
-  //         'media': displayList[index].media,
-  //         'savedAt': FieldValue.serverTimestamp(),
-  //       });
-  //       // add the course to savedCourses
-  //       savedCourses.add(courseNotifier.currentCourse);
-  //     } else {
-  //       print('duplicate');
-  //     }
-  //     return null;
-  //   }
-  //   return null;
-  // }
 
 
   Widget _showList(int index) {
@@ -176,6 +133,55 @@ class _MyCoursesState extends State<MyCourses>
                   ));
       case 1:
         return Expanded(
+            child: displayList.isEmpty
+                ? const Center(
+              child: Text('No results found...'),
+            )
+                : Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25.0),
+              child: ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  itemCount: myList.length,
+                  itemBuilder: (context, index) {
+                    return MiniCourseCard(
+                      displayList: myList,
+                      index: index,
+                      onBookmarkTapped: () {
+                        setState(() {
+                          HapticFeedback.heavyImpact();
+                          myList[index].isSaved =
+                          !myList[index].isSaved;
+                          courseNotifier.currentCourse = courseNotifier.courseList[index];
+
+                          // Add the course as a favorite
+                          db.addSavedCourseSubCollection(index: index, displayList: myList,
+                              duplicateCount: duplicateCount, savedCourses: savedCoursesNotifier, courseNotifier: courseNotifier);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              elevation: 1,
+                              behavior: SnackBarBehavior.fixed,
+                              backgroundColor: kKindaGreen,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5)),
+                              content: Center(
+                                  child: Text(
+                                    displayList[index].isSaved
+                                        ? 'Added to saved courses'
+                                        : 'Removed from saved courses',
+                                    style: const TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold),
+                                  )),
+                              duration: const Duration(seconds: 1),
+                            ),
+                          );
+                        });
+                      },
+                    );
+                  }),
+            ));
+      case 2:
+        return Expanded(
             child: displayOngoingList.isEmpty
                 ? const Center(
                     child: Text('No ongoing courses found...'),
@@ -195,7 +201,7 @@ class _MyCoursesState extends State<MyCourses>
                         }),
                   ));
         break;
-      case 2:
+      case 3:
         return Expanded(
             child: displayOngoingList.isEmpty
                 ? const Center(
@@ -282,6 +288,8 @@ class _MyCoursesState extends State<MyCourses>
     futureData = getModels();
     displayOngoingList = List.from(_myCourses);
     displayList = List.from(courseNotifier.courseList);
+    getCourseIds(userNotifier);
+    myList = filterCoursesByIds(userCourseIds, courseNotifier.courseList);
     super.initState();
   }
 
@@ -294,6 +302,36 @@ class _MyCoursesState extends State<MyCourses>
   ValueNotifier<double> _setValueNotifier(MyCourse course){
     return  _valueNotifier =  ValueNotifier(calculateCompletionPercentage(course));
 
+  }
+
+  late List userCourseIds = [];
+  bool match = false;
+
+  void getCourseIds(UserNotifier userNotifier) {
+    for (int i = 0; i < userNotifier.usersList.length; i++) {
+      if (userNotifier.usersList[i].email == user?.email) {
+        match = true;
+        print(match);
+        print(userNotifier.usersList[i].email);
+        userCourseIds = userNotifier.usersList[i].courses!;
+      }
+    }
+    if(match){
+      print(userCourseIds);
+    } else {
+      print('user not found');
+    }
+  }
+
+  List<Course> filterCoursesByIds(List courseIds, List<Course> courses) {
+    List<Course> filteredCourses = [];
+    for (var course in courses) {
+      //print(course.courseId);
+      if (courseIds.contains(course.courseId)) {
+        filteredCourses.add(course);
+      }
+    }
+    return filteredCourses;
   }
 
   @override
@@ -395,7 +433,7 @@ class _MyCoursesState extends State<MyCourses>
                      Padding(
                       padding: const EdgeInsets.only(left: 25.0, bottom: 10),
                       child: Text(
-                        tabIndex ==0? 'All courses': tabIndex ==1? 'Ongoing':'Completed',
+                        tabIndex == 0? 'All courses': tabIndex == 1? 'Enrolled': tabIndex == 2? 'Ongoing':'Completed',
                         style: const TextStyle(
                             fontSize: 22.0,
                             fontWeight: FontWeight.bold,

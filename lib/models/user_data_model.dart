@@ -8,6 +8,8 @@ class UserModel{
   Timestamp? dateCreated = Timestamp.now();
   String? avatar;
   String? email;
+  List<dynamic>? courses;
+
 
   ///A constructor for setting attribute values when creating a user object
    UserModel ({
@@ -16,6 +18,7 @@ class UserModel{
     required this.dateCreated,
     this.avatar,
     this.email,
+     this.courses
   });
 
   ///Receives a map which matches class attributes
@@ -25,5 +28,6 @@ class UserModel{
     dateCreated = data['dateCreated'];
     avatar = data['avatar'];
     email = data['email'];
+    courses = data['courses'];
   }
 }
