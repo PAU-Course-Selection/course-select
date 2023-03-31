@@ -1,6 +1,7 @@
 import 'package:course_select/controllers/course_notifier.dart';
 import 'package:course_select/controllers/home_page_notifier.dart';
 import 'package:course_select/controllers/user_notifier.dart';
+import 'package:course_select/models/saved_course_data_model.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:course_select/routes/routes.dart';
 import 'package:get/get.dart';
@@ -9,8 +10,6 @@ import 'firebase_options.dart';
 import 'package:course_select/screens/intro_pages/welcome_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
-
 import 'internationalization/app_internalization.dart';
 
 
@@ -38,6 +37,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
             create: (context) => CourseNotifier()
+        ),
+        ChangeNotifierProvider(
+            create: (context) => SavedCoursesNotifier()
         ),
       ],
       child: ScreenUtilInit(

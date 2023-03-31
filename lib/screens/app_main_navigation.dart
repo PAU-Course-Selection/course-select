@@ -1,6 +1,6 @@
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:course_select/screens/home_page.dart';
-import 'package:course_select/screens/notifications_page.dart';
+import 'package:course_select/screens/saved_courses_page.dart';
 import 'package:course_select/screens/timetable_page.dart';
 import 'package:course_select/constants/constants.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
@@ -20,7 +20,7 @@ class _AppMainNavState extends State<AppMainNav> {
   late final List<Widget> _widgetOptions = <Widget>[
     const HomePage(),
     const MyCourses(),
-    const Notifications(),
+    const SavedCourses(),
     const Timetable(),
   ];
 

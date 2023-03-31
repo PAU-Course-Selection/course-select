@@ -4,34 +4,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../models/course_data_model.dart';
 import '../constants/constants.dart';
+import '../models/course_data_model.dart';
 
-class MiniCourseCard extends StatefulWidget {
-  const MiniCourseCard({
-    Key? key,
-    required this.displayList, required this.index, required this.onBookmarkTapped,
-  }) : super(key: key);
-
+class SavedCourseCard extends StatefulWidget {
   final List<Course> displayList;
   final int index;
-  final Function onBookmarkTapped;
+
+  const SavedCourseCard({Key? key, required this.displayList,
+    required this.index}) : super(key: key);
 
   @override
-  State<MiniCourseCard> createState() => _MiniCourseCardState();
+  State<SavedCourseCard> createState() => _SavedCourseCardState();
 }
 
-class _MiniCourseCardState extends State<MiniCourseCard> {
+class _SavedCourseCardState extends State<SavedCourseCard> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding:
-      const EdgeInsets.only(bottom: 10.0),
+    return Container(
+      width: double.infinity,
+      decoration: const BoxDecoration(
+          color: Color(0xff1eb8ca),
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(15),bottomLeft: Radius.circular(15))
+      ),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          color:
-          kLightBackground.withOpacity(0.2),
+          color: const Color(0xfff3f3f3),
         ),
         child: Stack(
           children: [
@@ -69,11 +68,11 @@ class _MiniCourseCardState extends State<MiniCourseCard> {
                       widget.displayList[widget.index]
                           .courseName
                           .length >
-                          20
+                          26
                           ? widget.displayList[widget.index]
                           .courseName
                           .substring(
-                          0, 20) +
+                          0, 26) +
                           '...'
                           : widget.displayList[widget.index]
                           .courseName,
@@ -110,44 +109,33 @@ class _MiniCourseCardState extends State<MiniCourseCard> {
             ),
             Positioned(
                 right: 10,
-                child: GestureDetector(
-                  onTap: () => widget.onBookmarkTapped.call(),
-                  child: Container(
-                    padding:
-                    const EdgeInsets.all(15),
-                    child: widget.displayList[widget.index]
-                        .isSaved
-                        ? Animate(
-                      child: Icon(
-                          Icons
-                              .bookmark_added,
-                          color:
-                          kPrimaryColour),
-                    )
-                        .animate()
-                        .shake(
-                        hz: 1,
-                        curve: Curves
-                            .easeInOutCubic,
-                        duration: 500.ms)
-                        .shimmer(
-                        delay: 10.ms,
-                        duration: 1000.ms)
-                        .scaleXY(
-                        end: 1.2,
-                        duration: 100.ms)
-                        .then(delay: 1.ms)
-                        .scaleXY(
-                        end: 1 / 1.2,
-                        curve: Curves
-                            .bounceInOut)
-                        : Icon(
-                      Icons
-                          .bookmark_border_rounded,
-                      color: Colors.orange
-                          .withOpacity(0.5),
-                    ),
-                  ),
+                child: Container(
+                  padding:
+                  const EdgeInsets.all(15),
+                  child:  Animate(
+                    child: Icon(
+                        Icons
+                            .bookmark_added,
+                        color:
+                        kPrimaryColour),
+                  )
+                      .animate()
+                      .shake(
+                      hz: 1,
+                      curve: Curves
+                          .easeInOutCubic,
+                      duration: 500.ms)
+                      .shimmer(
+                      delay: 10.ms,
+                      duration: 1000.ms)
+                      .scaleXY(
+                      end: 1.2,
+                      duration: 100.ms)
+                      .then(delay: 1.ms)
+                      .scaleXY(
+                      end: 1 / 1.2,
+                      curve: Curves
+                          .bounceInOut)
                 )),
             Positioned(
               right: 0,

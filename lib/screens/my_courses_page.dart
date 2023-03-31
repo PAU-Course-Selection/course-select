@@ -1,12 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:course_select/controllers/home_page_notifier.dart';
 import 'package:course_select/shared_widgets/courses_filter.dart';
+import 'package:course_select/utils/auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import '../constants/constants.dart';
 import '../controllers/course_notifier.dart';
+import '../controllers/user_notifier.dart';
 import '../models/course_data_model.dart';
+import '../models/saved_course_data_model.dart';
 import '../shared_widgets/active_course_tile.dart';
 import '../shared_widgets/filter_button.dart';
 import '../shared_widgets/mini_course_card.dart';
@@ -24,22 +29,35 @@ class _MyCoursesState extends State<MyCourses>
     with SingleTickerProviderStateMixin {
   DatabaseManager db = DatabaseManager();
   late final CourseNotifier courseNotifier;
+  late final SavedCoursesNotifier savedCoursesNotifier;
+  final User? user = Auth().currentUser;
   late ValueNotifier<double> _valueNotifier;
   late int tabIndex;
 
-  //late final UserNotifier userNotifier;
+  // Get the current user's ID
+  final userId = Auth().currentUser!.uid;
+   late String id;
+
+// Get a reference to the user's document in the "users" collection
+  late final DocumentReference<Map<String, dynamic>> userRef;
+
+  late final UserNotifier userNotifier;
   late Future futureData;
   late final AnimationController _animationController;
 
   late List<Course> displayList;
   late List<MyCourse> displayOngoingList;
+  late List<Course> myList;
 
   void updateList(String value) {
     /// filter courses list
     setState(() {
       displayList = courseNotifier.courseList
           .where((element) =>
-              element.courseName!.toLowerCase().contains(value.toLowerCase()))
+              element.courseName!.toLowerCase().contains(value.toLowerCase())
+          || element.subjectArea!.toLowerCase().contains(value.toLowerCase())
+          || element.level!.toLowerCase().contains(value.toLowerCase())
+      )
           .toList();
     });
   }
@@ -58,6 +76,9 @@ class _MyCoursesState extends State<MyCourses>
     //db.getUsers(userNotifier);
     return db.getCourses(courseNotifier);
   }
+
+  int duplicateCount = 0;
+
 
   Widget _showList(int index) {
     switch (index) {
@@ -81,7 +102,11 @@ class _MyCoursesState extends State<MyCourses>
                                 HapticFeedback.heavyImpact();
                                 displayList[index].isSaved =
                                     !displayList[index].isSaved;
+                                courseNotifier.currentCourse = courseNotifier.courseList[index];
 
+                                // Add the course as a favorite
+                                db.addSavedCourseSubCollection(index: index, displayList: displayList,
+                                    duplicateCount: duplicateCount, savedCourses: savedCoursesNotifier, courseNotifier: courseNotifier);
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     elevation: 1,
@@ -108,6 +133,55 @@ class _MyCoursesState extends State<MyCourses>
                   ));
       case 1:
         return Expanded(
+            child: displayList.isEmpty
+                ? const Center(
+              child: Text('No results found...'),
+            )
+                : Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25.0),
+              child: ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  itemCount: myList.length,
+                  itemBuilder: (context, index) {
+                    return MiniCourseCard(
+                      displayList: myList,
+                      index: index,
+                      onBookmarkTapped: () {
+                        setState(() {
+                          HapticFeedback.heavyImpact();
+                          myList[index].isSaved =
+                          !myList[index].isSaved;
+                          courseNotifier.currentCourse = courseNotifier.courseList[index];
+
+                          // Add the course as a favorite
+                          db.addSavedCourseSubCollection(index: index, displayList: myList,
+                              duplicateCount: duplicateCount, savedCourses: savedCoursesNotifier, courseNotifier: courseNotifier);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              elevation: 1,
+                              behavior: SnackBarBehavior.fixed,
+                              backgroundColor: kKindaGreen,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5)),
+                              content: Center(
+                                  child: Text(
+                                    displayList[index].isSaved
+                                        ? 'Added to saved courses'
+                                        : 'Removed from saved courses',
+                                    style: const TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold),
+                                  )),
+                              duration: const Duration(seconds: 1),
+                            ),
+                          );
+                        });
+                      },
+                    );
+                  }),
+            ));
+      case 2:
+        return Expanded(
             child: displayOngoingList.isEmpty
                 ? const Center(
                     child: Text('No ongoing courses found...'),
@@ -127,7 +201,7 @@ class _MyCoursesState extends State<MyCourses>
                         }),
                   ));
         break;
-      case 2:
+      case 3:
         return Expanded(
             child: displayOngoingList.isEmpty
                 ? const Center(
@@ -196,14 +270,26 @@ class _MyCoursesState extends State<MyCourses>
 
   }
 
+  // Future<String> getData(DocumentReference docRef) async {
+  //   DocumentSnapshot docSnap = await docRef.get();
+  //   var docId2 = docSnap.reference.id;
+  //   return docId2;
+  // }
+
+
   @override
   void initState() {
+
     _animationController = AnimationController(vsync: this);
     courseNotifier = Provider.of<CourseNotifier>(context, listen: false);
-    //userNotifier = Provider.of<UserNotifier>(context, listen: false);
+    savedCoursesNotifier = Provider.of<SavedCoursesNotifier>(context, listen: false);
+    userRef = FirebaseFirestore.instance.collection('Users').doc(userId);
+    userNotifier = Provider.of<UserNotifier>(context, listen: false);
     futureData = getModels();
     displayOngoingList = List.from(_myCourses);
     displayList = List.from(courseNotifier.courseList);
+    getCourseIds(userNotifier);
+    myList = filterCoursesByIds(userCourseIds, courseNotifier.courseList);
     super.initState();
   }
 
@@ -218,6 +304,36 @@ class _MyCoursesState extends State<MyCourses>
 
   }
 
+  late List userCourseIds = [];
+  bool match = false;
+
+  void getCourseIds(UserNotifier userNotifier) {
+    for (int i = 0; i < userNotifier.usersList.length; i++) {
+      if (userNotifier.usersList[i].email == user?.email) {
+        match = true;
+        print(match);
+        print(userNotifier.usersList[i].email);
+        userCourseIds = userNotifier.usersList[i].courses!;
+      }
+    }
+    if(match){
+      print(userCourseIds);
+    } else {
+      print('user not found');
+    }
+  }
+
+  List<Course> filterCoursesByIds(List courseIds, List<Course> courses) {
+    List<Course> filteredCourses = [];
+    for (var course in courses) {
+      //print(course.courseId);
+      if (courseIds.contains(course.courseId)) {
+        filteredCourses.add(course);
+      }
+    }
+    return filteredCourses;
+  }
+
   @override
   Widget build(BuildContext context) {
     HomePageNotifier homePageNotifier =
@@ -226,6 +342,12 @@ class _MyCoursesState extends State<MyCourses>
     tabIndex = homePageNotifier.tabIndex;
 
     return Scaffold(
+      appBar: AppBar(
+        title:  Text('Courses', style: kHeadlineMedium,),
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.black,
+        elevation: 0,
+      ),
       body: FutureBuilder(
           future: futureData,
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -236,16 +358,6 @@ class _MyCoursesState extends State<MyCourses>
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.only(left: 25.0, top: 25),
-                      child: Text(
-                        'Learn without limits!',
-                        style: TextStyle(
-                            fontSize: 22.0,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Roboto'),
-                      ),
-                    ),
                     const SizedBox(
                       height: 20.0,
                     ),
@@ -321,7 +433,7 @@ class _MyCoursesState extends State<MyCourses>
                      Padding(
                       padding: const EdgeInsets.only(left: 25.0, bottom: 10),
                       child: Text(
-                        tabIndex ==0? 'All courses': tabIndex ==1? 'Ongoing':'Completed',
+                        tabIndex == 0? 'All courses': tabIndex == 1? 'Enrolled': tabIndex == 2? 'Ongoing':'Completed',
                         style: const TextStyle(
                             fontSize: 22.0,
                             fontWeight: FontWeight.bold,

@@ -41,7 +41,7 @@ class _CategoryButtonState extends State<CategoryButton> {
             ]
         ),
         padding: const EdgeInsets.all(10),
-        width: screenWidth * 0.38,
+        width: screenWidth * 0.42,
         child: Row(
           children:  [
             Container(
