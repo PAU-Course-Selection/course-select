@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:course_select/controllers/home_page_notifier.dart';
 import 'package:course_select/controllers/user_notifier.dart';
 import 'package:course_select/screens/search_sheet.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -10,12 +11,14 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import '../constants/constants.dart';
 import '../controllers/course_notifier.dart';
+import '../models/course_data_model.dart';
 import '../routes/routes.dart';
 import '../shared_widgets/active_course_tile.dart';
 import '../shared_widgets/category_title.dart';
 import '../shared_widgets/course_card.dart';
 import '../shared_widgets/courses_filter.dart';
 import '../shared_widgets/filter_button.dart';
+import '../utils/auth.dart';
 import '../utils/firebase_data_management.dart';
 import 'app_main_navigation.dart';
 
@@ -31,6 +34,7 @@ class _HomePageState extends State<HomePage> {
   late final CourseNotifier courseNotifier;
   late final UserNotifier userNotifier;
   late Future futureData;
+  final User? user = Auth().currentUser;
 
   final DatabaseManager _db = DatabaseManager();
 
@@ -38,13 +42,12 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     courseNotifier = Provider.of<CourseNotifier>(context, listen: false);
     userNotifier = Provider.of<UserNotifier>(context, listen: false);
+    getModels();
     futureData = getModels();
 
     valueNotifier = ValueNotifier(0.0);
-    _db.getUsers(userNotifier);
     super.initState();
   }
-
 
   Future getModels() async{
     await _db.getUsers(userNotifier);
@@ -53,8 +56,41 @@ class _HomePageState extends State<HomePage> {
     return _db.getCourses(courseNotifier);
   }
 
+  late List userCourseIds = [];
+   bool match = false;
+
+  void getCourseIds(UserNotifier userNotifier) {
+    for (int i = 0; i < userNotifier.usersList.length; i++) {
+      if (userNotifier.usersList[i].email == user?.email) {
+        match = true;
+        print(match);
+        print(userNotifier.usersList[i].email);
+        userCourseIds = userNotifier.usersList[i].courses!;
+      }
+    }
+    if(match){
+      print(userCourseIds);
+    } else {
+      print('user not found');
+    }
+  }
+
+  List<Course> filterCoursesByIds(List courseIds, List<Course> courses) {
+    List<Course> filteredCourses = [];
+    for (var course in courses) {
+      //print(course.courseId);
+      if (courseIds.contains(course.courseId)) {
+          filteredCourses.add(course);
+      }
+    }
+    return filteredCourses;
+  }
+
   @override
   Widget build(BuildContext context) {
+    getCourseIds(userNotifier);
+    List myList = filterCoursesByIds(userCourseIds, courseNotifier.courseList);
+    print(myList);
     //final Size _size = MediaQuery.of(context).size;
     valueNotifier.value = 80.0;
     HomePageNotifier homePageNotifier = Provider.of<HomePageNotifier>(context, listen: true);
