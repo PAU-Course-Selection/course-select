@@ -96,7 +96,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
       DocumentReference docRef =
           FirebaseFirestore.instance.collection("Users").doc(docId);
       await docRef.update({"avatar": imageUrl});
-
       userNotifier.avatar = imageUrl;
     }
   }

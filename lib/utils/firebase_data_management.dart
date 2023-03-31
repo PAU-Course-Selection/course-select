@@ -13,8 +13,6 @@ class DatabaseManager {
   final data = FirebaseFirestore.instance;
   late final CourseNotifier courseNotifier;
   late final SavedCoursesNotifier savedCourses;
-
-  late final UserNotifier userNotifier;
   final User? user = Auth().currentUser;
 
 
@@ -187,6 +185,31 @@ class DatabaseManager {
   Future test()async{
     return Future.delayed(const Duration(seconds: 1));
   }
+
+  Future<void> updateUserCourses(UserNotifier userNotifier, CourseNotifier courseNotifier) async {
+    List ids = [];
+    try {
+      var myUser = await FirebaseFirestore.instance
+          .collection("Users")
+          .where("uid", isEqualTo: user?.uid)
+          .get();
+      if (myUser.docs.isNotEmpty) {
+        var docId = myUser.docs.first.id;
+
+        ids = userNotifier.getCourseIds();
+
+        DocumentReference docRef =
+        FirebaseFirestore.instance.collection("Users").doc(docId);
+        ids.add(courseNotifier.currentCourse.courseId);
+        await docRef.update({"courses": ids});
+        print('total user courses: $ids');
+        // getUsers(userNotifier);
+      }
+    } catch (e) {
+      print("Error updating user courses: $e");
+    }
+  }
+
 }
 
 

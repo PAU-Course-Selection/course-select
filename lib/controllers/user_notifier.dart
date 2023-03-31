@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:course_select/models/user_data_model.dart' as student;
 
+import '../models/course_data_model.dart';
 import '../utils/auth.dart';
 ///Creates a controller class with user attributes which notify all widgets of changes
 class UserNotifier extends ChangeNotifier {
@@ -22,7 +23,14 @@ class UserNotifier extends ChangeNotifier {
   get userName => _userName;
 
   List<student.UserModel> _usersList = [];
-  student.UserModel? currentCourse;
+  List _userCourseIds = [];
+
+  List get userCourseIds => _userCourseIds;
+
+  set userCourseIds(List value) {
+    _userCourseIds = value;
+    notifyListeners();
+  }
 
   ///A getter for the list of users
   UnmodifiableListView<student.UserModel> get usersList =>
@@ -95,5 +103,38 @@ class UserNotifier extends ChangeNotifier {
 
   set joinDate(value) {
     _joinDate = value;
+    notifyListeners();
+  }
+
+  bool match = false;
+
+  List getCourseIds() {
+    List ids = [];
+    for (int i = 0; i < usersList.length; i++) {
+      if (usersList[i].email == user?.email) {
+         match = true;
+        // print(match);
+        // print(usersList[i].email);
+        ids = usersList[i].courses!;
+      }
+    }
+    if (match) {
+      print('user found!');
+    }else {
+      print('user not found');
+    }
+    return ids;
+  }
+
+  List<Course> filterCoursesByIds(List<Course> courses) {
+    List ids = getCourseIds();
+    List<Course> filteredCourses = [];
+    for (var course in courses) {
+      //print(course.courseId);
+      if (ids.contains(course.courseId)) {
+        filteredCourses.add(course);
+      }
+    }
+    return filteredCourses;
   }
 }

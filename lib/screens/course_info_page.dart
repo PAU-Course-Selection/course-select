@@ -1,12 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:course_select/controllers/course_notifier.dart';
 import 'package:course_select/constants/constants.dart';
+import 'package:course_select/controllers/home_page_notifier.dart';
 import 'package:course_select/shared_widgets/classmates.dart';
 import 'package:course_select/shared_widgets/course_info_and_sharing.dart';
 import 'package:course_select/shared_widgets/video_player.dart';
+import 'package:course_select/utils/firebase_data_management.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+
+import '../controllers/user_notifier.dart';
 
 class CourseInfoPage extends StatefulWidget {
   const CourseInfoPage({
@@ -19,6 +23,9 @@ class CourseInfoPage extends StatefulWidget {
 
 class _CourseInfoPageState extends State<CourseInfoPage> {
   late CourseNotifier _courseNotifier;
+  late UserNotifier _userNotifier;
+  late HomePageNotifier _homePageNotifier;
+  final DatabaseManager _db = DatabaseManager();
   Image img = Image.asset('assets/images/c2.jpg');
   String videoUrl = '';
 
@@ -36,11 +43,14 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
   @override
   void initState() {
     _courseNotifier = Provider.of<CourseNotifier>(context, listen: false);
+    _homePageNotifier = Provider.of<HomePageNotifier>(context, listen: false);
+    _userNotifier = Provider.of<UserNotifier>(context, listen: false);
     videoUrl = _courseNotifier.currentCourse.media[0];
     super.initState();
   }
 
   Widget _courseInfo() {
+
     Column infoPage = Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -90,7 +100,9 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
         ),
         //Classmates Heading
          ElevatedButton(
-          onPressed: () {
+          onPressed: (){
+            _db.updateUserCourses(_userNotifier, _courseNotifier);
+            _homePageNotifier.isStateChanged = true;
           ScaffoldMessenger.of(context)
               .showSnackBar(
           SnackBar(
