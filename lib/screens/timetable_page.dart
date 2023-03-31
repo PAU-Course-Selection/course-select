@@ -122,7 +122,7 @@ class Timetable extends StatelessWidget {
                         color: kLightBackground.withOpacity(0.2),
                       ),
                       child: SfCalendar(
-                        view: CalendarView.month,
+                        view: CalendarView.week,
                         showNavigationArrow: true,
                         todayHighlightColor: kPrimaryColour,
                         selectionDecoration: BoxDecoration(

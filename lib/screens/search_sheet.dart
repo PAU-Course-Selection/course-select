@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../controllers/course_notifier.dart';
 import '../models/course_data_model.dart';
+import '../routes/routes.dart';
 import '../shared_widgets/mini_course_card.dart';
 import '../utils/firebase_data_management.dart';
 
@@ -174,7 +175,9 @@ class _SearchSheetState extends State<SearchSheet>
                                                   5)),
                                           content: Center(
                                               child: Text(
-                                                displayList[index].isSaved? 'Added to saved courses': 'Removed from saved courses',
+                                                displayList[index].isSaved
+                                                    ? 'Added to saved courses'
+                                                    : 'Removed from saved courses',
                                                 style: const TextStyle(
                                                     color: Colors.black,
                                                     fontWeight:
@@ -185,7 +188,10 @@ class _SearchSheetState extends State<SearchSheet>
                                         ),
                                       );
                                     });
-                                  },);
+                                  }, onCardPressed: (){
+                                  courseNotifier.currentCourse = courseNotifier.courseList[index];
+                                  Navigator.pushNamed(context, PageRoutes.courseInfo);
+                                },);
                               }),
                         )),
                   ],

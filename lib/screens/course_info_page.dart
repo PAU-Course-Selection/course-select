@@ -89,6 +89,40 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
           ),
         ),
         //Classmates Heading
+         ElevatedButton(
+          onPressed: () {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(
+          SnackBar(
+            elevation: 1,
+            behavior:
+            SnackBarBehavior.fixed,
+            backgroundColor: kKindaGreen,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5)),
+            content:
+            const Center(
+                child: Text(
+                "Successfully Enrolled",
+                style: TextStyle(
+                    color: Colors.black45,
+                    fontSize: 15.0,
+                    fontFamily: "Robots",
+                    fontWeight: FontWeight.bold),
+          )),
+          duration:
+          const Duration(seconds: 1),
+          ),
+          );
+          },
+           child: const Text(
+             "Enroll",
+             style: TextStyle(
+                 fontSize: 20.0,
+                 fontWeight: FontWeight.bold
+             ),
+           ),
+        ),
         const Text(
           "Classmates",
           style: TextStyle(
@@ -100,6 +134,9 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
         const Classmates(),
       ],
     );
+
+
+
 
     return infoPage;
   }
