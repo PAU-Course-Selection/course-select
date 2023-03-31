@@ -26,7 +26,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_courseNotifier.currentCourse.courseName),
+        title: const Text('Course Info'),
         backgroundColor: kPrimaryColour,
       ),
       body: _courseInfo(),
