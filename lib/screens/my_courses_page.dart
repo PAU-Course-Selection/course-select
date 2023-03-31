@@ -12,7 +12,9 @@ import '../controllers/course_notifier.dart';
 import '../controllers/user_notifier.dart';
 import '../models/course_data_model.dart';
 import '../models/saved_course_data_model.dart';
+import '../routes/routes.dart';
 import '../shared_widgets/active_course_tile.dart';
+import '../shared_widgets/category_title.dart';
 import '../shared_widgets/filter_button.dart';
 import '../shared_widgets/mini_course_card.dart';
 import '../utils/firebase_data_management.dart';
@@ -24,6 +26,7 @@ class MyCourses extends StatefulWidget {
   @override
   State<MyCourses> createState() => _MyCoursesState();
 }
+
 
 class _MyCoursesState extends State<MyCourses>
     with SingleTickerProviderStateMixin {
@@ -124,6 +127,7 @@ class _MyCoursesState extends State<MyCourses>
 
 
   Widget _showList(int index) {
+    HomePageNotifier homePageNotifier = Provider.of<HomePageNotifier>(context, listen: true);
     switch (index) {
       case 0:
         return Expanded(
@@ -170,10 +174,14 @@ class _MyCoursesState extends State<MyCourses>
                                   ),
                                 );
                               });
-                            },
+                            }, onCardPressed: (){
+                            courseNotifier.currentCourse = courseNotifier.courseList[index];
+                            Navigator.pushNamed(context, PageRoutes.courseInfo);
+                          },
                           );
                         }),
                   ));
+
       case 1:
         return Expanded(
             child: displayOngoingList.isEmpty
@@ -256,7 +264,10 @@ class _MyCoursesState extends State<MyCourses>
                             ),
                           );
                         });
-                      },
+                      }, onCardPressed: (){
+                      courseNotifier.currentCourse = courseNotifier.courseList[index];
+                      Navigator.pushNamed(context, PageRoutes.courseInfo);
+                    },
                     );
                   }),
             ));
