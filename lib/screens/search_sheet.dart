@@ -135,6 +135,31 @@ class _SearchSheetState extends State<SearchSheet>
                     const SizedBox(
                       height: 8.0,
                     ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 25.0),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: const [
+                              CatPill(categoryName: 'Data Science', categoryColour: Color(0xffd5f1d3),categoryIcon:'assets/images/analysis.png'),
+                              CatPill(categoryName: 'Software Engineering', categoryColour: Color(0xffffd0ef),categoryIcon:'assets/images/software.png'),
+
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            children: const [
+                              CatPill(categoryName: 'DevOps', categoryColour: Color(0xffffeeca),categoryIcon:'assets/images/devops.png'),
+                              CatPill(categoryName: 'Security', categoryColour: Color(0xfffcfcc3),categoryIcon:'assets/images/security.png'),
+                              CatPill(categoryName: 'Frontend', categoryColour: Color(0xfff4e1fe),categoryIcon:'assets/images/ui.png'),
+
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
                     const SizedBox(
                       height: 20.0,
                     ),
@@ -199,6 +224,38 @@ class _SearchSheetState extends State<SearchSheet>
               ),
             );
           }),
+    );
+  }
+}
+
+class CatPill extends StatelessWidget {
+  final String categoryName;
+  final Color categoryColour;
+  final String categoryIcon;
+  const CatPill({
+    Key? key, required this.categoryName, required this.categoryColour, required this.categoryIcon,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 5.0),
+      child: Container(
+        padding: const EdgeInsets.all(15.0),
+        decoration:  BoxDecoration(
+            color: categoryColour,
+            borderRadius: const BorderRadius.all(Radius.circular(15.0))),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children:  [
+              Padding(
+              padding: const EdgeInsets.fromLTRB(0.0, 0.0, 8.0, 4.0),
+              child: Image.asset(categoryIcon, width: 24, height: 20,)
+            ),
+            Text(categoryName, style: const TextStyle(fontSize: 16),),
+          ],
+        ),
+      ),
     );
   }
 }
