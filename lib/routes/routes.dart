@@ -1,4 +1,5 @@
 import 'package:course_select/screens/course_info_page.dart';
+import 'package:course_select/screens/edit_user_profile_page.dart';
 import 'package:course_select/screens/search_sheet.dart';
 import 'package:flutter/cupertino.dart';
 import '../screens/auth_pages/forgot_password_page.dart';
@@ -21,6 +22,7 @@ class PageRoutes{
   static const String searchSheet = 'search_sheet';
   static const String filterSheet = 'filter_sheet';
   static const String courses = 'courses_page';
+  static const String edit = 'edit_profile_page';
 
   ///Builds screen widgets and maps them to class attributes
   Map<String, WidgetBuilder> routes() {
@@ -33,7 +35,8 @@ class PageRoutes{
       forgotPassword: (context) => const ForgotPasswordPage(),
       searchSheet: (context) => const SearchSheet(filter: '',),
       filterSheet: (context) => const FilterSheet(),
-      courses: (context) => const MyCourses()
+      courses: (context) => const MyCourses(),
+      edit: (context) => const EditUserProfilePage(),
     };
   }
 

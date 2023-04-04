@@ -15,6 +15,7 @@ import '../models/saved_course_data_model.dart';
 import '../routes/routes.dart';
 import '../shared_widgets/active_course_tile.dart';
 import '../shared_widgets/category_title.dart';
+import '../shared_widgets/completed_course_tile.dart';
 import '../shared_widgets/enrolled_course_card.dart';
 import '../shared_widgets/filter_button.dart';
 import '../shared_widgets/mini_course_card.dart';
@@ -258,9 +259,7 @@ class _MyCoursesState extends State<MyCourses>
                         scrollDirection: Axis.vertical,
                         itemCount: displayOngoingList.length,
                         itemBuilder: (context, index) {
-                          return ActiveCourseTile(
-                            valueNotifier:
-                                _setValueNotifier(displayOngoingList[index]),
+                          return CompletedCourseTile(
                             courseName: displayOngoingList[index].courseName,
                             courseImage: displayOngoingList[index].courseImage,
                             remainingLessons:

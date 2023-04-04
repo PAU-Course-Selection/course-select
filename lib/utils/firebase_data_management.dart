@@ -1,5 +1,7 @@
 import 'package:course_select/controllers/course_notifier.dart';
+import 'package:course_select/controllers/lesson_notifier.dart';
 import 'package:course_select/models/course_data_model.dart';
+import 'package:course_select/models/lesson_data_model.dart';
 import 'package:course_select/models/user_data_model.dart' as student;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -210,6 +212,27 @@ class DatabaseManager {
     }
   }
 
+  Future<List<Lesson>> getLessons(List userCourses, LessonNotifier lessonNotifier) async {
+    final courseCollection = FirebaseFirestore.instance.collection('Courses');
+    //final snapshots = [];
+    List<Lesson> _lessons = [];
+
+    final coursesQuery = courseCollection.where('courseId', whereIn: userCourses);
+    final coursesSnapshot = await coursesQuery.get();
+
+    for (final courseDoc in coursesSnapshot.docs) {
+      final courseLessonsRef = courseDoc.reference.collection('Lessons');
+      final snapshot = await courseLessonsRef.get();
+
+      for (var document in snapshot.docs) {
+        //final data = document as Map<String, dynamic>;
+        Lesson lesson = Lesson.fromMap(document.data());
+        //print(lesson.lessonName);
+        _lessons.add(lesson);
+      }
+      lessonNotifier.lessonsList = _lessons;
+    }
+    return _lessons;
+    // print(lessonNotifier.lessonsList);
+  }
 }
-
-

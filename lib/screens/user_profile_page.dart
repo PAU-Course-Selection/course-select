@@ -121,11 +121,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.black,
         elevation: 0,
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 15.0),
-            child: Icon(Icons.edit),
-          )
+        actions:  [
+          IconButton(onPressed: (){
+            Navigator.pushNamed(context, PageRoutes.edit);
+
+          }, icon: const Icon(Icons.edit))
         ],
       ),
       body: FutureBuilder(

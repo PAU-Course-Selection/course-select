@@ -1,5 +1,6 @@
 import 'package:course_select/controllers/course_notifier.dart';
 import 'package:course_select/controllers/home_page_notifier.dart';
+import 'package:course_select/controllers/lesson_notifier.dart';
 import 'package:course_select/controllers/user_notifier.dart';
 import 'package:course_select/models/saved_course_data_model.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -40,6 +41,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
             create: (context) => SavedCoursesNotifier()
+        ),
+        ChangeNotifierProvider(
+            create: (context) => LessonNotifier()
         ),
       ],
       child: ScreenUtilInit(
