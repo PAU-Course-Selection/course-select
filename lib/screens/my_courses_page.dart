@@ -383,61 +383,31 @@ class _MyCoursesState extends State<MyCourses>
                     const SizedBox(
                       height: 20.0,
                     ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: SizedBox(
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 25.0, right: 20),
-                              child: TextField(
-                                onChanged: (value) {
-                                  updateList(value);
-                                },
-                                decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8.0),
-                                    ),
-                                    hintText: 'eg. Introduction to HTML',
-                                    focusedBorder: OutlineInputBorder(
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(8.0)),
-                                        borderSide: BorderSide(
-                                            width: 1, color: kPrimaryColour)),
-                                    prefixIcon: const Icon(
-                                      Icons.search,
-                                      color: Colors.grey,
-                                    ),
-                                    focusColor: kPrimaryColour),
+                    SizedBox(
+                      child: Padding(
+                        padding:
+                            const EdgeInsets.only(left: 25.0, right: 20),
+                        child: TextField(
+                          onChanged: (value) {
+                            updateList(value);
+                          },
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0),
                               ),
-                            ),
-                          ),
+                              hintText: 'eg. Introduction to HTML',
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(8.0)),
+                                  borderSide: BorderSide(
+                                      width: 1, color: kPrimaryColour)),
+                              prefixIcon: const Icon(
+                                Icons.search,
+                                color: Colors.grey,
+                              ),
+                              focusColor: kPrimaryColour),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 25.0),
-                          child: FilterButton(
-                            isFilterVisible: homePageNotifier.isFilterVisible,
-                            onPressed: () {
-                              homePageNotifier.isFilterVisible =
-                                  !homePageNotifier.isFilterVisible;
-
-                              showCupertinoModalBottomSheet(
-                                duration: const Duration(milliseconds: 100),
-                                topRadius: const Radius.circular(20),
-                                barrierColor: Colors.black54,
-                                elevation: 8,
-                                context: context,
-                                builder: (context) => SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.7,
-                                    child:
-                                        const Material(child: FilterSheet())),
-                              ).whenComplete(() =>
-                                  homePageNotifier.isFilterVisible = false);
-                            },
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                     const SizedBox(
                       height: 15.0,

@@ -1,4 +1,5 @@
 import 'package:course_select/screens/search_sheet.dart';
+import 'package:course_select/shared_widgets/category_pill.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -46,7 +47,7 @@ class _CoursesFilterState extends State<CoursesFilter> {
     List<Widget> cats = [
       Padding(
         padding: const EdgeInsets.only(right: 5.0),
-        child: CategoryButton(
+        child: CategoryPill(
           bgColour: homePageNotifier.tabIndex ==0? kSelected:Colors.white,
           iconBgColour: kPrimaryColour,
           icon: Icons.library_books,
@@ -66,7 +67,7 @@ class _CoursesFilterState extends State<CoursesFilter> {
       ),
       Padding(
         padding: const EdgeInsets.only(right: 5.0),
-        child: CategoryButton(
+        child: CategoryPill(
           bgColour: homePageNotifier.tabIndex ==1? kSelected:Colors.white,
           iconBgColour: kTeal,
           icon: Icons.person_add_alt_1_rounded,
@@ -86,7 +87,7 @@ class _CoursesFilterState extends State<CoursesFilter> {
       ),
       Padding(
         padding: const EdgeInsets.only(right: 5.0),
-        child: CategoryButton(
+        child: CategoryPill(
           bgColour: homePageNotifier.tabIndex ==2? kSelected: Colors.white,
           iconBgColour: Colors.blueGrey,
           icon: Icons.class_rounded,
@@ -108,7 +109,7 @@ class _CoursesFilterState extends State<CoursesFilter> {
       ),
       Padding(
         padding: const EdgeInsets.only(right: 5.0),
-        child: CategoryButton(
+        child: CategoryPill(
           bgColour: homePageNotifier.tabIndex == 3? kSelected: Colors.white,
           iconBgColour: Colors.blueAccent,
           icon: Icons.check_circle_rounded,
