@@ -250,7 +250,7 @@ class CatPill extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children:  [
               Padding(
-              padding: const EdgeInsets.fromLTRB(0.0, 0.0, 8.0, 4.0),
+              padding: const EdgeInsets.only(right: 5),
               child: Image.asset(categoryIcon, width: 24, height: 20,)
             ),
             Text(categoryName, style: const TextStyle(fontSize: 16),overflow: TextOverflow.ellipsis,),

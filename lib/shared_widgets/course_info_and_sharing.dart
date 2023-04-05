@@ -20,79 +20,78 @@ class _MiniCourseInfoAndShareState extends State<MiniCourseInfoAndShare> {
     super.initState();
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(
-            4.0,
-            4.0,
-            4.0,
-            4.0,
-          ),
-          child: Container(
-            padding: const EdgeInsets.all(16.0),
-            decoration: BoxDecoration(
-                boxShadow: kSomeShadow,
-                color: kLightGreen,
-                borderRadius: const BorderRadius.all(Radius.circular(32.0))),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: const [
-                Padding(
-                  padding: EdgeInsets.fromLTRB(0.0, 0.0, 8.0, 4.0),
-                  child: Icon(Icons.book),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 25.0),
+      child: SizedBox(
+        width: double.infinity,
+        child: Row(
+          children: [
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.all(16.0),
+                decoration:  BoxDecoration(
+                    color: Color(0xffffeeca),
+                    borderRadius:
+                        const BorderRadius.all(Radius.circular(25.0))),
+                child: Center(
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5),
+                        child: Image.asset('assets/icons/hourglass.png', width: 24, height: 20,)
+                      ),
+                      const Text("22 Lessons", style: TextStyle(fontWeight: FontWeight.bold)),
+                    ],
+                  ),
                 ),
-                Text("22 Lessons"),
-              ],
-            ),
-          ),
-        ),
-        Container(
-          padding: const EdgeInsets.all(16.0),
-          decoration: BoxDecoration(
-            boxShadow: kSomeShadow,
-            color: kLightGreen,
-            borderRadius: const BorderRadius.all(
-              Radius.circular(32.0),
-            ),
-          ),
-          child: Row(
-            children: [
-              const Padding(
-                padding: EdgeInsets.fromLTRB(0.0, 0.0, 8.0, 4.0),
-                child: Icon(Icons.timelapse),
               ),
-              Text(_hoursPerWeek()),
-            ],
-          ),
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.all(16.0),
+                decoration:  const BoxDecoration(
+                  color: Color(0xffd5f1d3),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(25.0),
+                  ),
+                ),
+                child: Center(
+                  child: Row(
+                    children: [
+                       Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: Image.asset('assets/icons/lesson.png', width: 24, height: 20,)
+                      ),
+                      Text(_hoursPerWeek(), style: const TextStyle(fontWeight: FontWeight.bold),),
+                    ],
+                  ),
+                ),
+              ),
+            ),const SizedBox(
+              width: 10,
+            ),
+            FloatingActionButton(
+              backgroundColor: Color(0xfff4e1fe),
+              foregroundColor: kTeal,
+              elevation: 0,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              onPressed: () => Share.share(
+                  "Check out the ${_courseNotifier.currentCourse.courseName} course in the Study Sprint app."),
+              child: const Icon(Icons.share),
+            ),
+          ],
         ),
-        ElevatedButton(
-          onPressed: () =>
-              Share.share(
-                  "Check out the ${_courseNotifier.currentCourse
-                      .courseName} course in the Study Sprint app."),
-          child: const Icon(Icons.share),
-          style: ButtonStyle(
-              padding: const MaterialStatePropertyAll<EdgeInsetsGeometry>(
-                  EdgeInsets.all(16.0)),
-              shape: const MaterialStatePropertyAll<OutlinedBorder>(
-                  CircleBorder()),
-              backgroundColor: MaterialStatePropertyAll<Color>(kPrimaryColour),
-              foregroundColor:
-              const MaterialStatePropertyAll<Color>(Colors.black),
-              elevation: MaterialStateProperty.all(8.0)),
-        ),
-      ],
+      ),
     );
   }
 
   String _hoursPerWeek() {
     String hpw = _courseNotifier.currentCourse.hoursPerWeek.toString();
-
     return "$hpw Weeks ";
   }
 }

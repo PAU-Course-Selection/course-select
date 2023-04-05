@@ -1,3 +1,4 @@
+import 'package:course_select/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -12,19 +13,15 @@ class _ClassmatesState extends State<Classmates> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        16.0,
-        8.0,
-        16.0,
-        4.0,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
       child: Container(
         height: 100.h,
         width: double.infinity,
         padding: const EdgeInsets.all(4.0),
         decoration: BoxDecoration(
-          color: const Color(0xffE1F0EC),
-          borderRadius: BorderRadius.circular(8.0),
+          color: kGreyBackground,
+          boxShadow: kSomeShadow,
+          borderRadius: BorderRadius.circular(25.0),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
