@@ -6,6 +6,7 @@ import 'package:course_select/shared_widgets/classmates.dart';
 import 'package:course_select/shared_widgets/course_info_and_sharing.dart';
 import 'package:course_select/shared_widgets/video_player.dart';
 import 'package:course_select/utils/firebase_data_management.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -28,13 +29,16 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
   final DatabaseManager _db = DatabaseManager();
   Image img = Image.asset('assets/images/c2.jpg');
   String videoUrl = '';
+  final ScrollController _controller = ScrollController(initialScrollOffset: 60.w);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Course Info'),
-        backgroundColor: kPrimaryColour,
+        title: Text('Course Info', style: kHeadlineMedium,),
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.black,
+        elevation: 0,
       ),
       body: _courseInfo(),
     );
@@ -52,15 +56,19 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
   Widget _courseInfo() {
 
     Column infoPage = Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         //COURSE NAME
-        Padding(
-          padding: const EdgeInsets.all(4.0),
-          child: Text(
-            _courseNotifier.currentCourse.courseName,
-            style: const TextStyle(fontSize: 24.00, fontFamily: "Roboto"),
-            textAlign: TextAlign.left,
+        SizedBox(
+          width: 400,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 25.0, top: 15),
+            child: Text(
+              _courseNotifier.currentCourse.courseName,
+              style:  TextStyle(fontSize: 38.00, fontFamily: 'Roboto', color: Color(0xff204548),
+                  fontWeight: FontWeight.bold),
+              textAlign: TextAlign.left,
+            ),
           ),
         ),
 
@@ -71,6 +79,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
             height: 300.h,
             width: double.infinity,
             child: ListView.builder(
+              controller: _controller,
               scrollDirection: Axis.horizontal,
               itemCount: _courseNotifier.currentCourse.media.length,
               itemBuilder: (context, index) {

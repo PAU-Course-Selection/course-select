@@ -115,3 +115,6 @@ flutter:
     - family: OpenSans
       fonts:
         - asset: assets/fonts/OpenSans.ttf
+    - family: Nexa
+      fonts:
+        - asset: assets/fonts/Nexa-Heavy.ttf

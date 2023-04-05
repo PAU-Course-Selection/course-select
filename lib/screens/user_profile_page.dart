@@ -313,6 +313,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                           leading: const Icon(Icons.dark_mode),
                                           title: const Text('Enable dark mode'),
                                         ),
+                                        SettingsTile.navigation(
+                                          leading: const Icon(Icons.settings_suggest_rounded),
+                                          title: const Text('Student Preferences'),
+                                        ),
                                       ],
                                     ),
                                     SettingsSection(

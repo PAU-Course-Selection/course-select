@@ -2,6 +2,7 @@ import 'package:course_select/controllers/home_page_notifier.dart';
 import 'package:course_select/constants/constants.dart';
 import 'package:course_select/models/saved_course_data_model.dart';
 import 'package:course_select/shared_widgets/courses_filter.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -141,8 +142,8 @@ class _SearchSheetState extends State<SearchSheet>
                         children: [
                           Row(
                             children: const [
-                              CatPill(categoryName: 'Data Science', categoryColour: Color(0xffd5f1d3),categoryIcon:'assets/images/analysis.png'),
-                              CatPill(categoryName: 'Software Engineering', categoryColour: Color(0xffffd0ef),categoryIcon:'assets/images/software.png'),
+                              CatPill(categoryName: 'Data Science', categoryColour: Color(0xffd5f1d3),categoryIcon:'assets/icons/analysis.png'),
+                              Expanded(child: CatPill(categoryName: 'Software Engineering', categoryColour: Color(0xffffd0ef),categoryIcon:'assets/icons/software.png')),
 
                             ],
                           ),
@@ -151,9 +152,9 @@ class _SearchSheetState extends State<SearchSheet>
                           ),
                           Row(
                             children: const [
-                              CatPill(categoryName: 'DevOps', categoryColour: Color(0xffffeeca),categoryIcon:'assets/images/devops.png'),
-                              CatPill(categoryName: 'Security', categoryColour: Color(0xfffcfcc3),categoryIcon:'assets/images/security.png'),
-                              CatPill(categoryName: 'Frontend', categoryColour: Color(0xfff4e1fe),categoryIcon:'assets/images/ui.png'),
+                              CatPill(categoryName: 'DevOps', categoryColour: Color(0xffffeeca),categoryIcon:'assets/icons/devops.png'),
+                              CatPill(categoryName: 'Security', categoryColour: Color(0xfffcfcc3),categoryIcon:'assets/icons/security.png'),
+                              Expanded(child: CatPill(categoryName: 'Frontend', categoryColour: Color(0xfff4e1fe),categoryIcon:'assets/icons/ui.png')),
 
                             ],
                           ),
@@ -252,7 +253,7 @@ class CatPill extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(0.0, 0.0, 8.0, 4.0),
               child: Image.asset(categoryIcon, width: 24, height: 20,)
             ),
-            Text(categoryName, style: const TextStyle(fontSize: 16),),
+            Text(categoryName, style: const TextStyle(fontSize: 16),overflow: TextOverflow.ellipsis,),
           ],
         ),
       ),
