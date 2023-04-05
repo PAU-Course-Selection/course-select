@@ -96,7 +96,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
       DocumentReference docRef =
           FirebaseFirestore.instance.collection("Users").doc(docId);
       await docRef.update({"avatar": imageUrl});
-
       userNotifier.avatar = imageUrl;
     }
   }
@@ -122,11 +121,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.black,
         elevation: 0,
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 15.0),
-            child: Icon(Icons.edit),
-          )
+        actions:  [
+          IconButton(onPressed: (){
+            Navigator.pushNamed(context, PageRoutes.edit);
+
+          }, icon: const Icon(Icons.edit))
         ],
       ),
       body: FutureBuilder(
@@ -294,7 +293,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
                             children: [
                               Expanded(
                                 child: SettingsList(
-                                  physics: const NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,
                                   platform: DevicePlatform.device,
                                   lightTheme: const SettingsThemeData(
@@ -313,6 +311,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                           initialValue: false,
                                           leading: const Icon(Icons.dark_mode),
                                           title: const Text('Enable dark mode'),
+                                        ),
+                                        SettingsTile.navigation(
+                                          leading: const Icon(Icons.settings_suggest_rounded),
+                                          title: const Text('Student Preferences'),
                                         ),
                                       ],
                                     ),

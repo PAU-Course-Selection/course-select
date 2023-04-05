@@ -59,6 +59,7 @@ dependencies:
   settings_ui: ^2.0.2
   flutter_slidable: ^2.0.0
   shimmer: ^2.0.0
+  intl: ^0.17.0
 
 
 dev_dependencies:
@@ -114,3 +115,6 @@ flutter:
     - family: OpenSans
       fonts:
         - asset: assets/fonts/OpenSans.ttf
+    - family: Nexa
+      fonts:
+        - asset: assets/fonts/Nexa-Heavy.ttf

@@ -5,30 +5,43 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:course_select/models/user_data_model.dart' as student;
 
+import '../models/course_data_model.dart';
 import '../utils/auth.dart';
+
 ///Creates a controller class with user attributes which notify all widgets of changes
 class UserNotifier extends ChangeNotifier {
   final User? user = Auth().currentUser;
   final DatabaseManager db = DatabaseManager();
 
   var _userName = '';
-  var _avatar = 'https://firebasestorage.googleapis.com/v0/b/agileproject-76bf9.appspot.com/o/User%20Data%2Fuser.png?alt=media&token=0b4c347c-e8d9-456c-b76a-b02f2e4080a0';
+  var _avatar =
+      'https://firebasestorage.googleapis.com/v0/b/agileproject-76bf9.appspot.com/o/User%20Data%2Fuser.png?alt=media&token=0b4c347c-e8d9-456c-b76a-b02f2e4080a0';
   var _email = 'example@gmail.com';
   var _joinDate = '00-00-0000';
 
   get email => _email;
+
   get avatar => _avatar;
+
   ///A getter for the authenticated user's name
   get userName => _userName;
 
   List<student.UserModel> _usersList = [];
-  student.UserModel? currentCourse;
+  List _userCourseIds = [];
+
+  List get userCourseIds => _userCourseIds;
+
+  set userCourseIds(List value) {
+    _userCourseIds = value;
+    notifyListeners();
+  }
 
   ///A getter for the list of users
   UnmodifiableListView<student.UserModel> get usersList =>
       UnmodifiableListView(_usersList);
 
   set email(value) => _email = value;
+
   ///Sets the user's name to be updated and used across different screens
   setUserName(String name) {
     _userName;
@@ -52,21 +65,22 @@ class UserNotifier extends ChangeNotifier {
   }
 
   void updateUserName() {
-    for(var student in usersList){
-      if (student.email == user?.email){
+    for (var student in usersList) {
+      if (student.email == user?.email) {
         userName = student.displayName ?? '';
       }
     }
     notifyListeners();
   }
-  void updateAvatar(){
+
+  void updateAvatar() {
     try {
       for (var student in usersList) {
         if (student.email == user?.email) {
-           avatar = student.avatar?? '';
+          avatar = student.avatar ?? '';
         }
       }
-    }on ArgumentError catch(e) {
+    } on ArgumentError catch (e) {
       print(e);
     }
     notifyListeners();
@@ -85,15 +99,47 @@ class UserNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateEmail(){
+  void updateEmail() {
     email = user?.email ?? 'User email';
     notifyListeners();
   }
-
 
   get joinDate => _joinDate;
 
   set joinDate(value) {
     _joinDate = value;
+    notifyListeners();
+  }
+
+  bool match = false;
+
+  List getCourseIds() {
+    List ids = [];
+    for (int i = 0; i < usersList.length; i++) {
+      if (usersList[i].email == user?.email) {
+        match = true;
+        // print(match);
+        // print(usersList[i].email);
+        ids = usersList[i].courses!;
+      }
+    }
+    if (match) {
+      print('user found!');
+    } else {
+      print('user not found');
+    }
+    return ids;
+  }
+
+  List<Course> filterCoursesByIds(List<Course> courses) {
+    List ids = getCourseIds();
+    List<Course> filteredCourses = [];
+    for (var course in courses) {
+      //print(course.courseId);
+      if (ids.contains(course.courseId)) {
+        filteredCourses.add(course);
+      }
+    }
+    return filteredCourses;
   }
 }

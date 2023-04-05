@@ -1,13 +1,58 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:course_select/constants/constants.dart';
+import 'package:course_select/controllers/lesson_notifier.dart';
+import 'package:course_select/utils/firebase_data_management.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-class Timetable extends StatelessWidget {
+import '../controllers/user_notifier.dart';
+import '../models/lesson_data_model.dart';
+
+class Timetable extends StatefulWidget {
   const Timetable({Key? key}) : super(key: key);
 
   @override
+  State<Timetable> createState() => _TimetableState();
+}
+
+class _TimetableState extends State<Timetable> {
+  final DatabaseManager _db = DatabaseManager();
+  late final LessonNotifier lessonNotifier;
+  late final UserNotifier userNotifier;
+  late List<Lesson> lessons= [];
+
+  @override
+  void initState() {
+    lessonNotifier = Provider.of<LessonNotifier>(context, listen: false);
+    userNotifier = Provider.of<UserNotifier>(context, listen: false);
+
+    getLessons();
+    super.initState();
+  }
+  getLessons() async {
+    await _db.getLessons(userNotifier.getCourseIds(),lessonNotifier)
+        .then((value) {
+          setState(() {
+            lessons= value;
+          });
+    });
+  }
+
+
+  formatDate(Timestamp timestamp){
+    var time = '${timestamp.toDate().hour.toString()}:${timestamp.toDate().minute.toString()}';
+    return time;
+  }
+
+
+
+
+  @override
   Widget build(BuildContext context) {
+    // print(lessons.first.startTime.toString());
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -43,71 +88,17 @@ class Timetable extends StatelessWidget {
                     ],
                   ),
                 ),
-                Padding(
-                  padding:  EdgeInsets.only(
-                    bottom: 10.0.h,
-                  ),
-                  child: Container(
-                    height: 160.h,
-                    padding: const EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        color: const Color(0xffe2e4e3)),
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          top: 5,
-                          child: CircleAvatar(
-                              radius: 20,
-                              backgroundColor: Colors.white,
-                              child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(75.0),
-                                  child: ImageIcon(
-                                    const AssetImage(
-                                        'assets/images/teacher.png'),
-                                    color: kTeal,
-                                  ))),
-                        ),
-                        Positioned(
-                            left: 60,
-                            top: 10,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
-                                Text(
-                                  'Design Patterns',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  '8:00 - 8:45',
-                                  style: TextStyle(color: Colors.grey),
-                                )
-                              ],
-                            )),
-                        Positioned(
-                            top: 60,
-                            child: ElevatedButton(
-                              onPressed: () {},
-                              child: const Text('Join Now'),
-                              style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                    const Color(0xff408E91),
-                                  ),
-                                  elevation: MaterialStateProperty.all(0),
-                                  shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                          borderRadius:
-                                          BorderRadius.circular(10.0)))),
-                            )),
-                        Positioned(
-                            top: 0,
-                            right: 10,
-                            width: 110,
-                            child: Image.asset('assets/images/class6.png')),
-                      ],
-                    ),
-                    width: double.infinity,
+                SizedBox(
+                  height: 160.h,
+                  width: MediaQuery.of(context).size.width,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: lessonNotifier.lessonsList.length,
+                      itemBuilder: (context,index){
+                        return LessonCard(title: lessonNotifier.lessonsList[index].lessonName,
+                          startTime: DateFormat.Hm().format(lessonNotifier.lessonsList[index].startTime!.toDate()),
+                          endTime: DateFormat.Hm().format(lessonNotifier.lessonsList[index].endTime!.toDate()));
+                      }
                   ),
                 ),
                 Expanded(
@@ -162,6 +153,92 @@ class Timetable extends StatelessWidget {
     meetings.add(Meeting('Software Testing', startTime, endTime,
         const Color(0xFF408E91), false));
     return meetings;
+  }
+}
+
+class LessonCard extends StatelessWidget {
+  final String? title;
+  final String startTime;
+  final String endTime;
+  const LessonCard({
+    Key? key, required this.title, required this.startTime, required this.endTime,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding:  EdgeInsets.only(
+        bottom: 10.0.h, right: 10.h
+      ),
+      child: Container(
+        height: 160.h,
+        padding: const EdgeInsets.all(15),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            color: const Color(0xffe2e4e3)),
+        child: Stack(
+          children: [
+            Positioned(
+              top: 5,
+              child: CircleAvatar(
+                  radius: 20,
+                  backgroundColor: Colors.white,
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(75.0),
+                      child: ImageIcon(
+                        const AssetImage(
+                            'assets/images/teacher.png'),
+                        color: kTeal,
+                      ))),
+            ),
+            Positioned(
+                left: 60,
+                top: 10,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children:  [
+                    Text(
+                      title!,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    SizedBox(
+                      width: 100.w,
+                      child: Text(
+                        '$startTime - $endTime',
+                        style: const TextStyle(color: Colors.grey),
+                      ),
+                    )
+                  ],
+                )),
+            Positioned(
+                top: 60,
+                child: ElevatedButton(
+                  onPressed: () {},
+                  child: const Text('Join Now'),
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(
+                        const Color(0xff408E91),
+                      ),
+                      elevation: MaterialStateProperty.all(0),
+                      shape: MaterialStateProperty.all<
+                          RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                              borderRadius:
+                              BorderRadius.circular(10.0)))),
+                )),
+            Positioned(
+                top: 0,
+                right: 10,
+                width: 110,
+                child: Image.asset('assets/images/class6.png')),
+          ],
+        ),
+        width: MediaQuery.of(context).size.width * 0.80,
+      ),
+    );
   }
 }
 

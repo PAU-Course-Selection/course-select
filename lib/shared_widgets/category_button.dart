@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CategoryButton extends StatefulWidget {
@@ -44,19 +45,13 @@ class _CategoryButtonState extends State<CategoryButton> {
         width: screenWidth * 0.42,
         child: Row(
           children:  [
-            Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                    color: widget.iconBgColour,
-                    borderRadius: BorderRadius.circular(50)
-                ),
+            CircleAvatar(
+                backgroundColor: widget.iconBgColour,
+                radius: 20,
                 child: Icon(widget.icon, color: widget.iconColour,)),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(left: 10.h),
-                child: Text(widget.text, style: const TextStyle( fontSize: 16, fontFamily: 'Roboto')),
-              ),
+            Padding(
+              padding: EdgeInsets.only(left: 10.w,),
+              child: Text(widget.text, style: const TextStyle( fontSize: 16, fontFamily: 'Roboto')),
             )
           ],
         ),
