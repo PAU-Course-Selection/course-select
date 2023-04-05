@@ -35,7 +35,76 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
       ScrollController(initialScrollOffset: 60.w);
 
   @override
+  void initState() {
+    _courseNotifier = Provider.of<CourseNotifier>(context, listen: false);
+    _homePageNotifier = Provider.of<HomePageNotifier>(context, listen: false);
+    _userNotifier = Provider.of<UserNotifier>(context, listen: false);
+    videoUrl = _courseNotifier.currentCourse.media[0];
+    print(_userNotifier.getCourseIds());
+    print(_courseNotifier.currentCourse.courseId);
+    super.initState();
+  }
+
+  Widget _conditionalButtomButton(){
+    if(_userNotifier.getCourseIds().contains(_courseNotifier.currentCourse.courseId)){
+      return GradientButton(
+        onPressed: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              elevation: 1,
+              behavior: SnackBarBehavior.fixed,
+              backgroundColor: kKindaGreen,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5)),
+              content: const Center(
+                  child: Text(
+                    "Yayy! Course Completed!",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 15.0,
+                        fontFamily: "Robots",
+                        fontWeight: FontWeight.bold),
+                  )),
+              duration: const Duration(seconds: 1),
+            ),
+          );
+        },
+        buttonText: 'Complete Course',
+      );
+    }else{
+      return GradientButton(
+        onPressed: () {
+          _db.updateUserCourses(_userNotifier, _courseNotifier);
+          _homePageNotifier.isStateChanged = true;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              elevation: 1,
+              behavior: SnackBarBehavior.fixed,
+              backgroundColor: kKindaGreen,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5)),
+              content: const Center(
+                  child: Text(
+                    "Successfully Enrolled",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 15.0,
+                        fontFamily: "Robots",
+                        fontWeight: FontWeight.bold),
+                  )),
+              duration: const Duration(seconds: 1),
+            ),
+          );
+        },
+        buttonText: 'Enroll',
+      );
+    }
+
+  }
+
+  @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -50,45 +119,13 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
       floatingActionButton: Container(
         height: 50,
         margin: const EdgeInsets.only(left: 25, right: 25),
-        child: GradientButton(
-          onPressed: () {
-            _db.updateUserCourses(_userNotifier, _courseNotifier);
-            _homePageNotifier.isStateChanged = true;
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                elevation: 1,
-                behavior: SnackBarBehavior.fixed,
-                backgroundColor: kKindaGreen,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5)),
-                content: const Center(
-                    child: Text(
-                      "Successfully Enrolled",
-                      style: TextStyle(
-                          color: Colors.black45,
-                          fontSize: 15.0,
-                          fontFamily: "Robots",
-                          fontWeight: FontWeight.bold),
-                    )),
-                duration: const Duration(seconds: 1),
-              ),
-            );
-          },
-          buttonText: 'Enroll',
-        ),
+        child: _conditionalButtomButton(),
       ),
       body: _courseInfo(),
     );
   }
 
-  @override
-  void initState() {
-    _courseNotifier = Provider.of<CourseNotifier>(context, listen: false);
-    _homePageNotifier = Provider.of<HomePageNotifier>(context, listen: false);
-    _userNotifier = Provider.of<UserNotifier>(context, listen: false);
-    videoUrl = _courseNotifier.currentCourse.media[0];
-    super.initState();
-  }
+
 
   Widget _courseInfo() {
     return SingleChildScrollView(
@@ -136,31 +173,32 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10),
             child: Container(
-              padding: const EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-                  color: kGreyBackground,
-                  borderRadius: BorderRadius.circular(16.0)),
-              child: const ReadMoreText(
-                'Flutter is Google’s mobile UI open source framework to build high-quality native (super fast) interfaces for iOS and Android apps with the unified codebase.',
-                trimLines: 2,
-                colorClickableText: Colors.pink,
-                trimMode: TrimMode.Line,
-                trimCollapsedText: 'Show more',
-                trimExpandedText: '..Show less',
-                moreStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                lessStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-              )
-            ),
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                    color: kGreyBackground,
+                    borderRadius: BorderRadius.circular(16.0)),
+                child: const ReadMoreText(
+                  'Flutter is Google’s mobile UI open source framework to build high-quality native (super fast) interfaces for iOS and Android apps with the unified codebase.',
+                  trimLines: 2,
+                  colorClickableText: Colors.pink,
+                  trimMode: TrimMode.Line,
+                  trimCollapsedText: 'Show more',
+                  trimExpandedText: '..Show less',
+                  moreStyle:
+                      TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                  lessStyle:
+                      TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                )),
           ),
           //Classmates Heading
 
-           Padding(
-             padding: const EdgeInsets.only(left: 25.0),
-             child: Text(
+          Padding(
+            padding: const EdgeInsets.only(left: 25.0),
+            child: Text(
               "Classmates",
               style: kHeadlineMedium,
+            ),
           ),
-           ),
           //Classmates Box
           const Classmates()
         ],
