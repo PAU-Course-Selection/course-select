@@ -293,7 +293,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
                             children: [
                               Expanded(
                                 child: SettingsList(
-                                  physics: const NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,
                                   platform: DevicePlatform.device,
                                   lightTheme: const SettingsThemeData(

@@ -143,7 +143,7 @@ class _SearchSheetState extends State<SearchSheet>
                           Row(
                             children: const [
                               CatPill(categoryName: 'Data Science', categoryColour: Color(0xffd5f1d3),categoryIcon:'assets/icons/analysis.png'),
-                              Expanded(child: CatPill(categoryName: 'Software Engineering', categoryColour: Color(0xffffd0ef),categoryIcon:'assets/icons/software.png')),
+                              Flexible(child: CatPill(categoryName: 'Software Engineering', categoryColour: Color(0xffffd0ef),categoryIcon:'assets/icons/software.png')),
 
                             ],
                           ),
@@ -154,7 +154,7 @@ class _SearchSheetState extends State<SearchSheet>
                             children: const [
                               CatPill(categoryName: 'DevOps', categoryColour: Color(0xffffeeca),categoryIcon:'assets/icons/devops.png'),
                               CatPill(categoryName: 'Security', categoryColour: Color(0xfffcfcc3),categoryIcon:'assets/icons/security.png'),
-                              Expanded(child: CatPill(categoryName: 'Frontend', categoryColour: Color(0xfff4e1fe),categoryIcon:'assets/icons/ui.png')),
+                              Flexible(child: CatPill(categoryName: 'Frontend', categoryColour: Color(0xfff4e1fe),categoryIcon:'assets/icons/ui.png')),
 
                             ],
                           ),
