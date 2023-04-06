@@ -31,7 +31,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late final ValueNotifier<double> valueNotifier;
-  late final CourseNotifier courseNotifier;
+  late final CourseNotifier _courseNotifier;
   late final UserNotifier userNotifier;
   late Future futureData;
   final User? user = Auth().currentUser;
@@ -40,8 +40,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    courseNotifier = Provider.of<CourseNotifier>(context, listen: false);
+    _courseNotifier = Provider.of<CourseNotifier>(context, listen: false);
     userNotifier = Provider.of<UserNotifier>(context, listen: false);
+    _db.getTotalLessons(_courseNotifier);
     getModels();
     futureData = getModels();
 
@@ -53,7 +54,7 @@ class _HomePageState extends State<HomePage> {
     await _db.getUsers(userNotifier);
     userNotifier.updateUserName();
     userNotifier.updateAvatar();
-    return _db.getCourses(courseNotifier);
+    return _db.getCourses(_courseNotifier);
   }
 
   late List userCourseIds = [];
@@ -243,19 +244,21 @@ class _HomePageState extends State<HomePage> {
                                 width: double.infinity,
                                 child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
-                                    itemCount: courseNotifier.courseList.length,
+                                    itemCount: _courseNotifier.courseList.length,
                                     itemBuilder: (context, index) {
-                                      var courseName = courseNotifier
+                                      var courseName = _courseNotifier
                                           .courseList[index].courseName;
                                       return GestureDetector(
                                         onTap: (){
-                                        courseNotifier.currentCourse = courseNotifier.courseList[index];
+                                        _courseNotifier.currentCourse = _courseNotifier.courseList[index];
                                           Navigator.pushNamed(context, PageRoutes.courseInfo);
                                         },
                                         child: CourseCard(
                                           courseTitle: courseName.length > 30? courseName.substring(0,30) +'...': courseName,
-                                          courseImage: courseNotifier.courseList[index].media[1],
-                                          subjectArea: courseNotifier.courseList[index].subjectArea, hoursPerWeek: courseNotifier.courseList[index].duration,
+                                          courseImage: _courseNotifier.courseList[index].media[1],
+                                          subjectArea: _courseNotifier.courseList[index].subjectArea,
+                                          hoursPerWeek: _courseNotifier.courseList[index].duration,
+                                          numLessons: _courseNotifier.courseList[index].totalLessons,
                                         ),
                                       );
                                     }),

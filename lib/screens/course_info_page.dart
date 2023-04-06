@@ -3,8 +3,6 @@ import 'package:course_select/controllers/course_notifier.dart';
 import 'package:course_select/constants/constants.dart';
 import 'package:course_select/controllers/home_page_notifier.dart';
 import 'package:course_select/models/user_data_model.dart';
-import 'package:course_select/shared_widgets/classmates.dart';
-import 'package:course_select/shared_widgets/course_info_and_sharing.dart';
 import 'package:course_select/shared_widgets/gradient_button.dart';
 import 'package:course_select/shared_widgets/video_player.dart';
 import 'package:course_select/utils/firebase_data_management.dart';
@@ -13,6 +11,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../controllers/user_notifier.dart';
 
@@ -31,6 +30,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
   late HomePageNotifier _homePageNotifier;
   final DatabaseManager _db = DatabaseManager();
   late List<UserModel> classmates = [];
+  late int numLessons;
   Image img = Image.asset('assets/images/c2.jpg');
   String videoUrl = '';
   final ScrollController _controller =
@@ -39,9 +39,11 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
   @override
   void initState() {
     _courseNotifier = Provider.of<CourseNotifier>(context, listen: false);
+    numLessons = _courseNotifier.currentCourse.totalLessons;
     _homePageNotifier = Provider.of<HomePageNotifier>(context, listen: false);
     _userNotifier = Provider.of<UserNotifier>(context, listen: false);
     videoUrl = _courseNotifier.currentCourse.media[0];
+    getNumLessons();
     getClassmates();
     super.initState();
   }
@@ -52,6 +54,15 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
         .then((value) {
       setState(() {
         classmates = value;
+      });
+    });
+  }
+
+  getNumLessons() async {
+    await _db.getTotalLessons(_courseNotifier)
+        .then((value) {
+      setState(() {
+        numLessons = value;
       });
     });
   }
@@ -116,7 +127,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
 
   @override
   Widget build(BuildContext context) {
-    for(var user in classmates){
+    for (var user in classmates) {
       print(user.email);
     }
     return Scaffold(
@@ -181,7 +192,34 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
           ),
 
           //ROW WITH SHARE BUTTON
-          const MiniCourseInfoAndShare(),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 25.0),
+            child: SizedBox(
+              width: double.infinity,
+              child: Row(
+                children: [
+                   InfoPill(icon: 'assets/icons/hourglass.png',text: _hoursPerWeek(), bgColour: Color(0xffffeeca) ),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                   InfoPill(icon: 'assets/icons/lesson.png',text: '$numLessons Lessons', bgColour: Color(0xffd5f1d3) ),
+
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  FloatingActionButton(
+                    backgroundColor: const Color(0xfff4e1fe),
+                    foregroundColor: kTeal,
+                    elevation: 0,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    onPressed: () => Share.share(
+                        "Check out the ${_courseNotifier.currentCourse.courseName} course in the Study Sprint app."),
+                    child: const Icon(Icons.share),
+                  ),
+                ],
+              ),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10),
             child: Container(
@@ -217,43 +255,63 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
               child: Container(
                 height: 100.h,
                 width: double.infinity,
-                padding: const EdgeInsets.all(4.0),
+                padding: const EdgeInsets.all(10.0),
                 decoration: BoxDecoration(
                   color: kGreyBackground,
                   borderRadius: BorderRadius.circular(25.0),
                 ),
                 child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
+                    scrollDirection: Axis.horizontal,
                     itemCount: classmates.length,
                     itemBuilder: (context, index) {
                       return Padding(
                         padding: const EdgeInsets.only(right: 15.0),
-                        child: CircleAvatar(
-                            radius: 30,
-                            backgroundColor: Colors.white,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(75.0),
-                              child: CachedNetworkImage(
-                                height: 60.0,
-                                width: 60.0,
-                                fit: BoxFit.cover,
-                                imageUrl: classmates[index].avatar!,
-                                placeholder: (context, url) {
-                                  return const CircularProgressIndicator();
-                                },
-                                errorWidget: (context, url, error) =>
-                                const Icon(
-                                  Icons.person,
-                                  color: Colors.grey,
+                        child: Column(
+                          children: [
+                            CircleAvatar(
+                                radius: 30,
+                                backgroundColor: Colors.white,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(75.0),
+                                  child: CachedNetworkImage(
+                                    height: 60.0,
+                                    width: 60.0,
+                                    fit: BoxFit.cover,
+                                    imageUrl: classmates[index].avatar!,
+                                    placeholder: (context, url) {
+                                      return const CircularProgressIndicator();
+                                    },
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(
+                                      Icons.person,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                )),
+                            Expanded(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 2.0),
+                                child: Text(
+                                  classmates[index].displayName!,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w600),
                                 ),
                               ),
-                            )),
+                            )
+                          ],
+                        ),
                       );
                     }),
               ))
         ],
       ),
     );
+  }
+
+  String _hoursPerWeek() {
+    String hpw = _courseNotifier.currentCourse.hoursPerWeek.toString();
+    return "$hpw Weeks ";
   }
 
   Widget _photoVideoView(int index) {
@@ -308,5 +366,40 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
             child: CourseVideoPlayer(videoPath: videoUrl),
           ),
         ));
+  }
+}
+
+class InfoPill extends StatelessWidget {
+  final String icon;
+  final String text;
+  final Color bgColour;
+  const InfoPill({
+    Key? key, required this.icon, required this.text, required this.bgColour,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+            color: bgColour,
+            borderRadius:
+                const BorderRadius.all(Radius.circular(25.0))),
+        child: Row(
+          children: [
+            Padding(
+                padding: const EdgeInsets.only(right: 5),
+                child: Image.asset(
+                  icon,
+                  width: 24,
+                  height: 20,
+                )),
+             Text(text,
+                style: TextStyle(fontWeight: FontWeight.bold)),
+          ],
+        ),
+      ),
+    );
   }
 }

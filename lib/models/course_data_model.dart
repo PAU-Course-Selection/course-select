@@ -6,6 +6,7 @@ class Course{
   String courseName = '';
   int hoursPerWeek = 0;
   int duration = 0;
+  int totalLessons = 0;
   List prereqs = [];
   bool isSaved=false;
   List media = [];
@@ -23,6 +24,7 @@ class Course{
     courseName = data['courseName'];
     hoursPerWeek = data['hoursPerWeek'];
     duration = data['duration'];
+    totalLessons = data['totalLessons'];
     prereqs = data['prereqs'];
     isSaved = data['isSaved'];
     media = data['media'];

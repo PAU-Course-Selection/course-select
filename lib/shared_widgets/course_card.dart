@@ -9,10 +9,11 @@ class CourseCard extends StatefulWidget {
   final String courseImage;
   final String subjectArea;
   final int hoursPerWeek;
+  final int numLessons;
 
   const CourseCard({Key? key, required this.courseTitle,
     required this.courseImage, required this.subjectArea,
-    required this.hoursPerWeek}) : super(key: key);
+    required this.hoursPerWeek, required this.numLessons}) : super(key: key);
 
   @override
   State<CourseCard> createState() => _CourseCardState();
@@ -82,7 +83,7 @@ class _CourseCardState extends State<CourseCard> {
                                 const SizedBox(
                                   width: 5,
                                 ),
-                                const Text('20 lessons')
+                                 Text('${widget.numLessons} lessons')
                               ],),
                           ),
                         )

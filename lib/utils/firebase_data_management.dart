@@ -17,7 +17,6 @@ class DatabaseManager {
   late final SavedCoursesNotifier savedCourses;
   final User? user = Auth().currentUser;
 
-
   late Query<Map<String, dynamic>> favoritesQuery = FirebaseFirestore.instance
       .collection('Dummy')
       .where('dummyField', isEqualTo: 'dummyValue');
@@ -165,30 +164,34 @@ class DatabaseManager {
     if (myUser.docs.isNotEmpty) {
       var docId = myUser.docs.first.id;
 
-
       userRef = FirebaseFirestore.instance.collection('Users').doc(docId);
       final favsRef = userRef.collection('Favourites');
 
-      final snapshot = await favsRef
-          .where('courseName', isEqualTo: courseName)
-          .get();
+      final snapshot =
+          await favsRef.where('courseName', isEqualTo: courseName).get();
       if (snapshot.docs.isNotEmpty) {
         final documentId = snapshot.docs.first.id;
-        await favsRef.doc(documentId).delete().then((value) => print('deleted'));
+        await favsRef
+            .doc(documentId)
+            .delete()
+            .then((value) => print('deleted'));
         print('doc id: $documentId');
       } else {
         throw Exception('Document not found');
       }
       savedCourses.savedCourses.removeWhere(
-            (course) => course.courseName == courseNotifier.currentCourse.courseName,
+        (course) =>
+            course.courseName == courseNotifier.currentCourse.courseName,
       );
     }
   }
-  Future test()async{
+
+  Future test() async {
     return Future.delayed(const Duration(seconds: 1));
   }
 
-  Future<void> updateUserCourses(UserNotifier userNotifier, CourseNotifier courseNotifier) async {
+  Future<void> updateUserCourses(
+      UserNotifier userNotifier, CourseNotifier courseNotifier) async {
     List ids = [];
     try {
       var myUser = await FirebaseFirestore.instance
@@ -201,7 +204,7 @@ class DatabaseManager {
         ids = userNotifier.getCourseIds();
 
         DocumentReference docRef =
-        FirebaseFirestore.instance.collection("Users").doc(docId);
+            FirebaseFirestore.instance.collection("Users").doc(docId);
         ids.add(courseNotifier.currentCourse.courseId);
         await docRef.update({"courses": ids});
         print('total user courses: $ids');
@@ -212,12 +215,14 @@ class DatabaseManager {
     }
   }
 
-  Future<List<Lesson>> getLessons(List userCourses, LessonNotifier lessonNotifier) async {
+  Future<List<Lesson>> getLessons(
+      List userCourses, LessonNotifier lessonNotifier) async {
     final courseCollection = FirebaseFirestore.instance.collection('Courses');
     //final snapshots = [];
     List<Lesson> _lessons = [];
 
-    final coursesQuery = courseCollection.where('courseId', whereIn: userCourses);
+    final coursesQuery =
+        courseCollection.where('courseId', whereIn: userCourses);
     final coursesSnapshot = await coursesQuery.get();
 
     for (final courseDoc in coursesSnapshot.docs) {
@@ -255,4 +260,34 @@ class DatabaseManager {
     return _users;
   }
 
+  getTotalLessons(CourseNotifier courseNotifier) async {
+    int numLessons = 0;
+    try{
+      var course = await FirebaseFirestore.instance
+          .collection("Courses")
+          .where("courseId", isEqualTo: courseNotifier.currentCourse.courseId)
+          .get();
+      if (course.docs.isNotEmpty) {
+        var docId = course.docs.first.id;
+
+        final courseDoc =
+        FirebaseFirestore.instance.collection('Courses').doc(docId);
+        final courseLessonsRef = courseDoc.collection('Lessons');
+
+        // Get the total number of lessons for the course
+        final totalLessons = (await courseLessonsRef.get()).docs.length;
+        numLessons = totalLessons;
+        courseNotifier.totalLessons = totalLessons;
+
+        // Update the course document to include the total number of lessons
+        await courseDoc.update({
+          'totalLessons': totalLessons,
+        });
+      }
+    }catch (e){
+      print(e);
+    }
+    print('total num of lessons is: ${courseNotifier.totalLessons}');
+    return numLessons;
+  }
 }

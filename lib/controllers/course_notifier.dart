@@ -6,6 +6,14 @@ import 'package:flutter/cupertino.dart';
 class CourseNotifier extends ChangeNotifier {
   List<Course> _courseList = <Course>[];
   late Course _currentCourse;
+  late int _totalLessons = 0;
+
+  get totalLessons => _totalLessons;
+
+  set totalLessons(value) {
+    _totalLessons = value;
+    notifyListeners();
+  }
 
   Course get currentCourse => _currentCourse;
 
