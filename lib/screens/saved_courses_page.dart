@@ -148,7 +148,6 @@ class _SavedCoursesState extends State<SavedCourses> {
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           }
-
           ///Shimmer
           return const Center(
             child: Text('Shimmer'),

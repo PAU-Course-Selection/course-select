@@ -31,25 +31,23 @@ class _MiniCourseInfoAndShareState extends State<MiniCourseInfoAndShare> {
             Expanded(
               child: Container(
                 padding: const EdgeInsets.all(16.0),
-                decoration:  BoxDecoration(
+                decoration:  const BoxDecoration(
                     color: Color(0xffffeeca),
                     borderRadius:
-                        const BorderRadius.all(Radius.circular(25.0))),
-                child: Center(
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 5),
-                        child: Image.asset('assets/icons/hourglass.png', width: 24, height: 20,)
-                      ),
-                      const Text("22 Lessons", style: TextStyle(fontWeight: FontWeight.bold)),
-                    ],
-                  ),
+                        BorderRadius.all(Radius.circular(25.0))),
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 5),
+                      child: Image.asset('assets/icons/hourglass.png', width: 24, height: 20,)
+                    ),
+                    const Text("22 Lessons", style: TextStyle(fontWeight: FontWeight.bold)),
+                  ],
                 ),
               ),
             ),
             const SizedBox(
-              width: 10,
+              width: 8,
             ),
             Expanded(
               child: Container(
@@ -60,16 +58,14 @@ class _MiniCourseInfoAndShareState extends State<MiniCourseInfoAndShare> {
                     Radius.circular(25.0),
                   ),
                 ),
-                child: Center(
-                  child: Row(
-                    children: [
-                       Padding(
-                        padding: const EdgeInsets.only(right: 10),
-                        child: Image.asset('assets/icons/lesson.png', width: 24, height: 20,)
-                      ),
-                      Text(_hoursPerWeek(), style: const TextStyle(fontWeight: FontWeight.bold),),
-                    ],
-                  ),
+                child: Row(
+                  children: [
+                     Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: Image.asset('assets/icons/lesson.png', width: 24, height: 20,)
+                    ),
+                    Text(_hoursPerWeek(), style: const TextStyle(fontWeight: FontWeight.bold),),
+                  ],
                 ),
               ),
             ),const SizedBox(
