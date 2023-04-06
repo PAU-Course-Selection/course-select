@@ -28,7 +28,6 @@ class _TimetableState extends State<Timetable> {
   void initState() {
     lessonNotifier = Provider.of<LessonNotifier>(context, listen: false);
     userNotifier = Provider.of<UserNotifier>(context, listen: false);
-
     getLessons();
     super.initState();
   }
@@ -36,7 +35,7 @@ class _TimetableState extends State<Timetable> {
     await _db.getLessons(userNotifier.getCourseIds(),lessonNotifier)
         .then((value) {
           setState(() {
-            lessons= value;
+            lessons = value;
           });
     });
   }

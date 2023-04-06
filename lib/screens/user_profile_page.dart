@@ -40,14 +40,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
     );
   }
 
-  Widget _signOutButton() {
-    return ElevatedButton(
-      onPressed: () =>
-          {Auth().signOut(), Get.offAndToNamed(PageRoutes.loginRegister)},
-      child: const Text('Sign Out'),
-    );
-  }
-
   Future getData() async {
     var users = await db.getUsers(userNotifier);
     userNotifier.updateUserName();

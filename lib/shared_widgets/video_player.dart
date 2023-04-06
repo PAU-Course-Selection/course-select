@@ -1,4 +1,5 @@
 
+import 'package:course_select/constants/constants.dart';
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
@@ -56,8 +57,13 @@ class _CourseVideoPlayerState extends State<CourseVideoPlayer> {
         } else {
           // If the VideoPlayerController is still initializing, show a
           // loading spinner.
-          return const Center(
-            child: CircularProgressIndicator(),
+          return  Center(
+            child: Container(
+              decoration: const BoxDecoration(image: DecorationImage(image: AssetImage('assets/images/c2.jpg'), fit: BoxFit.cover)),
+                child: Center(
+                    child: CircularProgressIndicator(
+                      color: kPrimaryColour,
+                    ))),
           );
         }
       },

@@ -28,6 +28,17 @@ class UserNotifier extends ChangeNotifier {
 
   List<student.UserModel> _usersList = [];
   List _userCourseIds = [];
+  List<student.UserModel> _userClassmates = [];
+
+  ///A getter for the list of users
+  UnmodifiableListView<student.UserModel> get userClassmates =>
+      UnmodifiableListView(_userClassmates);
+
+  ///Sets or updates list downloaded from the database using the model api
+  set userClassmates(List<student.UserModel> list) {
+    _userClassmates = list;
+    notifyListeners();
+  }
 
   List get userCourseIds => _userCourseIds;
 
@@ -35,6 +46,7 @@ class UserNotifier extends ChangeNotifier {
     _userCourseIds = value;
     notifyListeners();
   }
+
 
   ///A getter for the list of users
   UnmodifiableListView<student.UserModel> get usersList =>
