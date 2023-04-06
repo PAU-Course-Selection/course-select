@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:course_select/controllers/course_notifier.dart';
 import 'package:course_select/constants/constants.dart';
 import 'package:course_select/controllers/home_page_notifier.dart';
+import 'package:course_select/models/user_data_model.dart';
 import 'package:course_select/shared_widgets/classmates.dart';
 import 'package:course_select/shared_widgets/course_info_and_sharing.dart';
 import 'package:course_select/shared_widgets/gradient_button.dart';
@@ -29,6 +30,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
   late UserNotifier _userNotifier;
   late HomePageNotifier _homePageNotifier;
   final DatabaseManager _db = DatabaseManager();
+  late List<UserModel> classmates = [];
   Image img = Image.asset('assets/images/c2.jpg');
   String videoUrl = '';
   final ScrollController _controller =
@@ -40,13 +42,24 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     _homePageNotifier = Provider.of<HomePageNotifier>(context, listen: false);
     _userNotifier = Provider.of<UserNotifier>(context, listen: false);
     videoUrl = _courseNotifier.currentCourse.media[0];
-    print(_userNotifier.getCourseIds());
-    print(_courseNotifier.currentCourse.courseId);
+    getClassmates();
     super.initState();
   }
 
-  Widget _conditionalButtomButton(){
-    if(_userNotifier.getCourseIds().contains(_courseNotifier.currentCourse.courseId)){
+  getClassmates() async {
+    await _db
+        .getClassmates(_courseNotifier.currentCourse.courseId, _userNotifier)
+        .then((value) {
+      setState(() {
+        classmates = value;
+      });
+    });
+  }
+
+  Widget _conditionalButtomButton() {
+    if (_userNotifier
+        .getCourseIds()
+        .contains(_courseNotifier.currentCourse.courseId)) {
       return GradientButton(
         onPressed: () {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -58,20 +71,20 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
                   borderRadius: BorderRadius.circular(5)),
               content: const Center(
                   child: Text(
-                    "Yayy! Course Completed!",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 15.0,
-                        fontFamily: "Robots",
-                        fontWeight: FontWeight.bold),
-                  )),
+                "Yayy! Course Completed!",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 15.0,
+                    fontFamily: "Robots",
+                    fontWeight: FontWeight.bold),
+              )),
               duration: const Duration(seconds: 1),
             ),
           );
         },
         buttonText: 'Complete Course',
       );
-    }else{
+    } else {
       return GradientButton(
         onPressed: () {
           _db.updateUserCourses(_userNotifier, _courseNotifier);
@@ -85,13 +98,13 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
                   borderRadius: BorderRadius.circular(5)),
               content: const Center(
                   child: Text(
-                    "Successfully Enrolled",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 15.0,
-                        fontFamily: "Robots",
-                        fontWeight: FontWeight.bold),
-                  )),
+                "Successfully Enrolled",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 15.0,
+                    fontFamily: "Robots",
+                    fontWeight: FontWeight.bold),
+              )),
               duration: const Duration(seconds: 1),
             ),
           );
@@ -99,12 +112,13 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
         buttonText: 'Enroll',
       );
     }
-
   }
 
   @override
   Widget build(BuildContext context) {
-
+    for(var user in classmates){
+      print(user.email);
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -124,8 +138,6 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
       body: _courseInfo(),
     );
   }
-
-
 
   Widget _courseInfo() {
     return SingleChildScrollView(
@@ -200,7 +212,45 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
             ),
           ),
           //Classmates Box
-          const Classmates()
+          Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+              child: Container(
+                height: 100.h,
+                width: double.infinity,
+                padding: const EdgeInsets.all(4.0),
+                decoration: BoxDecoration(
+                  color: kGreyBackground,
+                  borderRadius: BorderRadius.circular(25.0),
+                ),
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                    itemCount: classmates.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 15.0),
+                        child: CircleAvatar(
+                            radius: 30,
+                            backgroundColor: Colors.white,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(75.0),
+                              child: CachedNetworkImage(
+                                height: 60.0,
+                                width: 60.0,
+                                fit: BoxFit.cover,
+                                imageUrl: classmates[index].avatar!,
+                                placeholder: (context, url) {
+                                  return const CircularProgressIndicator();
+                                },
+                                errorWidget: (context, url, error) =>
+                                const Icon(
+                                  Icons.person,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            )),
+                      );
+                    }),
+              ))
         ],
       ),
     );

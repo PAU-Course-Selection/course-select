@@ -235,4 +235,24 @@ class DatabaseManager {
     return _lessons;
     // print(lessonNotifier.lessonsList);
   }
+
+  getClassmates(String courseId, UserNotifier userNotifier) async {
+    List<student.UserModel> _users = [];
+    var querySnapshot = await FirebaseFirestore.instance
+        .collection("Users")
+        .where("courses", arrayContains: courseId)
+        .get();
+
+    // Loop through the documents to access each user's data
+    for (var doc in querySnapshot.docs) {
+      // Access user data using doc.data()
+      var userData = doc.data();
+      student.UserModel user = student.UserModel.fromMap(userData);
+      _users.add(user);
+      userNotifier.userClassmates = _users;
+      // print(user.email);
+    }
+    return _users;
+  }
+
 }
