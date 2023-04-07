@@ -7,16 +7,16 @@ import '../constants/constants.dart';
 import '../screens/search_sheet.dart';
 import 'gradient_button.dart';
 
-class Empty extends StatefulWidget {
+class EmptyFavouritesPage extends StatefulWidget {
   final Function onAdd;
 
-  const Empty({Key? key, required this.onAdd}) : super(key: key);
+  const EmptyFavouritesPage({Key? key, required this.onAdd}) : super(key: key);
 
   @override
-  State<Empty> createState() => _EmptyState();
+  State<EmptyFavouritesPage> createState() => _EmptyFavouritesPageState();
 }
 
-class _EmptyState extends State<Empty> {
+class _EmptyFavouritesPageState extends State<EmptyFavouritesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
