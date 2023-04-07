@@ -190,10 +190,10 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
               child: Animate(
                 child: Text(
                   _courseNotifier.currentCourse.courseName,
-                  style: const TextStyle(
+                  style:  TextStyle(
                       fontSize: 38.00,
                       fontFamily: 'Roboto',
-                      color: Color(0xff204548),
+                      color: kDeepGreen,
                       fontWeight: FontWeight.bold),
                   textAlign: TextAlign.left,
                 ),
@@ -240,7 +240,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
                     width: 10,
                   ),
                   FloatingActionButton(
-                    backgroundColor: const Color(0xfff4e1fe),
+                    backgroundColor: kSaraLightPink,
                     foregroundColor: kTeal,
                     elevation: 0,
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,

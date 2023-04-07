@@ -1,7 +1,13 @@
 enum SubjectArea{
   frontend,
   backend,
-  dataScience,
+  programming,
   devOps,
   software
+}
+
+enum SkillLevel{
+  beginner,
+  intermediate,
+  advanced
 }
