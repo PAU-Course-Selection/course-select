@@ -9,7 +9,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -55,7 +54,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     ImagePicker imagePicker = ImagePicker();
     XFile? file = await imagePicker.pickImage(
         source: useCamera ? ImageSource.camera : ImageSource.gallery);
-    print(file?.path);
+    // print(file?.path);
 
     if (file == null) return;
     //Import dart:core
@@ -71,7 +70,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     //Handle errors/success
     try {
       //Store the file
-      await referenceImageToUpload.putFile(io.File(file!.path));
+      await referenceImageToUpload.putFile(io.File(file.path));
       //Success: get the download URL
       imageUrl = await referenceImageToUpload.getDownloadURL();
     } catch (error) {
@@ -317,6 +316,42 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                           leading:
                                               const Icon(Icons.delete_forever),
                                           title: const Text('Delete Account'),
+                                          onPressed:(context){
+                                            var currentUser = FirebaseAuth.instance.currentUser;
+
+                                            // set up the buttons
+                                            Widget cancelButton = TextButton(
+                                              child: const Text("Cancel"),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            );
+                                            Widget confirmButton = TextButton(
+                                              child: const Text("Confirm"),
+                                              onPressed: () async {
+                                                Navigator.of(context).pushNamed("logIn");
+                                                await currentUser?.delete();
+                                                await currentUser?.reload();
+
+                                              },
+                                            );
+                                            // set up the AlertDialog
+                                            AlertDialog alert = AlertDialog(
+                                              title: const Text("Delete Account"),
+                                              content: const Text("Are you sure you would like to delete your account?"),
+                                              actions: [
+                                                cancelButton,
+                                                confirmButton,
+                                              ],
+                                            );
+                                            // show the dialog
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return alert;
+                                              },
+                                            );
+                                          },
                                         ),
                                         SettingsTile.switchTile(
                                           onToggle: (value) {},
@@ -368,7 +403,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
                                           ),
                                         ),),
-                                      SizedBox(height: 10,),
+                                      const SizedBox(height: 10,),
                                       const Text('App version 1.0.0', style: TextStyle(color: Colors.grey),),
                                     ],
                                   ))

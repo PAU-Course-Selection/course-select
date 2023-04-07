@@ -153,7 +153,7 @@ class _SearchSheetState extends State<SearchSheet>
                           Row(
                             children: const [
                               CatPill(categoryName: 'DevOps', categoryColour: Color(0xffffeeca),categoryIcon:'assets/icons/devops.png'),
-                              CatPill(categoryName: 'Security', categoryColour: Color(0xfffcfcc3),categoryIcon:'assets/icons/security.png'),
+                              CatPill(categoryName: 'Backend', categoryColour: Color(0xfffcfcc3),categoryIcon:'assets/icons/security.png'),
                               Flexible(child: CatPill(categoryName: 'Frontend', categoryColour: Color(0xfff4e1fe),categoryIcon:'assets/icons/ui.png')),
 
                             ],
