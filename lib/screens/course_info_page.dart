@@ -137,7 +137,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
                     ],
                   ),
                 ),)
-                  : CupertinoAlertDialog(title: Text("Checks and Limitations"),
+                  : CupertinoAlertDialog(title: const Text("Checks and Limitations"),
                 content: SizedBox(
                   height: 200,
                   child: Column(
@@ -363,7 +363,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
                         return GestureDetector(
                           onTap: () {
                             _courseNotifier.currentCourse =
-                            _courseNotifier.courseList[index];
+                            recommendations[index];
                             Navigator.pushNamed(
                                 context, PageRoutes.courseInfo);
                           },

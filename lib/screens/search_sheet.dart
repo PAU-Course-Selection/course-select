@@ -184,7 +184,7 @@ class _SearchSheetState extends State<SearchSheet>
                                       displayList[index].isSaved =
                                       !displayList[index].isSaved;
 
-                                      courseNotifier.currentCourse = courseNotifier.courseList[index];
+                                      courseNotifier.currentCourse = displayList[index];
                                       db.addSavedCourseSubCollection(index: index, displayList: displayList,
                                           duplicateCount: duplicateCount, savedCourses: savedCoursesNotifier, courseNotifier: courseNotifier);
 
@@ -215,7 +215,7 @@ class _SearchSheetState extends State<SearchSheet>
                                       );
                                     });
                                   }, onCardPressed: (){
-                                  courseNotifier.currentCourse = courseNotifier.courseList[index];
+                                  courseNotifier.currentCourse = displayList[index];
                                   Navigator.pushNamed(context, PageRoutes.courseInfo);
                                 },);
                               }),
