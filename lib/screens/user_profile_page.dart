@@ -7,6 +7,7 @@ import 'package:course_select/constants/constants.dart';
 import 'package:course_select/utils/enums.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -35,8 +36,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
   final DatabaseManager db = DatabaseManager();
   final User? user = Auth().currentUser;
   late Future futureData;
-  List interests = [];
-  List levels = [];
 
   Widget _title() {
     return Text(
@@ -106,20 +105,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
     futureData = getData();
     oldUrl = userNotifier.avatar;
     super.initState();
-  }
-
-  _userLevels() {
-    setState(() {
-      levels = List.from(userNotifier.getLevel());
-    });
-    return levels;
-  }
-
-  _userInterests() {
-    setState(() {
-      interests = List.from(userNotifier.getInterests());
-    });
-    return interests;
   }
 
   late String oldUrl;
@@ -385,7 +370,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                               },
                                             );
                                             // set up the AlertDialog
-                                            AlertDialog alert = AlertDialog(
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                           Widget dialog = io.Platform.isAndroid == true? AlertDialog(
+                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
                                               title:
                                                   const Text("Delete Account"),
                                               content: const Text(
@@ -394,14 +383,39 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                                 cancelButton,
                                                 confirmButton,
                                               ],
-                                            );
+                                            ):  CupertinoAlertDialog(
+                                             title: const Text('This action is irreversible. Are you sure?'),
+                                             actions: [
+                                               CupertinoDialogAction(
+                                                 /// This parameter indicates this action is the default,
+                                                 /// and turns the action's text to bold text.
+                                                 isDefaultAction: true,
+                                                 onPressed: () {
+                                                   Navigator.pop(context);
+                                                 },
+                                                 child: const Text('Cancel'),
+                                               ),
+                                               CupertinoDialogAction(
+                                                 /// This parameter indicates the action would perform
+                                                 /// a destructive action such as deletion, and turns
+                                                 /// the action's text color to red.
+                                                 isDestructiveAction: true,
+                                                 onPressed: () async{
+                                                   Navigator.pop(context);
+                                                   Navigator.of(context)
+                                                       .pushNamed("logIn");
+                                                   await currentUser?.delete();
+                                                   await currentUser?.reload();
+                                                 },
+                                                 child: const Text('Confirm'),
+                                               ),
+                                             ],
+                                           );
                                             // show the dialog
-                                            showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return alert;
+                                                return dialog;
                                               },
                                             );
+
                                           },
                                         ),
                                         SettingsTile.switchTile(
