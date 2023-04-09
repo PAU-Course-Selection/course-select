@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> {
     _db.getTotalLessons(_courseNotifier);
     getModels();
     futureData = getModels();
-
+    Auth().currentUser?.reload();
     valueNotifier = ValueNotifier(0.0);
     super.initState();
   }
