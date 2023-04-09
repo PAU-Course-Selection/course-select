@@ -145,8 +145,7 @@ class _MyCoursesState extends State<MyCourses>
                               });
                             },
                             onCardPressed: () {
-                              courseNotifier.currentCourse =
-                                  courseNotifier.courseList[index];
+                              courseNotifier.currentCourse = displayList[index];
                               Navigator.pushNamed(
                                   context, PageRoutes.courseInfo);
                             },
@@ -155,9 +154,9 @@ class _MyCoursesState extends State<MyCourses>
                   ));
       case 1:
         return Expanded(
-            child: displayList.isEmpty
+            child: myList.isEmpty
                 ? const Center(
-                    child: Text('No results found...'),
+                    child: Text('You are not enrolled on any courses...'),
                   )
                 : RefreshIndicator(
                     color: kPrimaryColour,
@@ -184,7 +183,7 @@ class _MyCoursesState extends State<MyCourses>
                                   myList[index].isSaved =
                                       !myList[index].isSaved;
                                   courseNotifier.currentCourse =
-                                      courseNotifier.courseList[index];
+                                      myList[index];
                                   // Add the course as a favorite
                                   db.addSavedCourseSubCollection(
                                       index: index,
@@ -310,8 +309,7 @@ class _MyCoursesState extends State<MyCourses>
                               });
                             },
                             onCardPressed: () {
-                              courseNotifier.currentCourse =
-                                  courseNotifier.courseList[index];
+                              courseNotifier.currentCourse = displayList[index];
                               Navigator.pushNamed(
                                   context, PageRoutes.courseInfo);
                             },

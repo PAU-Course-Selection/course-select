@@ -31,9 +31,13 @@ class DatabaseManager {
       'uid': uid,
       'email': email,
       'dateCreated': DateTime.now(),
+      'courses': [],
+      'interests': [],
+      'skillLevels': [],
       'avatar':
           'https://firebasestorage.googleapis.com/v0/b/agileproject-76bf9.appspot.com/o/User%20Data%2Fuser.png?alt=media&token=0b4c347c-e8d9-456c-b76a-b02f2e4080a0'
-    }).then((DocumentReference doc) => print(doc.id));
+
+    });
   }
 
   getUsers(UserNotifier userNotifier) async {
@@ -214,6 +218,62 @@ class DatabaseManager {
       print("Error updating user courses: $e");
     }
   }
+
+  Future<void> updateUserInterests(
+      UserNotifier userNotifier, List updatedList) async {
+    try {
+      var myUser = await FirebaseFirestore.instance
+          .collection("Users")
+          .where("uid", isEqualTo: user?.uid)
+          .get();
+      if (myUser.docs.isNotEmpty) {
+        var docId = myUser.docs.first.id;
+
+        List interests = userNotifier.getInterests();
+        for (var interest in updatedList) {
+          if (!interests.contains(interest)) {
+            interests.add(interest);
+          }
+        }
+
+        DocumentReference docRef = FirebaseFirestore.instance.collection("Users").doc(docId);
+        await docRef.update({"interests": interests});
+        print('total user interests: $interests');
+        // getUsers(userNotifier);
+      }
+    } catch (e) {
+      print("Error updating user interests: $e");
+    }
+  }
+
+  Future<void> updateUserLevel(
+      UserNotifier userNotifier, List updatedList) async {
+    try {
+      var myUser = await FirebaseFirestore.instance
+          .collection("Users")
+          .where("uid", isEqualTo: user?.uid)
+          .get();
+      if (myUser.docs.isNotEmpty) {
+        var docId = myUser.docs.first.id;
+
+        List levels = userNotifier.getLevel();
+        print(levels);
+        for (var level in updatedList) {
+          if (!levels.contains(level)) {
+            levels.add(level);
+          }
+        }
+
+        DocumentReference docRef = FirebaseFirestore.instance.collection("Users").doc(docId);
+        await docRef.update({"skillLevel": levels});
+        print('total user levels: $levels');
+        // getUsers(userNotifier);
+      }
+    } catch (e) {
+      print("Error updating user levels: $e");
+    }
+  }
+
 
   Future<List<Lesson>> getLessons(
       List userCourses, LessonNotifier lessonNotifier) async {

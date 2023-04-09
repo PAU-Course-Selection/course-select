@@ -9,6 +9,8 @@ class UserModel{
   String? avatar;
   String? email;
   List<dynamic>? courses;
+  List<dynamic>? interests;
+  List<dynamic>? skillLevel;
 
 
   ///A constructor for setting attribute values when creating a user object
@@ -29,5 +31,7 @@ class UserModel{
     avatar = data['avatar'];
     email = data['email'];
     courses = data['courses'];
+    interests = data['interests'];
+    skillLevel = data['skillLevel'];
   }
 }

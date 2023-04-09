@@ -20,15 +20,24 @@ class UserNotifier extends ChangeNotifier {
   var _joinDate = '00-00-0000';
 
   get email => _email;
-
   get avatar => _avatar;
-
   ///A getter for the authenticated user's name
   get userName => _userName;
 
   List<student.UserModel> _usersList = [];
   List _userCourseIds = [];
+  List _userInterests = [];
+  List _skillLevel = [];
+
+  set userInterests(List value) {
+    _userInterests = value;
+    notifyListeners();
+  }
+
   List<student.UserModel> _userClassmates = [];
+
+  ///A getter for the list of interests
+  List get userInterests => (_userInterests);
 
   ///A getter for the list of users
   UnmodifiableListView<student.UserModel> get userClassmates =>
@@ -133,6 +142,7 @@ class UserNotifier extends ChangeNotifier {
         // print(match);
         // print(usersList[i].email);
         ids = usersList[i].courses!;
+        userCourseIds = ids;
       }
     }
     if (match) {
@@ -142,6 +152,46 @@ class UserNotifier extends ChangeNotifier {
     }
     return ids;
   }
+
+  List getInterests() {
+    List interests = [];
+    for (int i = 0; i < usersList.length; i++) {
+      if (usersList[i].email == user?.email) {
+        match = true;
+        // print(match);
+        // print(usersList[i].email);
+        interests = usersList[i].interests!;
+        userInterests = interests;
+      }
+    }
+    if (match) {
+      print('user interests found!');
+    } else {
+      print('user interests NOT found');
+    }
+    return interests;
+  }
+
+  List getLevel() {
+    List level = [];
+    for (int i = 0; i < usersList.length; i++) {
+      if (usersList[i].email == user?.email) {
+        match = true;
+        // print(match);
+        // print(usersList[i].email);
+        level = usersList[i].skillLevel!;
+        skillLevel = level;
+      }
+    }
+    if (match) {
+      print('user level found');
+    } else {
+      print('user level NOT found');
+    }
+    return level;
+  }
+
+
 
   List<Course> filterCoursesByIds(List<Course> courses) {
     List ids = getCourseIds();
@@ -153,5 +203,15 @@ class UserNotifier extends ChangeNotifier {
       }
     }
     return filteredCourses;
+  }
+
+  ///A getter for the list of levels
+  List get skillLevel => (_skillLevel);
+
+
+
+  set skillLevel(List value) {
+    _skillLevel = value;
+    notifyListeners();
   }
 }

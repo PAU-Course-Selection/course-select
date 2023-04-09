@@ -4,14 +4,18 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:course_select/routes/routes.dart';
 import 'package:course_select/constants/constants.dart';
+import 'package:course_select/utils/enums.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:multi_select_flutter/bottom_sheet/multi_select_bottom_sheet.dart';
+import 'package:multi_select_flutter/chip_field/multi_select_chip_field.dart';
+import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 
@@ -46,6 +50,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     userNotifier.updateEmail();
     userNotifier.updateAvatar();
     userNotifier.updateDate();
+
     return users;
   }
 
@@ -55,7 +60,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     ImagePicker imagePicker = ImagePicker();
     XFile? file = await imagePicker.pickImage(
         source: useCamera ? ImageSource.camera : ImageSource.gallery);
-    print(file?.path);
+    // print(file?.path);
 
     if (file == null) return;
     //Import dart:core
@@ -71,7 +76,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     //Handle errors/success
     try {
       //Store the file
-      await referenceImageToUpload.putFile(io.File(file!.path));
+      await referenceImageToUpload.putFile(io.File(file.path));
       //Success: get the download URL
       imageUrl = await referenceImageToUpload.getDownloadURL();
     } catch (error) {
@@ -107,17 +112,27 @@ class _UserProfilePageState extends State<UserProfilePage> {
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
+    List<String> subjects = SubjectArea.values
+        .map((status) => status.toString().split('.').last)
+        .map((str) => str.substring(0, 1).toUpperCase() + str.substring(1))
+        .toList();
+    List<String> levels = SkillLevel.values
+        .map((status) => status.toString().split('.').last)
+        .map((str) => str.substring(0, 1).toUpperCase() + str.substring(1))
+        .toList();
+    print(subjects);
     return Scaffold(
       appBar: AppBar(
         title: _title(),
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.black,
         elevation: 0,
-        actions:  [
-          IconButton(onPressed: (){
-            Navigator.pushNamed(context, PageRoutes.edit);
-
-          }, icon: const Icon(Icons.edit))
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, PageRoutes.edit);
+              },
+              icon: const Icon(Icons.edit))
         ],
       ),
       body: FutureBuilder(
@@ -247,13 +262,15 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         ),
                         Column(
                           children: [
-                            Text('2', style: kHeadlineMedium.copyWith(color: kTeal)),
+                            Text('2',
+                                style: kHeadlineMedium.copyWith(color: kTeal)),
                             const Text('Active'),
                           ],
                         ),
                         Column(
                           children: [
-                            Text('1', style: kHeadlineMedium.copyWith(color: kTeal)),
+                            Text('1',
+                                style: kHeadlineMedium.copyWith(color: kTeal)),
                             const Text('Completed'),
                           ],
                         ),
@@ -288,7 +305,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                   shrinkWrap: true,
                                   platform: DevicePlatform.device,
                                   lightTheme: const SettingsThemeData(
-                                      settingsListBackground: Colors.transparent),
+                                      settingsListBackground:
+                                          Colors.transparent),
                                   sections: [
                                     SettingsSection(
                                       title: const Text('Common'),
@@ -305,8 +323,20 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                           title: const Text('Enable dark mode'),
                                         ),
                                         SettingsTile.navigation(
-                                          leading: const Icon(Icons.settings_suggest_rounded),
-                                          title: const Text('Student Preferences'),
+                                          leading: const Icon(
+                                              Icons.settings_suggest_rounded),
+                                          title:
+                                              const Text('Student Preferences'),
+                                          onPressed: (context) {
+                                            setState(() {
+                                              _showMultiSelect(
+                                                  context,
+                                                  subjects,
+                                                  levels,
+                                                  db,
+                                                  userNotifier);
+                                            });
+                                          },
                                         ),
                                       ],
                                     ),
@@ -314,9 +344,79 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                       title: const Text('Security & Privacy'),
                                       tiles: <SettingsTile>[
                                         SettingsTile(
-                                          leading:
-                                              const Icon(Icons.delete_forever),
+                                          leading: const Icon(
+                                            Icons.delete_forever,
+                                            color: Colors.red,
+                                          ),
                                           title: const Text('Delete Account'),
+                                          onPressed: (context) {
+                                            var currentUser = FirebaseAuth
+                                                .instance.currentUser;
+
+                                            // set up the buttons
+                                            Widget cancelButton = TextButton(
+                                              child: const Text("Cancel"),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            );
+                                            Widget confirmButton = TextButton(
+                                              child: const Text("Confirm"),
+                                              onPressed: () async {
+                                                Navigator.of(context)
+                                                    .pushNamed("logIn");
+                                                await currentUser?.delete();
+                                                await currentUser?.reload();
+                                              },
+                                            );
+                                            // set up the AlertDialog
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                           Widget dialog = io.Platform.isAndroid == true? AlertDialog(
+                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+                                              title:
+                                                  const Text("Delete Account"),
+                                              content: const Text(
+                                                  "Are you sure you would like to delete your account?"),
+                                              actions: [
+                                                cancelButton,
+                                                confirmButton,
+                                              ],
+                                            ):  CupertinoAlertDialog(
+                                             title: const Text('This action is irreversible. Are you sure?'),
+                                             actions: [
+                                               CupertinoDialogAction(
+                                                 /// This parameter indicates this action is the default,
+                                                 /// and turns the action's text to bold text.
+                                                 isDefaultAction: true,
+                                                 onPressed: () {
+                                                   Navigator.pop(context);
+                                                 },
+                                                 child: const Text('Cancel'),
+                                               ),
+                                               CupertinoDialogAction(
+                                                 /// This parameter indicates the action would perform
+                                                 /// a destructive action such as deletion, and turns
+                                                 /// the action's text color to red.
+                                                 isDestructiveAction: true,
+                                                 onPressed: () async{
+                                                   Navigator.pop(context);
+                                                   Navigator.of(context)
+                                                       .pushNamed("logIn");
+                                                   await currentUser?.delete();
+                                                   await currentUser?.reload();
+                                                 },
+                                                 child: const Text('Confirm'),
+                                               ),
+                                             ],
+                                           );
+                                            // show the dialog
+                                                return dialog;
+                                              },
+                                            );
+
+                                          },
                                         ),
                                         SettingsTile.switchTile(
                                           onToggle: (value) {},
@@ -330,9 +430,14 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                     SettingsSection(
                                       tiles: <SettingsTile>[
                                         SettingsTile(
-                                          leading: const Icon(Icons.logout),
+                                          leading: const Icon(Icons.logout,
+                                              color: Colors.red),
                                           title: const Text('Log out'),
-                                          onPressed: (context)=> {Auth().signOut(), Get.offAndToNamed(PageRoutes.loginRegister)},
+                                          onPressed: (context) => {
+                                            Auth().signOut(),
+                                            Get.offAndToNamed(
+                                                PageRoutes.loginRegister)
+                                          },
                                         ),
                                       ],
                                     ),
@@ -341,51 +446,188 @@ class _UserProfilePageState extends State<UserProfilePage> {
                               ),
                               SafeArea(
                                   child: Column(
-                                    children: [
-                                      SizedBox(
-                                        width: 300.w,
-                                        child: Center(
-                                          child: RichText(
-                                            textAlign: TextAlign.center,
-                                            text: const TextSpan(
-                                                text: 'Study Sprint\'s ',
-                                                style: TextStyle(color: Colors.black),
-                                                children: [
-                                                  TextSpan(
-                                                    text: 'GDPR Privacy',
-                                                    style: TextStyle(color: Colors.black, decoration: TextDecoration.underline,),
-                                                  ),
-                                                  TextSpan(
-                                                      text: ' and '
-                                                  ),
-                                                  TextSpan(
-                                                    text: 'Open Source Software',
-                                                    style: TextStyle(color: Colors.black, decoration: TextDecoration.underline,),
-                                                  ),
-                                                ]
-                                            ),
-
-
-                                          ),
-                                        ),),
-                                      SizedBox(height: 10,),
-                                      const Text('App version 1.0.0', style: TextStyle(color: Colors.grey),),
-                                    ],
-                                  ))
-
+                                children: [
+                                  SizedBox(
+                                    width: 300.w,
+                                    child: Center(
+                                      child: RichText(
+                                        textAlign: TextAlign.center,
+                                        text: const TextSpan(
+                                            text: 'Study Sprint\'s ',
+                                            style:
+                                                TextStyle(color: Colors.black),
+                                            children: [
+                                              TextSpan(
+                                                text: 'GDPR Privacy',
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  decoration:
+                                                      TextDecoration.underline,
+                                                ),
+                                              ),
+                                              TextSpan(text: ' and '),
+                                              TextSpan(
+                                                text: 'Open Source Software',
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  decoration:
+                                                      TextDecoration.underline,
+                                                ),
+                                              ),
+                                            ]),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  const Text(
+                                    'App version 1.0.0',
+                                    style: TextStyle(color: Colors.grey),
+                                  ),
+                                ],
+                              ))
                             ],
                           ),
                           width: double.infinity,
                         ),
                       ),
                     ),
-
                   ],
                 ),
               ),
             );
           }),
     );
+  }
+}
+
+_showMultiSelect(BuildContext context, List subjectsList, List levelsList,
+    DatabaseManager db, UserNotifier userNotifier) {
+  var userInterests = userNotifier.getInterests();
+  var userLevels = userNotifier.getLevel();
+  var _selectedInterests = [];
+  var _selectedLevels = [];
+  {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      // required for min/max child size
+      constraints: BoxConstraints(maxHeight: 570.h),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+      context: context,
+      builder: (ctx) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 25.0),
+              child: Image.asset(
+                'assets/icons/star.png',
+                width: 50,
+                height: 50,
+                color: kSaraLightPink,
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.only(top: 10.0, bottom: 10),
+              child: Text(
+                'Personalise your experience',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+            ),
+            Text(
+              'Select Interests',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: kDeepGreen,
+                  fontSize: 32,
+                  fontFamily: 'Roboto'),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              width: 320.w,
+              child: const Text(
+                'You will be offered appropriate courses and groups of '
+                'interrelated courses for a full immersion in the noted area of interest',
+                textAlign: TextAlign.center,
+              ),
+            ),
+            Container(
+                padding: const EdgeInsets.symmetric(vertical: 0),
+                width: 280.w,
+                child: RichText(
+                  textAlign: TextAlign.center,
+                  text: const TextSpan(children: [
+                    TextSpan(
+                        text: 'Allowable time limit for full time students is ',
+                        style: TextStyle(color: Colors.black)),
+                    TextSpan(
+                        text: '10 hours per week',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.black)),
+                  ]),
+                )),
+            Divider(
+              color: kDeepGreen.withOpacity(0.2),
+            ),
+            Container(
+              padding: const EdgeInsets.only(top: 10),
+              child: MultiSelectChipField(
+                title: const Text('Subject Areas'),
+                headerColor: Colors.white,
+                selectedChipColor: kTeal,
+                selectedTextStyle: const TextStyle(color: Colors.white),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.white),
+                ),
+                items: subjectsList.map((e) => MultiSelectItem(e, e)).toList(),
+                initialValue: userInterests,
+                onTap: (values) {
+                  print('Selected interests: $values');
+                  _selectedInterests = List.from(userInterests);
+                  for (var value in values) {
+                    if (_selectedInterests.contains(value)) {
+                      _selectedInterests.remove(value);
+                    } else {
+                      _selectedInterests.add(value);
+                    }
+                  }
+                },
+
+              ),
+            ),
+            MultiSelectChipField(
+              title: const Text('Skill Levels'),
+              headerColor: Colors.white,
+              selectedChipColor: const Color(0xffffd0ef),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.white),
+              ),
+              items: levelsList.map((e) => MultiSelectItem(e, e)).toList(),
+              initialValue: userLevels,
+              onTap: (values) {
+                print('Selected levels: $values');
+                _selectedLevels = List.from(userLevels);
+                for (var value in values) {
+                  if (_selectedLevels.contains(value)) {
+                    _selectedLevels.remove(value);
+                  } else {
+                    _selectedLevels.add(value);
+                  }
+                }
+              },
+
+            ),
+          ],
+        );
+      },
+    ).whenComplete(() {
+      db.updateUserInterests(userNotifier, _selectedInterests);
+      db.updateUserLevel(userNotifier, _selectedLevels);
+      // print('user interests: ${userNotifier.userInterests}');
+      // print('user levels: ${userNotifier.skillLevel}');
+      print('complete');
+    });
   }
 }
 
@@ -458,11 +700,3 @@ class PhotoAvatar extends StatelessWidget {
     ]);
   }
 }
-// _signOutButton(),
-// //TODO create list tiles for settings and options according to design
-// Text("Language"),
-// Text("Clear Schedule"),
-// Text("Manage Courses"),
-// Text("Allow Activity Sharing"),
-// Text("Log Out"),
-// Text("Delete Account"),

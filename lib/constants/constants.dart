@@ -8,6 +8,8 @@ Color kLightGreen = const Color(0xffa7fcd1);
 Color kLightBackground = const Color(0xffD9D9D9);
 Color kKindaGreen = const Color(0xffd5f1d3);
 Color kGreyBackground = const Color(0xfff3f3f3);
+Color kSaraLightPink = const Color(0xfff4e1fe);
+Color kDeepGreen = const Color(0xff204548);
 TextStyle kHeadlineMedium = const TextStyle(
     color: Colors.black,
     fontSize: 24,

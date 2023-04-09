@@ -132,7 +132,7 @@ class _SavedCoursesState extends State<SavedCourses> {
                   child: SizedBox(
                       width: double.infinity,
                       height: MediaQuery.of(context).size.height * 0.80.w,
-                      child:   Empty(onAdd: _deleteDocument,),
+                      child:   EmptyFavouritesPage(onAdd: _deleteDocument,),
                 )));
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
