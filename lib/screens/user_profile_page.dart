@@ -514,7 +514,7 @@ _showMultiSelect(BuildContext context, List subjectsList, List levelsList,
     showModalBottomSheet(
       isScrollControlled: true,
       // required for min/max child size
-      constraints: BoxConstraints(maxHeight: 570.h),
+      constraints: BoxConstraints(maxHeight: 590.h),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       context: context,
       builder: (ctx) {
