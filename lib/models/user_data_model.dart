@@ -11,6 +11,7 @@ class UserModel{
   List<dynamic>? courses;
   List<dynamic>? interests;
   List<dynamic>? skillLevel;
+  int? studentLevel;
 
 
   ///A constructor for setting attribute values when creating a user object
@@ -33,5 +34,6 @@ class UserModel{
     courses = data['courses'];
     interests = data['interests'];
     skillLevel = data['skillLevel'];
+    studentLevel = data['studentLevel'];
   }
 }

@@ -33,7 +33,7 @@ class DatabaseManager {
       'dateCreated': DateTime.now(),
       'courses': [],
       'interests': [],
-      'skillLevels': [],
+      'studentLevel': 0,
       'avatar':
           'https://firebasestorage.googleapis.com/v0/b/agileproject-76bf9.appspot.com/o/User%20Data%2Fuser.png?alt=media&token=0b4c347c-e8d9-456c-b76a-b02f2e4080a0'
 
@@ -246,8 +246,8 @@ class DatabaseManager {
     }
   }
 
-  Future<void> updateUserLevel(
-      UserNotifier userNotifier, List updatedList) async {
+  Future<void> updateStudentLevel(
+      UserNotifier userNotifier, int studentLevel) async {
     try {
       var myUser = await FirebaseFirestore.instance
           .collection("Users")
@@ -256,21 +256,16 @@ class DatabaseManager {
       if (myUser.docs.isNotEmpty) {
         var docId = myUser.docs.first.id;
 
-        List levels = userNotifier.getLevel();
-        print(levels);
-        for (var level in updatedList) {
-          if (!levels.contains(level)) {
-            levels.add(level);
-          }
-        }
+        int level = userNotifier.studentLevel;
+
+        level = studentLevel;
 
         DocumentReference docRef = FirebaseFirestore.instance.collection("Users").doc(docId);
-        await docRef.update({"skillLevel": levels});
-        print('total user levels: $levels');
-        // getUsers(userNotifier);
+        await docRef.update({"studentLevel": level});
+        print('current student levels: $level');
       }
     } catch (e) {
-      print("Error updating user levels: $e");
+      print("Error updating student level: $e");
     }
   }
 

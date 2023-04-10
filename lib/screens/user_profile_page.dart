@@ -1,6 +1,7 @@
 import 'dart:io' as io;
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chips_choice/chips_choice.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:course_select/routes/routes.dart';
 import 'package:course_select/constants/constants.dart';
@@ -36,6 +37,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
   final DatabaseManager db = DatabaseManager();
   final User? user = Auth().currentUser;
   late Future futureData;
+  int tag = 0;
 
   Widget _title() {
     return Text(
@@ -330,7 +332,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                                   subjects,
                                                   levels,
                                                   db,
-                                                  userNotifier);
+                                                  userNotifier,
+                                              );
                                             });
                                           },
                                         ),
@@ -500,130 +503,165 @@ class _UserProfilePageState extends State<UserProfilePage> {
   }
 }
 
-_showMultiSelect(BuildContext context, List subjectsList, List levelsList,
+
+_showMultiSelect(BuildContext context, List subjectsList, List<String> levelsList,
     DatabaseManager db, UserNotifier userNotifier) {
   var userInterests = userNotifier.getInterests();
-  var userLevels = userNotifier.getLevel();
   var _selectedInterests = [];
-  var _selectedLevels = [];
+
   {
     showModalBottomSheet(
       isScrollControlled: true,
       // required for min/max child size
-      constraints: BoxConstraints(maxHeight: 590.h),
+      constraints: BoxConstraints(maxHeight: 650.h),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       context: context,
       builder: (ctx) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 25.0),
-              child: Image.asset(
-                'assets/icons/star.png',
-                width: 50,
-                height: 50,
-                color: kSaraLightPink,
+        return StatefulBuilder(builder: (context, setModalState){
+          return Column(
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 25.0),
+                    child: Image.asset(
+                      'assets/icons/star.png',
+                      width: 50,
+                      height: 50,
+                      color: kSaraLightPink,
+                    ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 10.0, bottom: 10),
+                    child: Text(
+                      'Personalise your experience',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
+                  ),
+                  Text(
+                    'Select Interests',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: kDeepGreen,
+                        fontSize: 32,
+                        fontFamily: 'Roboto'),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    width: 320.w,
+                    child: const Text(
+                      'You will be offered appropriate courses and groups of '
+                          'interrelated courses for a full immersion in the noted area of interest',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Container(
+                      padding: const EdgeInsets.symmetric(vertical: 0),
+                      width: 280.w,
+                      child: RichText(
+                        textAlign: TextAlign.center,
+                        text: const TextSpan(children: [
+                          TextSpan(
+                              text: 'Allowable time limit for full time students is ',
+                              style: TextStyle(color: Colors.black)),
+                          TextSpan(
+                              text: '10 hours per week',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, color: Colors.black)),
+                        ]),
+                      )),
+                ],
               ),
-            ),
-            const Padding(
-              padding: EdgeInsets.only(top: 10.0, bottom: 10),
-              child: Text(
-                'Personalise your experience',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              Divider(
+                color: kDeepGreen.withOpacity(0.2),
               ),
-            ),
-            Text(
-              'Select Interests',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: kDeepGreen,
-                  fontSize: 32,
-                  fontFamily: 'Roboto'),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 15),
-              width: 320.w,
-              child: const Text(
-                'You will be offered appropriate courses and groups of '
-                'interrelated courses for a full immersion in the noted area of interest',
-                textAlign: TextAlign.center,
-              ),
-            ),
-            Container(
-                padding: const EdgeInsets.symmetric(vertical: 0),
-                width: 280.w,
-                child: RichText(
-                  textAlign: TextAlign.center,
-                  text: const TextSpan(children: [
-                    TextSpan(
-                        text: 'Allowable time limit for full time students is ',
-                        style: TextStyle(color: Colors.black)),
-                    TextSpan(
-                        text: '10 hours per week',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.black)),
-                  ]),
-                )),
-            Divider(
-              color: kDeepGreen.withOpacity(0.2),
-            ),
-            Container(
-              padding: const EdgeInsets.only(top: 10),
-              child: MultiSelectChipField(
-                title: const Text('Subject Areas'),
-                headerColor: Colors.white,
-                selectedChipColor: kTeal,
-                selectedTextStyle: const TextStyle(color: Colors.white),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white),
-                ),
-                items: subjectsList.map((e) => MultiSelectItem(e, e)).toList(),
-                initialValue: userInterests,
-                onTap: (values) {
-                  print('Selected interests: $values');
-                  _selectedInterests = List.from(userInterests);
-                  for (var value in values) {
-                    if (_selectedInterests.contains(value)) {
-                      _selectedInterests.remove(value);
-                    } else {
-                      _selectedInterests.add(value);
+              Container(
+                padding:  const EdgeInsets.only(top: 10),
+                child: MultiSelectChipField(
+                  // showHeader: false,
+                  title: const Text('Subject Areas'),
+                  headerColor: Colors.white,
+                  selectedChipColor: kTeal,
+                  selectedTextStyle: const TextStyle(color: Colors.white),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.white),
+                  ),
+                  items: subjectsList.map((e) => MultiSelectItem(e, e)).toList(),
+                  initialValue: userInterests,
+                  onTap: (values) {
+                    print('Selected interests: $values');
+                    _selectedInterests = List.from(userInterests);
+                    for (var value in values) {
+                      if (_selectedInterests.contains(value)) {
+                        _selectedInterests.remove(value);
+                      } else {
+                        _selectedInterests.add(value);
+                      }
                     }
-                  }
-                },
-
+                  },
+                ),
               ),
-            ),
-            MultiSelectChipField(
-              title: const Text('Skill Levels'),
-              headerColor: Colors.white,
-              selectedChipColor: const Color(0xffffd0ef),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.white),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                   Padding(
+                    padding: EdgeInsets.only(left: 10.0, top: 10),
+                    child: Row(
+                      children: [
+                        Image.asset('assets/icons/speedometer.png',width: 20, height: 20,),
+                        SizedBox(width: 8,),
+                        Text('Student\'s Level', style: TextStyle(fontSize: 18),),
+                      ],
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: ChipsChoice<int>.single(
+                      value: userNotifier.studentLevel,
+                      onChanged: (val) {
+                      setModalState((){
+                        userNotifier.studentLevel = val;
+                      });
+                      },
+                      // print(tag);
+                      choiceItems: C2Choice.listFrom<int, String>(
+                        source: levelsList,
+                        value: (i, v) => i,
+                        label: (i, v) => v,
+                        tooltip: (i, v) => v,
+                      ),
+                      choiceCheckmark: true,
+                      choiceStyle: C2ChipStyle.outlined(
+                        overlayColor: kSaraLightPink,
+                        color: kSaraAccent,
+                        foregroundStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+                        borderStyle: BorderStyle.solid,
+                        borderRadius: BorderRadius.all(
+                            Radius.circular(15)
+                        ),
+                        selectedStyle:  C2ChipStyle.filled(
+                          overlayColor: kSaraLightPink,
+                          height: 35,
+                          color: const Color(0xffffd0ef),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(15),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              items: levelsList.map((e) => MultiSelectItem(e, e)).toList(),
-              initialValue: userLevels,
-              onTap: (values) {
-                print('Selected levels: $values');
-                _selectedLevels = List.from(userLevels);
-                for (var value in values) {
-                  if (_selectedLevels.contains(value)) {
-                    _selectedLevels.remove(value);
-                  } else {
-                    _selectedLevels.add(value);
-                  }
-                }
-              },
-            ),
-          ],
-        );
+            ],
+          );
+        });
       },
     ).whenComplete(() {
       db.updateUserInterests(userNotifier, _selectedInterests);
-      db.updateUserLevel(userNotifier, _selectedLevels);
+      db.updateStudentLevel(userNotifier, userNotifier.studentLevel);
       // print('user interests: ${userNotifier.userInterests}');
       // print('user levels: ${userNotifier.skillLevel}');
-      print('complete');
     });
   }
 }
