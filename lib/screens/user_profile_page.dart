@@ -320,12 +320,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                           title: const Text('Language'),
                                           value: const Text('English'),
                                         ),
-                                        SettingsTile.switchTile(
-                                          onToggle: (value) {},
-                                          initialValue: false,
-                                          leading: const Icon(Icons.dark_mode),
-                                          title: const Text('Enable dark mode'),
-                                        ),
                                         SettingsTile.navigation(
                                           leading: const Icon(
                                               Icons.settings_suggest_rounded),
