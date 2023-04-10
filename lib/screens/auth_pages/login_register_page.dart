@@ -68,7 +68,7 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
         );
         userController.setUserName(_controllerName.text);
         db.userSetup(displayName:_controllerName.text.trim(), email: _controllerEmail.text.trim());
-        Get.offAndToNamed(PageRoutes.home);
+        Get.offAndToNamed(PageRoutes.interests);
       }else{
         setState(() {
           _showError = true;
