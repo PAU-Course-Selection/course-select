@@ -6,6 +6,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../routes/routes.dart';
 import '../../utils/auth.dart';
+import '../select_interests_page.dart';
 import 'intro_page2.dart';
 import 'intro_page3.dart';
 
@@ -19,7 +20,7 @@ class WelcomePage extends StatelessWidget {
         stream: Auth().authStateChanges,
         builder: (context, snapshot){
           if(snapshot.hasData){
-            return AppMainNav();
+            return const AppMainNav(); //AppMainNav SelectInterestsPage
           }else{
             return const Onboarding();
           }

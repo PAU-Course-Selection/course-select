@@ -612,12 +612,12 @@ _showMultiSelect(BuildContext context, List subjectsList, List<String> levelsLis
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                    Padding(
-                    padding: EdgeInsets.only(left: 10.0, top: 10),
+                    padding: const EdgeInsets.only(left: 10.0, top: 10),
                     child: Row(
                       children: [
                         Image.asset('assets/icons/speedometer.png',width: 20, height: 20,),
-                        SizedBox(width: 8,),
-                        Text('Student\'s Level', style: TextStyle(fontSize: 18),),
+                        const SizedBox(width: 8,),
+                        const Text('Student\'s Level', style: TextStyle(fontSize: 18),),
                       ],
                     ),
                   ),
