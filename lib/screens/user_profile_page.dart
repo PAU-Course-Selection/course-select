@@ -348,7 +348,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                       ],
                                     ),
                                     SettingsSection(
-                                      title: const Text('Security & Privacy'),
+                                      title: const Text('Security & Account Settings'),
                                       tiles: <SettingsTile>[
                                         SettingsTile(
                                           leading: const Icon(
@@ -434,10 +434,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                           title: const Text(
                                               'Allow activity sharing'),
                                         ),
-                                      ],
-                                    ),
-                                    SettingsSection(
-                                      tiles: <SettingsTile>[
                                         SettingsTile(
                                           leading: const Icon(Icons.logout,
                                               color: Colors.red),
