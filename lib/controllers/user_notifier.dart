@@ -4,6 +4,7 @@ import 'package:course_select/utils/firebase_data_management.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:course_select/models/user_data_model.dart' as student;
+import 'package:intl/intl.dart';
 
 import '../models/course_data_model.dart';
 import '../utils/auth.dart';
@@ -61,7 +62,11 @@ class UserNotifier extends ChangeNotifier {
   UnmodifiableListView<student.UserModel> get usersList =>
       UnmodifiableListView(_usersList);
 
-  set email(value) => _email = value;
+
+  set email(value) {
+    _email = value;
+    notifyListeners();
+  }
 
   ///Sets the user's name to be updated and used across different screens
   setUserName(String name) {
@@ -85,48 +90,31 @@ class UserNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateUserName() {
-    for (var student in usersList) {
-      if (student.email == user?.email) {
-        userName = student.displayName ?? '';
-      }
-    }
-    notifyListeners();
-  }
-
-  void updateAvatar() {
-    try {
-      for (var student in usersList) {
-        if (student.email == user?.email) {
-          avatar = student.avatar ?? '';
+  void updateUserDetails() {
+    try{
+      FirebaseAuth.instance.authStateChanges().listen((User? user) {
+        if (user != null) {
+          email = user.email;
+          for (var student in usersList) {
+            if (student.email == user.email) {
+              userName = student.displayName ?? '';
+              email = student.email ?? '';
+              avatar = student.avatar ?? '';
+              DateTime? date = student.dateCreated?.toDate();
+              var formattedDate = DateFormat.yMEd().format(date?? DateTime.now());
+              joinDate = "Joined on $formattedDate";
+              break; // Stop searching once the user is found
+            }
+          }
         }
-      }
-    } on ArgumentError catch (e) {
+        notifyListeners();
+      });
+    }catch (e){
       print(e);
     }
-    notifyListeners();
-  }
-
-  void updateDate() {
-    for (var student in usersList) {
-      if (student.email == user?.email) {
-        DateTime? date = student.dateCreated?.toDate();
-        String? year = date?.year.toString();
-        String? month = date?.month.toString();
-        String? day = date?.day.toString();
-        joinDate = "Joined on $year-$month-$day";
-      }
-    }
-    notifyListeners();
-  }
-
-  void updateEmail() {
-    email = user?.email ?? 'User email';
-    notifyListeners();
   }
 
   get joinDate => _joinDate;
-
   set joinDate(value) {
     _joinDate = value;
     notifyListeners();

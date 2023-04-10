@@ -46,11 +46,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
   Future getData() async {
     var users = await db.getUsers(userNotifier);
-    userNotifier.updateUserName();
-    userNotifier.updateEmail();
-    userNotifier.updateAvatar();
-    userNotifier.updateDate();
-
+    userNotifier.updateUserDetails();
     return users;
   }
 
