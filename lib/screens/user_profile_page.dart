@@ -37,7 +37,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
   final DatabaseManager db = DatabaseManager();
   final User? user = Auth().currentUser;
   late Future futureData;
-  int tag = 0;
 
   Widget _title() {
     return Text(
@@ -49,6 +48,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
   Future getData() async {
     var users = await db.getUsers(userNotifier);
     userNotifier.updateUserDetails();
+    userNotifier.getStudentLevel();
     return users;
   }
 
@@ -236,9 +236,15 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                         color: kPrimaryColour,
                                       )))
                             ]))),
-                    Text(
-                      userNotifier.userName,
-                      style: kHeadlineMedium,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          userNotifier.userName,
+                          style: kHeadlineMedium,
+                        ),
+                        getIcons(userNotifier.studentLevel)
+                      ],
                     ),
                     Text(userNotifier.email ?? 'User email'),
                     Text(userNotifier.joinDate),
@@ -503,11 +509,13 @@ class _UserProfilePageState extends State<UserProfilePage> {
   }
 }
 
+late int studentLevel;
 
 _showMultiSelect(BuildContext context, List subjectsList, List<String> levelsList,
     DatabaseManager db, UserNotifier userNotifier) {
   var userInterests = userNotifier.getInterests();
   var _selectedInterests = [];
+  studentLevel = userNotifier.getStudentLevel();
 
   {
     showModalBottomSheet(
@@ -517,7 +525,7 @@ _showMultiSelect(BuildContext context, List subjectsList, List<String> levelsLis
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       context: context,
       builder: (ctx) {
-        return StatefulBuilder(builder: (context, setModalState){
+        return StatefulBuilder(builder: (context, setState){
           return Column(
             children: [
               Column(
@@ -618,10 +626,10 @@ _showMultiSelect(BuildContext context, List subjectsList, List<String> levelsLis
                   Align(
                     alignment: Alignment.topLeft,
                     child: ChipsChoice<int>.single(
-                      value: userNotifier.studentLevel,
+                      value: studentLevel,
                       onChanged: (val) {
-                      setModalState((){
-                        userNotifier.studentLevel = val;
+                      setState((){
+                        studentLevel = val;
                       });
                       },
                       // print(tag);
@@ -635,9 +643,9 @@ _showMultiSelect(BuildContext context, List subjectsList, List<String> levelsLis
                       choiceStyle: C2ChipStyle.outlined(
                         overlayColor: kSaraLightPink,
                         color: kSaraAccent,
-                        foregroundStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+                        foregroundStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
                         borderStyle: BorderStyle.solid,
-                        borderRadius: BorderRadius.all(
+                        borderRadius: const BorderRadius.all(
                             Radius.circular(15)
                         ),
                         selectedStyle:  C2ChipStyle.filled(
@@ -659,11 +667,25 @@ _showMultiSelect(BuildContext context, List subjectsList, List<String> levelsLis
       },
     ).whenComplete(() {
       db.updateUserInterests(userNotifier, _selectedInterests);
-      db.updateStudentLevel(userNotifier, userNotifier.studentLevel);
+      db.updateStudentLevel(userNotifier, studentLevel);
       // print('user interests: ${userNotifier.userInterests}');
       // print('user levels: ${userNotifier.skillLevel}');
     });
   }
+}
+Widget getIcons(int count) {
+  Icon icon = Icon(Icons.star, color: kSaraAccent,); // replace with your desired icon
+  List<Icon> icons = [];
+
+  Row row = Row(
+    children: icons,
+  );
+
+  for (int i = 0; i <= count; i++) {
+    icons.add(icon);
+  }
+
+  return row;
 }
 
 class EditImageOptionsItem extends StatelessWidget {

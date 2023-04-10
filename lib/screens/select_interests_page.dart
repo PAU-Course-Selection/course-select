@@ -26,7 +26,7 @@ class _SelectInterestsPageState extends State<SelectInterestsPage> {
   @override
   Widget build(BuildContext context) {
     var userInterests = userNotifier.getInterests();
-    var userLevels = userNotifier.getLevel();
+    // var userLevels = userNotifier.studentLevel
     var _selectedInterests = [];
     var _selectedLevels = [];
 
@@ -120,27 +120,6 @@ class _SelectInterestsPageState extends State<SelectInterestsPage> {
                 }
               },
             ),
-          ),
-          MultiSelectChipField(
-            title: const Text('Skill Levels'),
-            headerColor: Colors.white,
-            selectedChipColor: const Color(0xffffd0ef),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.white),
-            ),
-            items: levels.map((e) => MultiSelectItem(e, e)).toList(),
-            initialValue: userLevels,
-            onTap: (values) {
-              print('Selected levels: $values');
-              _selectedLevels = List.from(userLevels);
-              for (var value in values) {
-                if (_selectedLevels.contains(value)) {
-                  _selectedLevels.remove(value);
-                } else {
-                  _selectedLevels.add(value);
-                }
-              }
-            },
           ),
           ElevatedButton(
               onPressed: () {

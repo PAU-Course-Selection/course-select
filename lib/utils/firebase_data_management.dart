@@ -262,6 +262,7 @@ class DatabaseManager {
 
         DocumentReference docRef = FirebaseFirestore.instance.collection("Users").doc(docId);
         await docRef.update({"studentLevel": level});
+        userNotifier.studentLevel = studentLevel;
         print('current student levels: $level');
       }
     } catch (e) {

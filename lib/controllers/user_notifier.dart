@@ -29,7 +29,7 @@ class UserNotifier extends ChangeNotifier {
   List _userCourseIds = [];
   List _userInterests = [];
   List _skillLevel = [];
-  int _studentLevel = 0;
+  int _studentLevel =0;
 
   int get studentLevel => _studentLevel;
 
@@ -166,23 +166,6 @@ class UserNotifier extends ChangeNotifier {
       print('user interests NOT found');
     }
     return interests;
-  }
-
-  List getLevel() {
-    List level = [];
-    for (int i = 0; i < usersList.length; i++) {
-      if (user != null && usersList[i].email == user?.email) {
-        match = true;
-        level = usersList[i].skillLevel ?? []; // use a default value if skillLevel is null
-        skillLevel = level;
-      }
-    }
-    if (match) {
-      print('user level found');
-    } else {
-      print('user level NOT found');
-    }
-    return level;
   }
   int getStudentLevel() {
     int level = 0;

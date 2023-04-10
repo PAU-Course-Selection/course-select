@@ -10,7 +10,6 @@ class UserModel{
   String? email;
   List<dynamic>? courses;
   List<dynamic>? interests;
-  List<dynamic>? skillLevel;
   int? studentLevel;
 
 
@@ -33,7 +32,6 @@ class UserModel{
     email = data['email'];
     courses = data['courses'];
     interests = data['interests'];
-    skillLevel = data['skillLevel'];
     studentLevel = data['studentLevel'];
   }
 }
