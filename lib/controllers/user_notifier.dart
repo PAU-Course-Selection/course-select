@@ -175,11 +175,9 @@ class UserNotifier extends ChangeNotifier {
   List getLevel() {
     List level = [];
     for (int i = 0; i < usersList.length; i++) {
-      if (usersList[i].email == user?.email) {
+      if (user != null && usersList[i].email == user?.email) {
         match = true;
-        // print(match);
-        // print(usersList[i].email);
-        level = usersList[i].skillLevel!;
+        level = usersList[i].skillLevel ?? []; // use a default value if skillLevel is null
         skillLevel = level;
       }
     }
@@ -190,6 +188,7 @@ class UserNotifier extends ChangeNotifier {
     }
     return level;
   }
+
 
 
 

@@ -355,13 +355,15 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
                                             // set up the buttons
                                             Widget cancelButton = TextButton(
-                                              child: const Text("Cancel"),
+                                              style: ButtonStyle(overlayColor: MaterialStatePropertyAll(kSaraLightPink)),
+                                              child: const Text("Cancel", style: TextStyle(color: Colors.red),),
                                               onPressed: () {
                                                 Navigator.of(context).pop();
                                               },
                                             );
                                             Widget confirmButton = TextButton(
-                                              child: const Text("Confirm"),
+                                              style: ButtonStyle(overlayColor: MaterialStatePropertyAll(kSaraLightPink)),
+                                              child:  Text('Confirm', style: TextStyle(color: kDeepGreen)),
                                               onPressed: () async {
                                                 Navigator.of(context)
                                                     .pushNamed("logIn");
@@ -374,7 +376,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                               context: context,
                                               builder: (BuildContext context) {
                                            Widget dialog = io.Platform.isAndroid == true? AlertDialog(
-                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
                                               title:
                                                   const Text("Delete Account"),
                                               content: const Text(
@@ -512,7 +514,7 @@ _showMultiSelect(BuildContext context, List subjectsList, List levelsList,
     showModalBottomSheet(
       isScrollControlled: true,
       // required for min/max child size
-      constraints: BoxConstraints(maxHeight: 570.h),
+      constraints: BoxConstraints(maxHeight: 590.h),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       context: context,
       builder: (ctx) {
@@ -616,7 +618,6 @@ _showMultiSelect(BuildContext context, List subjectsList, List levelsList,
                   }
                 }
               },
-
             ),
           ],
         );
