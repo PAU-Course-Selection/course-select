@@ -43,17 +43,18 @@ class _HomePageState extends State<HomePage> {
     _courseNotifier = Provider.of<CourseNotifier>(context, listen: false);
     userNotifier = Provider.of<UserNotifier>(context, listen: false);
     _db.getTotalLessons(_courseNotifier);
+
     getModels();
     futureData = getModels();
     Auth().currentUser?.reload();
     valueNotifier = ValueNotifier(0.0);
+    print(user?.email);
     super.initState();
   }
 
   Future getModels() async{
     await _db.getUsers(userNotifier);
-    userNotifier.updateUserName();
-    userNotifier.updateAvatar();
+    userNotifier.updateUserDetails();
     return _db.getCourses(_courseNotifier);
   }
 

@@ -40,15 +40,6 @@ class _TimetableState extends State<Timetable> {
     });
   }
 
-
-  formatDate(Timestamp timestamp){
-    var time = '${timestamp.toDate().hour.toString()}:${timestamp.toDate().minute.toString()}';
-    return time;
-  }
-
-
-
-
   @override
   Widget build(BuildContext context) {
     // print(lessons.first.startTime.toString());
