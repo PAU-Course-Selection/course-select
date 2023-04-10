@@ -258,7 +258,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         Column(
                           children: [
                             Text(
-                              '3',
+                              userNotifier.userCourseIds.length.toString(),
                               style: kHeadlineMedium.copyWith(color: kTeal),
                             ),
                             const Text('Enrolled'),
