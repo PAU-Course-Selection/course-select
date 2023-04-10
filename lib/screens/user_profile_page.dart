@@ -37,12 +37,23 @@ class _UserProfilePageState extends State<UserProfilePage> {
   final DatabaseManager db = DatabaseManager();
   final User? user = Auth().currentUser;
   late Future futureData;
+  int levelResult =0;
 
   Widget _title() {
     return Text(
       'Profile',
       style: kHeadlineMedium,
     );
+  }
+
+  Future<dynamic> _update() async {
+    print('called');
+    await db.test();
+    if(mounted){
+      setState(() {
+        levelResult = userNotifier.studentLevel;
+      });
+    }
   }
 
   Future getData() async {
@@ -236,15 +247,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                         color: kPrimaryColour,
                                       )))
                             ]))),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          userNotifier.userName,
-                          style: kHeadlineMedium,
-                        ),
-                        getIcons(userNotifier.studentLevel)
-                      ],
+                    getLevelPill(userNotifier.studentLevel),
+                    Text(
+                      userNotifier.userName,
+                      style: kHeadlineMedium,
                     ),
                     Text(userNotifier.email ?? 'User email'),
                     Text(userNotifier.joinDate),
@@ -333,6 +339,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                                   levels,
                                                   db,
                                                   userNotifier,
+                                                      ()=> _update()
+
                                               );
                                             });
                                           },
@@ -506,10 +514,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
 late int studentLevel;
 
 _showMultiSelect(BuildContext context, List subjectsList, List<String> levelsList,
-    DatabaseManager db, UserNotifier userNotifier) {
+    DatabaseManager db, UserNotifier userNotifier, Function onComplete) {
   var userInterests = userNotifier.getInterests();
   var _selectedInterests = [];
-  studentLevel = userNotifier.getStudentLevel();
+  studentLevel = userNotifier.studentLevel;
 
   {
     showModalBottomSheet(
@@ -646,7 +654,7 @@ _showMultiSelect(BuildContext context, List subjectsList, List<String> levelsLis
                           overlayColor: kSaraLightPink,
                           height: 35,
                           color: const Color(0xffffd0ef),
-                          borderRadius: BorderRadius.all(
+                          borderRadius: const BorderRadius.all(
                             Radius.circular(15),
                           ),
                         ),
@@ -662,24 +670,21 @@ _showMultiSelect(BuildContext context, List subjectsList, List<String> levelsLis
     ).whenComplete(() {
       db.updateUserInterests(userNotifier, _selectedInterests);
       db.updateStudentLevel(userNotifier, studentLevel);
+      onComplete.call();
       // print('user interests: ${userNotifier.userInterests}');
       // print('user levels: ${userNotifier.skillLevel}');
     });
   }
+  return studentLevel;
 }
-Widget getIcons(int count) {
-  Icon icon = Icon(Icons.star, color: kSaraAccent,); // replace with your desired icon
-  List<Icon> icons = [];
-
-  Row row = Row(
-    children: icons,
+Widget getLevelPill(int count) {
+  Widget levelPill = Container(
+    padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+    decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),color: kSaraLightPink),
+    child: Text(count ==0? 'Beginner': count == 1? 'Intermediate': 'Advanced', style: TextStyle(fontWeight: FontWeight.w500),),
   );
 
-  for (int i = 0; i <= count; i++) {
-    icons.add(icon);
-  }
-
-  return row;
+  return levelPill;
 }
 
 class EditImageOptionsItem extends StatelessWidget {

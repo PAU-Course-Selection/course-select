@@ -333,11 +333,22 @@ class _MyCoursesState extends State<MyCourses>
         Provider.of<SavedCoursesNotifier>(context, listen: false);
     userRef = FirebaseFirestore.instance.collection('Users').doc(userId);
     userNotifier = Provider.of<UserNotifier>(context, listen: false);
+    myList = userNotifier.filterCoursesByIds(courseNotifier.courseList);
     futureData = getModels();
     displayOngoingList = List.from(_myCourses);
     displayList = List.from(courseNotifier.courseList);
-    myList = userNotifier.filterCoursesByIds(courseNotifier.courseList);
+
     super.initState();
+  }
+
+  getMyCourses() async {
+    await db.getCourses(courseNotifier)
+        .then((value) {
+      setState(() {
+        myList = userNotifier.filterCoursesByIds(value);
+      });
+    });
+    return myList;
   }
 
   @override

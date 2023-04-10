@@ -29,7 +29,7 @@ class UserNotifier extends ChangeNotifier {
   List _userCourseIds = [];
   List _userInterests = [];
   List _skillLevel = [];
-  int _studentLevel =0;
+  int _studentLevel = 0;
 
   int get studentLevel => _studentLevel;
 
@@ -177,7 +177,7 @@ class UserNotifier extends ChangeNotifier {
       }
     }
     if (match) {
-      print('user level found');
+       print('getStudentLevel: $studentLevel');
     } else {
       print('user level NOT found');
     }

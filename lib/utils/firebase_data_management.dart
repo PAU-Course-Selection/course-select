@@ -238,7 +238,6 @@ class DatabaseManager {
 
         DocumentReference docRef = FirebaseFirestore.instance.collection("Users").doc(docId);
         await docRef.update({"interests": interests});
-        print('total user interests: $interests');
         // getUsers(userNotifier);
       }
     } catch (e) {
@@ -256,9 +255,9 @@ class DatabaseManager {
       if (myUser.docs.isNotEmpty) {
         var docId = myUser.docs.first.id;
 
-        int level = userNotifier.studentLevel;
+        // int level = userNotifier.studentLevel;
 
-        level = studentLevel;
+        int level = studentLevel;
 
         DocumentReference docRef = FirebaseFirestore.instance.collection("Users").doc(docId);
         await docRef.update({"studentLevel": level});
