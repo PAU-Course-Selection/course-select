@@ -236,6 +236,7 @@ class _HomePageState extends State<HomePage> {
                         HapticFeedback.heavyImpact();
                         setState(() {
                           futureData = getModels();
+                          getForYouList();
                         });
                         return futureData;
                       },

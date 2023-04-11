@@ -664,6 +664,7 @@ _showMultiSelect(BuildContext context, List subjectsList, List<String> levelsLis
         });
       },
     ).whenComplete(() {
+       print('final interests: $_selectedInterests');
       db.updateUserInterests(userNotifier, _selectedInterests);
       db.updateStudentLevel(userNotifier, studentLevel);
       onComplete.call();

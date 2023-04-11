@@ -238,7 +238,9 @@ class DatabaseManager {
 
         DocumentReference docRef = FirebaseFirestore.instance.collection("Users").doc(docId);
         await docRef.update({"interests": interests});
-        print('updated subjects');
+        for(var c in interests){
+          print('updated subjects: $c');
+        }
         // getUsers(userNotifier);
       }
     } catch (e) {
