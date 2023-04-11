@@ -187,11 +187,11 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
               context: context,
               builder: (BuildContext context) {
                 return Platform.isAndroid == true
-                    ? preReqs.isNotEmpty
+                    ? preReqs.isNotEmpty && !isMatching
                         ? androidLimitationDialog(preReqs: preReqs)
                         : androidConfirmationDialog(
                             courseNotifier: _courseNotifier,
-                            preReqs: preReqs,
+                            preReqs: isMatching? 'with prerequisites: $preReqs': preReqs,
                             db: _db,
                             userNotifier: _userNotifier,
                             homePageNotifier: _homePageNotifier)
