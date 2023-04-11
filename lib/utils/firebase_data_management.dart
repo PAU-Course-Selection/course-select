@@ -221,6 +221,7 @@ class DatabaseManager {
 
   Future<void> updateUserInterests(
       UserNotifier userNotifier, List updatedList) async {
+    print('received updatedList: $updatedList');
     try {
       var myUser = await FirebaseFirestore.instance
           .collection("Users")
@@ -229,16 +230,14 @@ class DatabaseManager {
       if (myUser.docs.isNotEmpty) {
         var docId = myUser.docs.first.id;
 
-        List interests = List.from(userNotifier.getInterests());
-        for (var interest in updatedList) {
-          if (!interests.contains(interest)) {
-            interests.add(interest);
-          }
-        }
-
         DocumentReference docRef = FirebaseFirestore.instance.collection("Users").doc(docId);
-        await docRef.update({"interests": interests});
-        for(var c in interests){
+        await docRef.update({"interests": updatedList}).whenComplete(() {
+          userNotifier.getInterests();
+          userNotifier.userInterests = updatedList;
+          print('updated firebase and user, complete');
+        });
+
+        for(var c in updatedList){
           print('updated subjects: $c');
         }
         // getUsers(userNotifier);

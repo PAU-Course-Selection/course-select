@@ -37,7 +37,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
   final DatabaseManager db = DatabaseManager();
   final User? user = Auth().currentUser;
   late Future futureData;
-  int levelResult =0;
+  int levelResult = 0;
+  List myInterests = [];
 
   Widget _title() {
     return Text(
@@ -49,8 +50,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
   Future<dynamic> _update() async {
     // print('called');
     await db.test();
-    if(mounted){
+    if (mounted) {
       setState(() {
+        myInterests = userNotifier.userInterests;
+        print("myInterests: $myInterests");
         levelResult = userNotifier.studentLevel;
       });
     }
@@ -58,6 +61,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
   Future getData() async {
     var users = await db.getUsers(userNotifier);
+
     userNotifier.updateUserDetails();
     userNotifier.getStudentLevel();
     return users;
@@ -112,7 +116,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
   void initState() {
     userNotifier = Provider.of<UserNotifier>(context, listen: false);
     futureData = getData();
-    oldUrl = userNotifier.avatar;
     super.initState();
   }
 
@@ -333,21 +336,22 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                               const Text('Student Preferences'),
                                           onPressed: (context) {
                                             setState(() {
+                                              getData();
                                               _showMultiSelect(
                                                   context,
                                                   subjects,
                                                   levels,
                                                   db,
                                                   userNotifier,
-                                                      ()=> _update()
-                                              );
+                                                  () => _update());
                                             });
                                           },
                                         ),
                                       ],
                                     ),
                                     SettingsSection(
-                                      title: const Text('Security & Account Settings'),
+                                      title: const Text(
+                                          'Security & Account Settings'),
                                       tiles: <SettingsTile>[
                                         SettingsTile(
                                           leading: const Icon(
@@ -361,15 +365,27 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
                                             // set up the buttons
                                             Widget cancelButton = TextButton(
-                                              style: ButtonStyle(overlayColor: MaterialStatePropertyAll(kSaraLightPink)),
-                                              child: const Text("Cancel", style: TextStyle(color: Colors.red),),
+                                              style: ButtonStyle(
+                                                  overlayColor:
+                                                      MaterialStatePropertyAll(
+                                                          kSaraLightPink)),
+                                              child: const Text(
+                                                "Cancel",
+                                                style: TextStyle(
+                                                    color: Colors.red),
+                                              ),
                                               onPressed: () {
                                                 Navigator.of(context).pop();
                                               },
                                             );
                                             Widget confirmButton = TextButton(
-                                              style: ButtonStyle(overlayColor: MaterialStatePropertyAll(kSaraLightPink)),
-                                              child:  Text('Confirm', style: TextStyle(color: kDeepGreen)),
+                                              style: ButtonStyle(
+                                                  overlayColor:
+                                                      MaterialStatePropertyAll(
+                                                          kSaraLightPink)),
+                                              child: Text('Confirm',
+                                                  style: TextStyle(
+                                                      color: kDeepGreen)),
                                               onPressed: () async {
                                                 Navigator.of(context)
                                                     .pushNamed("logIn");
@@ -381,49 +397,68 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                             showDialog(
                                               context: context,
                                               builder: (BuildContext context) {
-                                           Widget dialog = io.Platform.isAndroid == true? AlertDialog(
-                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-                                              title:
-                                                  const Text("Delete Account"),
-                                              content: const Text(
-                                                  "Are you sure you would like to delete your account?"),
-                                              actions: [
-                                                cancelButton,
-                                                confirmButton,
-                                              ],
-                                            ):  CupertinoAlertDialog(
-                                             title: const Text('This action is irreversible. Are you sure?'),
-                                             actions: [
-                                               CupertinoDialogAction(
-                                                 /// This parameter indicates this action is the default,
-                                                 /// and turns the action's text to bold text.
-                                                 isDefaultAction: true,
-                                                 onPressed: () {
-                                                   Navigator.pop(context);
-                                                 },
-                                                 child: const Text('Cancel'),
-                                               ),
-                                               CupertinoDialogAction(
-                                                 /// This parameter indicates the action would perform
-                                                 /// a destructive action such as deletion, and turns
-                                                 /// the action's text color to red.
-                                                 isDestructiveAction: true,
-                                                 onPressed: () async{
-                                                   Navigator.pop(context);
-                                                   Navigator.of(context)
-                                                       .pushNamed("logIn");
-                                                   await currentUser?.delete();
-                                                   await currentUser?.reload();
-                                                 },
-                                                 child: const Text('Confirm'),
-                                               ),
-                                             ],
-                                           );
-                                            // show the dialog
+                                                Widget dialog =
+                                                    io.Platform.isAndroid ==
+                                                            true
+                                                        ? AlertDialog(
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            15.0)),
+                                                            title: const Text(
+                                                                "Delete Account"),
+                                                            content: const Text(
+                                                                "Are you sure you would like to delete your account?"),
+                                                            actions: [
+                                                              cancelButton,
+                                                              confirmButton,
+                                                            ],
+                                                          )
+                                                        : CupertinoAlertDialog(
+                                                            title: const Text(
+                                                                'This action is irreversible. Are you sure?'),
+                                                            actions: [
+                                                              CupertinoDialogAction(
+                                                                /// This parameter indicates this action is the default,
+                                                                /// and turns the action's text to bold text.
+                                                                isDefaultAction:
+                                                                    true,
+                                                                onPressed: () {
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                },
+                                                                child: const Text(
+                                                                    'Cancel'),
+                                                              ),
+                                                              CupertinoDialogAction(
+                                                                /// This parameter indicates the action would perform
+                                                                /// a destructive action such as deletion, and turns
+                                                                /// the action's text color to red.
+                                                                isDestructiveAction:
+                                                                    true,
+                                                                onPressed:
+                                                                    () async {
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pushNamed(
+                                                                          "logIn");
+                                                                  await currentUser
+                                                                      ?.delete();
+                                                                  await currentUser
+                                                                      ?.reload();
+                                                                },
+                                                                child: const Text(
+                                                                    'Confirm'),
+                                                              ),
+                                                            ],
+                                                          );
+                                                // show the dialog
                                                 return dialog;
                                               },
                                             );
-
                                           },
                                         ),
                                         SettingsTile.switchTile(
@@ -507,12 +542,22 @@ class _UserProfilePageState extends State<UserProfilePage> {
 }
 
 late int studentLevel;
-late List userInterests;
+// late List userInterests;
+List<dynamic> _selectedInterests = [];
+// var userInterests = [];
 
-_showMultiSelect(BuildContext context, List subjectsList, List<String> levelsList,
-    DatabaseManager db, UserNotifier userNotifier, Function onComplete) {
-   userInterests = userNotifier.getInterests();
-  var _selectedInterests = [];
+_showMultiSelect(
+    BuildContext context,
+    List subjectsList,
+    List<String> levelsList,
+    DatabaseManager db,
+    UserNotifier userNotifier,
+    Function onComplete) {
+
+  List<dynamic> userInterests = userNotifier.userInterests;
+  if(userInterests.isEmpty){
+    userInterests= userNotifier.getInterests();
+  }
   studentLevel = userNotifier.studentLevel;
 
   {
@@ -523,7 +568,7 @@ _showMultiSelect(BuildContext context, List subjectsList, List<String> levelsLis
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       context: context,
       builder: (ctx) {
-        return StatefulBuilder(builder: (context, setState){
+        return StatefulBuilder(builder: (context, setState) {
           return Column(
             children: [
               Column(
@@ -542,7 +587,8 @@ _showMultiSelect(BuildContext context, List subjectsList, List<String> levelsLis
                     padding: EdgeInsets.only(top: 10.0, bottom: 10),
                     child: Text(
                       'Personalise your experience',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                     ),
                   ),
                   Text(
@@ -558,7 +604,7 @@ _showMultiSelect(BuildContext context, List subjectsList, List<String> levelsLis
                     width: 320.w,
                     child: const Text(
                       'You will be offered appropriate courses and groups of '
-                          'interrelated courses for a full immersion in the noted area of interest',
+                      'interrelated courses for a full immersion in the noted area of interest',
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -569,12 +615,14 @@ _showMultiSelect(BuildContext context, List subjectsList, List<String> levelsLis
                         textAlign: TextAlign.center,
                         text: const TextSpan(children: [
                           TextSpan(
-                              text: 'Allowable time limit for full time students is ',
+                              text:
+                                  'Allowable time limit for full time students is ',
                               style: TextStyle(color: Colors.black)),
                           TextSpan(
                               text: '10 hours per week',
                               style: TextStyle(
-                                  fontWeight: FontWeight.bold, color: Colors.black)),
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black)),
                         ]),
                       )),
                 ],
@@ -583,41 +631,44 @@ _showMultiSelect(BuildContext context, List subjectsList, List<String> levelsLis
                 color: kDeepGreen.withOpacity(0.2),
               ),
               Container(
-                padding:  const EdgeInsets.only(top: 10),
+                padding: const EdgeInsets.only(top: 10),
                 child: MultiSelectChipField(
-                  // showHeader: false,
-                  title: const Text('Subject Areas'),
-                  headerColor: Colors.white,
-                  selectedChipColor: kTeal,
-                  selectedTextStyle: const TextStyle(color: Colors.white),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.white),
-                  ),
-                  items: subjectsList.map((e) => MultiSelectItem(e, e)).toList(),
-                  initialValue: userInterests,
-                  onTap: (values) {
-                    print('Selected interests: $values');
-                    _selectedInterests = List.from(userInterests);
-                    for (var value in values) {
-                      if (_selectedInterests.contains(value)) {
-                        _selectedInterests.remove(value);
-                      } else {
-                        _selectedInterests.add(value);
-                      }
-                    }
-                  },
-                ),
+                    // showHeader: false,
+                    title: const Text('Subject Areas'),
+                    headerColor: Colors.white,
+                    selectedChipColor: kTeal,
+                    selectedTextStyle: const TextStyle(color: Colors.white),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.white),
+                    ),
+                    items:
+                        subjectsList.map((e) => MultiSelectItem(e, e)).toList(),
+                    initialValue: userInterests,
+                    onTap: (values) {
+                      setState(() {
+                        _selectedInterests = values;
+                      });
+                    }),
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                   Padding(
+                  Padding(
                     padding: const EdgeInsets.only(left: 10.0, top: 10),
                     child: Row(
                       children: [
-                        Image.asset('assets/icons/speedometer.png',width: 20, height: 20,),
-                        const SizedBox(width: 8,),
-                        const Text('Student\'s Level', style: TextStyle(fontSize: 18),),
+                        Image.asset(
+                          'assets/icons/speedometer.png',
+                          width: 20,
+                          height: 20,
+                        ),
+                        const SizedBox(
+                          width: 8,
+                        ),
+                        const Text(
+                          'Student\'s Level',
+                          style: TextStyle(fontSize: 18),
+                        ),
                       ],
                     ),
                   ),
@@ -626,9 +677,9 @@ _showMultiSelect(BuildContext context, List subjectsList, List<String> levelsLis
                     child: ChipsChoice<int>.single(
                       value: studentLevel,
                       onChanged: (val) {
-                      setState((){
-                        studentLevel = val;
-                      });
+                        setState(() {
+                          studentLevel = val;
+                        });
                       },
                       // print(tag);
                       choiceItems: C2Choice.listFrom<int, String>(
@@ -641,12 +692,12 @@ _showMultiSelect(BuildContext context, List subjectsList, List<String> levelsLis
                       choiceStyle: C2ChipStyle.outlined(
                         overlayColor: kSaraLightPink,
                         color: kSaraAccent,
-                        foregroundStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+                        foregroundStyle: const TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.w500),
                         borderStyle: BorderStyle.solid,
-                        borderRadius: const BorderRadius.all(
-                            Radius.circular(15)
-                        ),
-                        selectedStyle:  C2ChipStyle.filled(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(15)),
+                        selectedStyle: C2ChipStyle.filled(
                           overlayColor: kSaraLightPink,
                           height: 35,
                           color: const Color(0xffffd0ef),
@@ -664,7 +715,8 @@ _showMultiSelect(BuildContext context, List subjectsList, List<String> levelsLis
         });
       },
     ).whenComplete(() {
-       print('final interests: $_selectedInterests');
+      print('final interests: $_selectedInterests');
+      userNotifier.userInterests = _selectedInterests;
       db.updateUserInterests(userNotifier, _selectedInterests);
       db.updateStudentLevel(userNotifier, studentLevel);
       onComplete.call();
@@ -674,11 +726,20 @@ _showMultiSelect(BuildContext context, List subjectsList, List<String> levelsLis
   }
   return studentLevel;
 }
+
 Widget getLevelPill(int count) {
   Widget levelPill = Container(
     padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-    decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),color: kSaraLightPink),
-    child: Text(count ==0? 'Beginner': count == 1? 'Intermediate': 'Advanced', style: TextStyle(fontWeight: FontWeight.w500),),
+    decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15), color: kSaraLightPink),
+    child: Text(
+      count == 0
+          ? 'Beginner'
+          : count == 1
+              ? 'Intermediate'
+              : 'Advanced',
+      style: TextStyle(fontWeight: FontWeight.w500),
+    ),
   );
 
   return levelPill;

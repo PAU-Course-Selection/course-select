@@ -109,15 +109,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // getCourseIds(userNotifier);
-    // List myList = filterCoursesByIds(userCourseIds, courseNotifier.courseList);
-    // print(myList);
-    //final Size _size = MediaQuery.of(context).size;
-    // getForYouList();
-    for(var c in forYouList){
-      print(forYouList.length);
-      print(c.subjectArea);
-    }
     valueNotifier.value = 80.0;
     HomePageNotifier homePageNotifier = Provider.of<HomePageNotifier>(context, listen: true);
 

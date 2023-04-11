@@ -157,7 +157,7 @@ class UserNotifier extends ChangeNotifier {
         // print(match);
         // print(usersList[i].email);
         interests = usersList[i].interests!;
-        userInterests = interests;
+        // userInterests = interests;
       }
     }
     if (match) {
@@ -165,7 +165,7 @@ class UserNotifier extends ChangeNotifier {
     } else {
       print('user interests NOT found');
     }
-    return interests;
+    return interests.toList();
   }
   int getStudentLevel() {
     int level = 0;
