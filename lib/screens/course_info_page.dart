@@ -24,6 +24,7 @@ import '../routes/routes.dart';
 import '../shared_widgets/course_card.dart';
 import '../shared_widgets/ios_confirmation_dialog.dart';
 import '../shared_widgets/ios_limitation_dialog.dart';
+import '../utils/enums.dart';
 
 class CourseInfoPage extends StatefulWidget {
   const CourseInfoPage({
@@ -44,6 +45,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
   late int numLessons;
   Image img = Image.asset('assets/images/c2.jpg');
   String videoUrl = '';
+
   final ScrollController _controller =
       ScrollController(initialScrollOffset: 60.w);
 
@@ -96,16 +98,24 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     });
   }
 
-  String formatPrerequisites(List prerequisites, List<Course> courses) {
+  String formatPrerequisites(List prerequisites, List<Course> courses, List enrolledCourses) {
+    final reqCourseIds = <String>{};
+
+    for (final course in courses) {
+      // If the course ID is in the list of prerequisites and not in the enrolled course list,
+      // add the course ID to the set of required course IDs.
+      if (prerequisites.contains(course.courseId) && !enrolledCourses.contains(course.courseId)) {
+        reqCourseIds.add(course.courseId);
+      }
+    }
     // Initialize a list to store the names of the required courses.
     final reqCourses = <String>[];
 
-    // Iterate through each course in the list of courses.
-    for (final course in courses) {
-      // If the course ID is in the list of prerequisites, add the course name to the list of required courses.
-      if (prerequisites.contains(course.courseId)) {
-        reqCourses.add(course.courseName);
-      }
+    // Iterate through each required course ID in the set of required course IDs.
+    for (final courseId in reqCourseIds) {
+      // Find the course with the corresponding course ID and add its name to the list of required course names.
+      final course = courses.firstWhere((c) => c.courseId == courseId);
+      reqCourses.add(course.courseName);
     }
 
     // If there are no required courses, return an empty string.
@@ -125,9 +135,10 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     return formattedCourses;
   }
 
+
   Widget _conditionalBottomButton() {
     var preReqs = formatPrerequisites(
-        _courseNotifier.currentCourse.prereqs, _courseNotifier.courseList);
+        _courseNotifier.currentCourse.prereqs, _courseNotifier.courseList, _userNotifier.userCourseIds);
     if (_userNotifier
         .getCourseIds()
         .contains(_courseNotifier.currentCourse.courseId)) {
@@ -160,6 +171,18 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
         onPressed: () {
           // _db.updateUserCourses(_userNotifier, _courseNotifier);
           // _homePageNotifier.isStateChanged = true;
+          final skillLevels = {0: 'beginner', 1: 'intermediate', 2: 'advanced'};
+          final userLevel = _userNotifier.studentLevel;
+          final courseLevel = _courseNotifier.currentCourse.level.toLowerCase();
+          final courseLevelIndex = skillLevels.entries.firstWhere((entry) => entry.value == courseLevel).key;
+          final courseLevelString = skillLevels[courseLevelIndex];
+          bool isMatching = false;
+          print('courseLevelString: $courseLevelString');
+          print('skillLevels[userLevel]: ${skillLevels[userLevel]}');
+          if (courseLevelIndex <= userLevel) {
+            isMatching = true;
+            print('isMatching $isMatching');
+          }
           showDialog(
               context: context,
               builder: (BuildContext context) {
@@ -172,11 +195,11 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
                             db: _db,
                             userNotifier: _userNotifier,
                             homePageNotifier: _homePageNotifier)
-                    : preReqs.isNotEmpty
-                        ? iOSLimitationDialog(preReqs: preReqs)
-                        : iOSConfirmationDialog(
+                    : preReqs.isNotEmpty && !isMatching
+                    ? IOSLimitationDialog(preReqs: preReqs):
+                         IOSConfirmationDialog(
                             courseNotifier: _courseNotifier,
-                            preReqs: preReqs,
+                            preReqs: isMatching? 'with prerequisites: $preReqs': preReqs,
                             db: _db,
                             userNotifier: _userNotifier,
                             homePageNotifier: _homePageNotifier);
@@ -185,6 +208,13 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
         buttonText: 'Enroll',
       );
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _userNotifier = Provider.of<UserNotifier>(context);
+     _userNotifier.getStudentLevel();
   }
 
   @override

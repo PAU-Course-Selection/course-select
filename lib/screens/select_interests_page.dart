@@ -151,7 +151,7 @@ class _SelectInterestsPageState extends State<SelectInterestsPage> {
                     children: [
                       Image.asset('assets/icons/speedometer.png',width: 20, height: 20,),
                       const SizedBox(width: 8,),
-                      const Text('Student\'s Level', style: TextStyle(fontSize: 18),),
+                      const Text('Skill Level', style: TextStyle(fontSize: 18),),
                     ],
                   ),
                 ),
