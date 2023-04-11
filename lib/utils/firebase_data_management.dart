@@ -229,7 +229,7 @@ class DatabaseManager {
       if (myUser.docs.isNotEmpty) {
         var docId = myUser.docs.first.id;
 
-        List interests = userNotifier.getInterests();
+        List interests = List.from(userNotifier.getInterests());
         for (var interest in updatedList) {
           if (!interests.contains(interest)) {
             interests.add(interest);
@@ -238,6 +238,7 @@ class DatabaseManager {
 
         DocumentReference docRef = FirebaseFirestore.instance.collection("Users").doc(docId);
         await docRef.update({"interests": interests});
+        print('updated subjects');
         // getUsers(userNotifier);
       }
     } catch (e) {

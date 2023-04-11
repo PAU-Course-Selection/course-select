@@ -47,7 +47,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
   }
 
   Future<dynamic> _update() async {
-    print('called');
+    // print('called');
     await db.test();
     if(mounted){
       setState(() {
@@ -129,7 +129,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
         .map((status) => status.toString().split('.').last)
         .map((str) => str.substring(0, 1).toUpperCase() + str.substring(1))
         .toList();
-    print(subjects);
+    // print(subjects);
     return Scaffold(
       appBar: AppBar(
         title: _title(),
@@ -340,7 +340,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                                   db,
                                                   userNotifier,
                                                       ()=> _update()
-
                                               );
                                             });
                                           },
@@ -508,10 +507,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
 }
 
 late int studentLevel;
+late List userInterests;
 
 _showMultiSelect(BuildContext context, List subjectsList, List<String> levelsList,
     DatabaseManager db, UserNotifier userNotifier, Function onComplete) {
-  var userInterests = userNotifier.getInterests();
+   userInterests = userNotifier.getInterests();
   var _selectedInterests = [];
   studentLevel = userNotifier.studentLevel;
 

@@ -35,6 +35,7 @@ class _HomePageState extends State<HomePage> {
   late final UserNotifier userNotifier;
   late Future futureData;
   final User? user = Auth().currentUser;
+  late List<Course> forYouList = [];
 
   final DatabaseManager _db = DatabaseManager();
 
@@ -43,12 +44,11 @@ class _HomePageState extends State<HomePage> {
     _courseNotifier = Provider.of<CourseNotifier>(context, listen: false);
     userNotifier = Provider.of<UserNotifier>(context, listen: false);
     _db.getTotalLessons(_courseNotifier);
-
     getModels();
     futureData = getModels();
-    Auth().currentUser?.reload();
     valueNotifier = ValueNotifier(0.0);
     print(user?.email);
+    getForYouList();
     super.initState();
   }
 
@@ -56,6 +56,14 @@ class _HomePageState extends State<HomePage> {
     await _db.getUsers(userNotifier);
     userNotifier.updateUserDetails();
     return _db.getCourses(_courseNotifier);
+  }
+
+  Future getForYouList() async{
+    await _db.getUsers(userNotifier);
+    await _db.getCourses(_courseNotifier);
+    setState(() {
+      forYouList = filterCoursesByIterests(userNotifier.getInterests(), _courseNotifier.courseList);
+    });
   }
 
   late List userCourseIds = [];
@@ -88,12 +96,28 @@ class _HomePageState extends State<HomePage> {
     return filteredCourses;
   }
 
+  List<Course> filterCoursesByIterests(List interests, List<Course> courses) {
+    List<Course> filteredCourses = [];
+    for (var course in courses) {
+      //print(course.courseId);
+      if (interests.contains(course.subjectArea)) {
+        filteredCourses.add(course);
+      }
+    }
+    return filteredCourses;
+  }
+
   @override
   Widget build(BuildContext context) {
     // getCourseIds(userNotifier);
     // List myList = filterCoursesByIds(userCourseIds, courseNotifier.courseList);
     // print(myList);
     //final Size _size = MediaQuery.of(context).size;
+    // getForYouList();
+    for(var c in forYouList){
+      print(forYouList.length);
+      print(c.subjectArea);
+    }
     valueNotifier.value = 80.0;
     HomePageNotifier homePageNotifier = Provider.of<HomePageNotifier>(context, listen: true);
 
@@ -233,7 +257,7 @@ class _HomePageState extends State<HomePage> {
                               padding: const EdgeInsets.symmetric(horizontal: 25.0),
                               child: ActiveCourseTile(valueNotifier: valueNotifier, courseImage: 'assets/images/html.jpg', courseName: 'Symmetry Theory', remainingLessons: 10,),
                             ),
-                             CategoryTitle(text: 'Top Picks', onPressed: (){
+                             CategoryTitle(text: forYouList.isEmpty? 'Top Picks':'For You', onPressed: (){
                                homePageNotifier.isAllSelected = true;
                                homePageNotifier.tabIndex = 0;
                                Navigator.pushNamed(context, PageRoutes.courses);
@@ -245,21 +269,21 @@ class _HomePageState extends State<HomePage> {
                                 width: double.infinity,
                                 child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
-                                    itemCount: _courseNotifier.courseList.length,
+                                    itemCount: forYouList.isEmpty? _courseNotifier.courseList.length: forYouList.length,
                                     itemBuilder: (context, index) {
-                                      var courseName = _courseNotifier
-                                          .courseList[index].courseName;
+                                      var courseName = forYouList.isEmpty? _courseNotifier
+                                          .courseList[index].courseName: forYouList[index].courseName;
                                       return GestureDetector(
                                         onTap: (){
-                                        _courseNotifier.currentCourse = _courseNotifier.courseList[index];
+                                        _courseNotifier.currentCourse = forYouList.isEmpty? _courseNotifier.courseList[index]: forYouList[index];
                                           Navigator.pushNamed(context, PageRoutes.courseInfo);
                                         },
                                         child: CourseCard(
                                           courseTitle: courseName.length > 30? courseName.substring(0,30) +'...': courseName,
-                                          courseImage: _courseNotifier.courseList[index].media[1],
-                                          subjectArea: _courseNotifier.courseList[index].subjectArea,
-                                          hoursPerWeek: _courseNotifier.courseList[index].duration,
-                                          numLessons: _courseNotifier.courseList[index].totalLessons,
+                                          courseImage: forYouList.isEmpty? _courseNotifier.courseList[index].media[1]: forYouList[index].media[1],
+                                          subjectArea: forYouList.isEmpty? _courseNotifier.courseList[index].subjectArea: forYouList[index].subjectArea,
+                                          hoursPerWeek:forYouList.isEmpty?_courseNotifier.courseList[index].duration: forYouList[index].duration,
+                                          numLessons: forYouList.isEmpty? _courseNotifier.courseList[index].totalLessons: forYouList[index].totalLessons
                                         ),
                                       );
                                     }),
