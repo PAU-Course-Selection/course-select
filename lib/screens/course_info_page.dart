@@ -7,6 +7,7 @@ import 'package:course_select/shared_widgets/android_confirmation_dialog.dart';
 import 'package:course_select/shared_widgets/android_limitation_dialog.dart';
 import 'package:course_select/shared_widgets/gradient_button.dart';
 import 'package:course_select/shared_widgets/video_player.dart';
+import 'package:course_select/utils/color_picker.dart';
 import 'package:course_select/utils/firebase_data_management.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -63,6 +64,28 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     super.initState();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Course Info',
+          style: kHeadlineMedium,
+        ),
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.black,
+        elevation: 0,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: Container(
+        height: 50,
+        margin: const EdgeInsets.only(left: 25, right: 25),
+        child: _conditionalBottomButton(),
+      ),
+      body: _courseInfo(),
+    );
+  }
+
   getClassmates() async {
     await _db
         .getClassmates(_courseNotifier.currentCourse.courseId, _userNotifier)
@@ -98,13 +121,15 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     });
   }
 
-  String formatPrerequisites(List prerequisites, List<Course> courses, List enrolledCourses) {
+  String formatPrerequisites(
+      List prerequisites, List<Course> courses, List enrolledCourses) {
     final reqCourseIds = <String>{};
 
     for (final course in courses) {
       // If the course ID is in the list of prerequisites and not in the enrolled course list,
       // add the course ID to the set of required course IDs.
-      if (prerequisites.contains(course.courseId) && !enrolledCourses.contains(course.courseId)) {
+      if (prerequisites.contains(course.courseId) &&
+          !enrolledCourses.contains(course.courseId)) {
         reqCourseIds.add(course.courseId);
       }
     }
@@ -135,10 +160,9 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     return formattedCourses;
   }
 
-
   Widget _conditionalBottomButton() {
-    var preReqs = formatPrerequisites(
-        _courseNotifier.currentCourse.prereqs, _courseNotifier.courseList, _userNotifier.userCourseIds);
+    var preReqs = formatPrerequisites(_courseNotifier.currentCourse.prereqs,
+        _courseNotifier.courseList, _userNotifier.userCourseIds);
     if (_userNotifier
         .getCourseIds()
         .contains(_courseNotifier.currentCourse.courseId)) {
@@ -174,7 +198,9 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
           final skillLevels = {0: 'beginner', 1: 'intermediate', 2: 'advanced'};
           final userLevel = _userNotifier.studentLevel;
           final courseLevel = _courseNotifier.currentCourse.level.toLowerCase();
-          final courseLevelIndex = skillLevels.entries.firstWhere((entry) => entry.value == courseLevel).key;
+          final courseLevelIndex = skillLevels.entries
+              .firstWhere((entry) => entry.value == courseLevel)
+              .key;
           final courseLevelString = skillLevels[courseLevelIndex];
           bool isMatching = false;
           print('courseLevelString: $courseLevelString');
@@ -191,15 +217,19 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
                         ? androidLimitationDialog(preReqs: preReqs)
                         : androidConfirmationDialog(
                             courseNotifier: _courseNotifier,
-                            preReqs: isMatching? 'with prerequisites: $preReqs': preReqs,
+                            preReqs: isMatching
+                                ? 'with prerequisites: $preReqs'
+                                : preReqs,
                             db: _db,
                             userNotifier: _userNotifier,
                             homePageNotifier: _homePageNotifier)
                     : preReqs.isNotEmpty && !isMatching
-                    ? IOSLimitationDialog(preReqs: preReqs):
-                         IOSConfirmationDialog(
+                        ? IOSLimitationDialog(preReqs: preReqs)
+                        : IOSConfirmationDialog(
                             courseNotifier: _courseNotifier,
-                            preReqs: isMatching? 'with prerequisites: $preReqs': preReqs,
+                            preReqs: isMatching
+                                ? 'with prerequisites: $preReqs'
+                                : preReqs,
                             db: _db,
                             userNotifier: _userNotifier,
                             homePageNotifier: _homePageNotifier);
@@ -214,29 +244,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _userNotifier = Provider.of<UserNotifier>(context);
-     _userNotifier.getStudentLevel();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Course Info',
-          style: kHeadlineMedium,
-        ),
-        backgroundColor: Colors.transparent,
-        foregroundColor: Colors.black,
-        elevation: 0,
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: Container(
-        height: 50,
-        margin: const EdgeInsets.only(left: 25, right: 25),
-        child: _conditionalBottomButton(),
-      ),
-      body: _courseInfo(),
-    );
+    _userNotifier.getStudentLevel();
   }
 
   Widget _courseInfo() {
@@ -245,15 +253,15 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           //COURSE NAME
-          SizedBox(
-            width: 400,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 25.0, top: 15),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: SizedBox(
+              width: 400,
               child: Animate(
                 child: Text(
                   _courseNotifier.currentCourse.courseName,
                   style: TextStyle(
-                      fontSize: 38.00,
+                      fontSize: 32.00,
                       fontFamily: 'Roboto',
                       color: kDeepGreen,
                       fontWeight: FontWeight.bold),
@@ -261,6 +269,21 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
                 ),
               ).fadeIn(duration: 1.seconds),
             ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 15.0),
+            child: Container(
+                padding: EdgeInsets.all(10.0),
+                decoration: BoxDecoration(
+                    color:
+                        ColourPicker().selectSkillColor(_courseNotifier.currentCourse.level),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(25.0),
+                    )),
+                child: Text(
+                  _courseNotifier.currentCourse.level,
+                  style: const TextStyle(),
+                )),
           ),
 
           //MEDIA LIST
@@ -290,14 +313,14 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
                   InfoPill(
                       icon: 'assets/icons/hourglass.png',
                       text: _hoursPerWeek(),
-                      bgColour: Color(0xffffeeca)),
+                      bgColour: const Color(0xffffeeca)),
                   const SizedBox(
                     width: 8,
                   ),
                   InfoPill(
                       icon: 'assets/icons/lesson.png',
                       text: '$numLessons Lessons',
-                      bgColour: Color(0xffd5f1d3)),
+                      bgColour: const Color(0xffd5f1d3)),
                   const SizedBox(
                     width: 10,
                   ),
@@ -345,9 +368,9 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
           ),
           //Classmates Box
           Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
               child: Container(
-                  height: 100.h,
+                  height: 120.h,
                   width: double.infinity,
                   padding: const EdgeInsets.all(10.0),
                   decoration: BoxDecoration(
@@ -360,7 +383,8 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
                           itemCount: classmates.length,
                           itemBuilder: (context, index) {
                             return Padding(
-                              padding: const EdgeInsets.only(right: 15.0),
+                              padding:
+                                  const EdgeInsets.only(right: 15.0, top: 10.0),
                               child: Column(
                                 children: [
                                   CircleAvatar(
@@ -384,16 +408,10 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
                                           ),
                                         ),
                                       )),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 2.0),
-                                      child: Text(
-                                        classmates[index].displayName!,
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                    ),
+                                  Text(
+                                    classmates[index].displayName!,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w600),
                                   )
                                 ],
                               ),
@@ -516,6 +534,8 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
           ),
         ));
   }
+
+
 }
 
 class InfoPill extends StatelessWidget {
@@ -547,7 +567,7 @@ class InfoPill extends StatelessWidget {
                   width: 24,
                   height: 20,
                 )),
-            Text(text, style: TextStyle(fontWeight: FontWeight.bold)),
+            Text(text, style: const TextStyle(fontWeight: FontWeight.bold)),
           ],
         ),
       ),

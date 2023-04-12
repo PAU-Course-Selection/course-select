@@ -36,6 +36,7 @@ class _SearchSheetState extends State<SearchSheet>
 
   void updateList(String value) {
     /// filter courses list
+    print(value);
     setState(() {
       displayList = courseNotifier.courseList
           .where((element) =>
