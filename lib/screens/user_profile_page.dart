@@ -1,6 +1,7 @@
 import 'dart:io' as io;
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chips_choice/chips_choice.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:course_select/routes/routes.dart';
 import 'package:course_select/constants/constants.dart';
@@ -36,6 +37,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
   final DatabaseManager db = DatabaseManager();
   final User? user = Auth().currentUser;
   late Future futureData;
+  int levelResult = 0;
+  List myInterests = [];
 
   Widget _title() {
     return Text(
@@ -44,9 +47,23 @@ class _UserProfilePageState extends State<UserProfilePage> {
     );
   }
 
+  Future<dynamic> _update() async {
+    // print('called');
+    await db.test();
+    if (mounted) {
+      setState(() {
+        myInterests = userNotifier.userInterests;
+        print("myInterests: $myInterests");
+        levelResult = userNotifier.studentLevel;
+      });
+    }
+  }
+
   Future getData() async {
     var users = await db.getUsers(userNotifier);
+
     userNotifier.updateUserDetails();
+    userNotifier.getStudentLevel();
     return users;
   }
 
@@ -99,7 +116,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
   void initState() {
     userNotifier = Provider.of<UserNotifier>(context, listen: false);
     futureData = getData();
-    oldUrl = userNotifier.avatar;
     super.initState();
   }
 
@@ -116,7 +132,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
         .map((status) => status.toString().split('.').last)
         .map((str) => str.substring(0, 1).toUpperCase() + str.substring(1))
         .toList();
-    print(subjects);
+    // print(subjects);
     return Scaffold(
       appBar: AppBar(
         title: _title(),
@@ -234,6 +250,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                         color: kPrimaryColour,
                                       )))
                             ]))),
+                    getLevelPill(userNotifier.studentLevel),
                     Text(
                       userNotifier.userName,
                       style: kHeadlineMedium,
@@ -250,7 +267,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         Column(
                           children: [
                             Text(
-                              '3',
+                              userNotifier.userCourseIds.length.toString(),
                               style: kHeadlineMedium.copyWith(color: kTeal),
                             ),
                             const Text('Enrolled'),
@@ -312,12 +329,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                           title: const Text('Language'),
                                           value: const Text('English'),
                                         ),
-                                        SettingsTile.switchTile(
-                                          onToggle: (value) {},
-                                          initialValue: false,
-                                          leading: const Icon(Icons.dark_mode),
-                                          title: const Text('Enable dark mode'),
-                                        ),
                                         SettingsTile.navigation(
                                           leading: const Icon(
                                               Icons.settings_suggest_rounded),
@@ -325,19 +336,22 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                               const Text('Student Preferences'),
                                           onPressed: (context) {
                                             setState(() {
+                                              getData();
                                               _showMultiSelect(
                                                   context,
                                                   subjects,
                                                   levels,
                                                   db,
-                                                  userNotifier);
+                                                  userNotifier,
+                                                  () => _update());
                                             });
                                           },
                                         ),
                                       ],
                                     ),
                                     SettingsSection(
-                                      title: const Text('Security & Privacy'),
+                                      title: const Text(
+                                          'Security & Account Settings'),
                                       tiles: <SettingsTile>[
                                         SettingsTile(
                                           leading: const Icon(
@@ -351,15 +365,27 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
                                             // set up the buttons
                                             Widget cancelButton = TextButton(
-                                              style: ButtonStyle(overlayColor: MaterialStatePropertyAll(kSaraLightPink)),
-                                              child: const Text("Cancel", style: TextStyle(color: Colors.red),),
+                                              style: ButtonStyle(
+                                                  overlayColor:
+                                                      MaterialStatePropertyAll(
+                                                          kSaraLightPink)),
+                                              child: const Text(
+                                                "Cancel",
+                                                style: TextStyle(
+                                                    color: Colors.red),
+                                              ),
                                               onPressed: () {
                                                 Navigator.of(context).pop();
                                               },
                                             );
                                             Widget confirmButton = TextButton(
-                                              style: ButtonStyle(overlayColor: MaterialStatePropertyAll(kSaraLightPink)),
-                                              child:  Text('Confirm', style: TextStyle(color: kDeepGreen)),
+                                              style: ButtonStyle(
+                                                  overlayColor:
+                                                      MaterialStatePropertyAll(
+                                                          kSaraLightPink)),
+                                              child: Text('Confirm',
+                                                  style: TextStyle(
+                                                      color: kDeepGreen)),
                                               onPressed: () async {
                                                 Navigator.of(context)
                                                     .pushNamed("logIn");
@@ -371,49 +397,68 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                             showDialog(
                                               context: context,
                                               builder: (BuildContext context) {
-                                           Widget dialog = io.Platform.isAndroid == true? AlertDialog(
-                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-                                              title:
-                                                  const Text("Delete Account"),
-                                              content: const Text(
-                                                  "Are you sure you would like to delete your account?"),
-                                              actions: [
-                                                cancelButton,
-                                                confirmButton,
-                                              ],
-                                            ):  CupertinoAlertDialog(
-                                             title: const Text('This action is irreversible. Are you sure?'),
-                                             actions: [
-                                               CupertinoDialogAction(
-                                                 /// This parameter indicates this action is the default,
-                                                 /// and turns the action's text to bold text.
-                                                 isDefaultAction: true,
-                                                 onPressed: () {
-                                                   Navigator.pop(context);
-                                                 },
-                                                 child: const Text('Cancel'),
-                                               ),
-                                               CupertinoDialogAction(
-                                                 /// This parameter indicates the action would perform
-                                                 /// a destructive action such as deletion, and turns
-                                                 /// the action's text color to red.
-                                                 isDestructiveAction: true,
-                                                 onPressed: () async{
-                                                   Navigator.pop(context);
-                                                   Navigator.of(context)
-                                                       .pushNamed("logIn");
-                                                   await currentUser?.delete();
-                                                   await currentUser?.reload();
-                                                 },
-                                                 child: const Text('Confirm'),
-                                               ),
-                                             ],
-                                           );
-                                            // show the dialog
+                                                Widget dialog =
+                                                    io.Platform.isAndroid ==
+                                                            true
+                                                        ? AlertDialog(
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            15.0)),
+                                                            title: const Text(
+                                                                "Delete Account"),
+                                                            content: const Text(
+                                                                "Are you sure you would like to delete your account?"),
+                                                            actions: [
+                                                              cancelButton,
+                                                              confirmButton,
+                                                            ],
+                                                          )
+                                                        : CupertinoAlertDialog(
+                                                            title: const Text(
+                                                                'This action is irreversible. Are you sure?'),
+                                                            actions: [
+                                                              CupertinoDialogAction(
+                                                                /// This parameter indicates this action is the default,
+                                                                /// and turns the action's text to bold text.
+                                                                isDefaultAction:
+                                                                    true,
+                                                                onPressed: () {
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                },
+                                                                child: const Text(
+                                                                    'Cancel'),
+                                                              ),
+                                                              CupertinoDialogAction(
+                                                                /// This parameter indicates the action would perform
+                                                                /// a destructive action such as deletion, and turns
+                                                                /// the action's text color to red.
+                                                                isDestructiveAction:
+                                                                    true,
+                                                                onPressed:
+                                                                    () async {
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pushNamed(
+                                                                          "logIn");
+                                                                  await currentUser
+                                                                      ?.delete();
+                                                                  await currentUser
+                                                                      ?.reload();
+                                                                },
+                                                                child: const Text(
+                                                                    'Confirm'),
+                                                              ),
+                                                            ],
+                                                          );
+                                                // show the dialog
                                                 return dialog;
                                               },
                                             );
-
                                           },
                                         ),
                                         SettingsTile.switchTile(
@@ -423,10 +468,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                           title: const Text(
                                               'Allow activity sharing'),
                                         ),
-                                      ],
-                                    ),
-                                    SettingsSection(
-                                      tiles: <SettingsTile>[
                                         SettingsTile(
                                           leading: const Icon(Icons.logout,
                                               color: Colors.red),
@@ -500,132 +541,208 @@ class _UserProfilePageState extends State<UserProfilePage> {
   }
 }
 
-_showMultiSelect(BuildContext context, List subjectsList, List levelsList,
-    DatabaseManager db, UserNotifier userNotifier) {
-  var userInterests = userNotifier.getInterests();
-  var userLevels = userNotifier.getLevel();
-  var _selectedInterests = [];
-  var _selectedLevels = [];
+late int studentLevel;
+// late List userInterests;
+List<dynamic> _selectedInterests = [];
+// var userInterests = [];
+
+_showMultiSelect(
+    BuildContext context,
+    List subjectsList,
+    List<String> levelsList,
+    DatabaseManager db,
+    UserNotifier userNotifier,
+    Function onComplete) {
+
+  List<dynamic> userInterests = userNotifier.userInterests;
+  if(userInterests.isEmpty){
+    userInterests= userNotifier.getInterests();
+  }
+  studentLevel = userNotifier.studentLevel;
+
   {
     showModalBottomSheet(
       isScrollControlled: true,
       // required for min/max child size
-      constraints: BoxConstraints(maxHeight: 590.h),
+      constraints: BoxConstraints(maxHeight: 650.h),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       context: context,
       builder: (ctx) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 25.0),
-              child: Image.asset(
-                'assets/icons/star.png',
-                width: 50,
-                height: 50,
-                color: kSaraLightPink,
+        return StatefulBuilder(builder: (context, setState) {
+          return Column(
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 25.0),
+                    child: Image.asset(
+                      'assets/icons/star.png',
+                      width: 50,
+                      height: 50,
+                      color: kSaraLightPink,
+                    ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 10.0, bottom: 10),
+                    child: Text(
+                      'Personalise your experience',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
+                  ),
+                  Text(
+                    'Select Interests',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: kDeepGreen,
+                        fontSize: 32,
+                        fontFamily: 'Roboto'),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    width: 320.w,
+                    child: const Text(
+                      'You will be offered appropriate courses and groups of '
+                      'interrelated courses for a full immersion in the noted area of interest',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Container(
+                      padding: const EdgeInsets.symmetric(vertical: 0),
+                      width: 280.w,
+                      child: RichText(
+                        textAlign: TextAlign.center,
+                        text: const TextSpan(children: [
+                          TextSpan(
+                              text:
+                                  'Allowable time limit for full time students is ',
+                              style: TextStyle(color: Colors.black)),
+                          TextSpan(
+                              text: '10 hours per week',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black)),
+                        ]),
+                      )),
+                ],
               ),
-            ),
-            const Padding(
-              padding: EdgeInsets.only(top: 10.0, bottom: 10),
-              child: Text(
-                'Personalise your experience',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              Divider(
+                color: kDeepGreen.withOpacity(0.2),
               ),
-            ),
-            Text(
-              'Select Interests',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: kDeepGreen,
-                  fontSize: 32,
-                  fontFamily: 'Roboto'),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 15),
-              width: 320.w,
-              child: const Text(
-                'You will be offered appropriate courses and groups of '
-                'interrelated courses for a full immersion in the noted area of interest',
-                textAlign: TextAlign.center,
+              Container(
+                padding: const EdgeInsets.only(top: 10),
+                child: MultiSelectChipField(
+                    // showHeader: false,
+                    title: const Text('Subject Areas'),
+                    headerColor: Colors.white,
+                    selectedChipColor: kTeal,
+                    selectedTextStyle: const TextStyle(color: Colors.white),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.white),
+                    ),
+                    items:
+                        subjectsList.map((e) => MultiSelectItem(e, e)).toList(),
+                    initialValue: userInterests,
+                    onTap: (values) {
+                      setState(() {
+                        _selectedInterests = values;
+                      });
+                    }),
               ),
-            ),
-            Container(
-                padding: const EdgeInsets.symmetric(vertical: 0),
-                width: 280.w,
-                child: RichText(
-                  textAlign: TextAlign.center,
-                  text: const TextSpan(children: [
-                    TextSpan(
-                        text: 'Allowable time limit for full time students is ',
-                        style: TextStyle(color: Colors.black)),
-                    TextSpan(
-                        text: '10 hours per week',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.black)),
-                  ]),
-                )),
-            Divider(
-              color: kDeepGreen.withOpacity(0.2),
-            ),
-            Container(
-              padding: const EdgeInsets.only(top: 10),
-              child: MultiSelectChipField(
-                title: const Text('Subject Areas'),
-                headerColor: Colors.white,
-                selectedChipColor: kTeal,
-                selectedTextStyle: const TextStyle(color: Colors.white),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white),
-                ),
-                items: subjectsList.map((e) => MultiSelectItem(e, e)).toList(),
-                initialValue: userInterests,
-                onTap: (values) {
-                  print('Selected interests: $values');
-                  _selectedInterests = List.from(userInterests);
-                  for (var value in values) {
-                    if (_selectedInterests.contains(value)) {
-                      _selectedInterests.remove(value);
-                    } else {
-                      _selectedInterests.add(value);
-                    }
-                  }
-                },
-
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10.0, top: 10),
+                    child: Row(
+                      children: [
+                        Image.asset(
+                          'assets/icons/speedometer.png',
+                          width: 20,
+                          height: 20,
+                        ),
+                        const SizedBox(
+                          width: 8,
+                        ),
+                        const Text(
+                          'Student\'s Level',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: ChipsChoice<int>.single(
+                      value: studentLevel,
+                      onChanged: (val) {
+                        setState(() {
+                          studentLevel = val;
+                        });
+                      },
+                      // print(tag);
+                      choiceItems: C2Choice.listFrom<int, String>(
+                        source: levelsList,
+                        value: (i, v) => i,
+                        label: (i, v) => v,
+                        tooltip: (i, v) => v,
+                      ),
+                      choiceCheckmark: true,
+                      choiceStyle: C2ChipStyle.outlined(
+                        overlayColor: kSaraLightPink,
+                        color: kSaraAccent,
+                        foregroundStyle: const TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.w500),
+                        borderStyle: BorderStyle.solid,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(15)),
+                        selectedStyle: C2ChipStyle.filled(
+                          overlayColor: kSaraLightPink,
+                          height: 35,
+                          color: const Color(0xffffd0ef),
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(15),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
-            MultiSelectChipField(
-              title: const Text('Skill Levels'),
-              headerColor: Colors.white,
-              selectedChipColor: const Color(0xffffd0ef),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.white),
-              ),
-              items: levelsList.map((e) => MultiSelectItem(e, e)).toList(),
-              initialValue: userLevels,
-              onTap: (values) {
-                print('Selected levels: $values');
-                _selectedLevels = List.from(userLevels);
-                for (var value in values) {
-                  if (_selectedLevels.contains(value)) {
-                    _selectedLevels.remove(value);
-                  } else {
-                    _selectedLevels.add(value);
-                  }
-                }
-              },
-            ),
-          ],
-        );
+            ],
+          );
+        });
       },
     ).whenComplete(() {
+      print('final interests: $_selectedInterests');
+      userNotifier.userInterests = _selectedInterests;
       db.updateUserInterests(userNotifier, _selectedInterests);
-      db.updateUserLevel(userNotifier, _selectedLevels);
+      db.updateStudentLevel(userNotifier, studentLevel);
+      onComplete.call();
       // print('user interests: ${userNotifier.userInterests}');
       // print('user levels: ${userNotifier.skillLevel}');
-      print('complete');
     });
   }
+  return studentLevel;
+}
+
+Widget getLevelPill(int count) {
+  Widget levelPill = Container(
+    padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+    decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15), color: kSaraLightPink),
+    child: Text(
+      count == 0
+          ? 'Beginner'
+          : count == 1
+              ? 'Intermediate'
+              : 'Advanced',
+      style: TextStyle(fontWeight: FontWeight.w500),
+    ),
+  );
+
+  return levelPill;
 }
 
 class EditImageOptionsItem extends StatelessWidget {

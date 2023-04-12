@@ -29,6 +29,14 @@ class UserNotifier extends ChangeNotifier {
   List _userCourseIds = [];
   List _userInterests = [];
   List _skillLevel = [];
+  int _studentLevel = 0;
+
+  int get studentLevel => _studentLevel;
+
+  set studentLevel(int value) {
+    _studentLevel = value;
+    notifyListeners();
+  }
 
   set userInterests(List value) {
     _userInterests = value;
@@ -149,7 +157,7 @@ class UserNotifier extends ChangeNotifier {
         // print(match);
         // print(usersList[i].email);
         interests = usersList[i].interests!;
-        userInterests = interests;
+        // userInterests = interests;
       }
     }
     if (match) {
@@ -157,20 +165,19 @@ class UserNotifier extends ChangeNotifier {
     } else {
       print('user interests NOT found');
     }
-    return interests;
+    return interests.toList();
   }
-
-  List getLevel() {
-    List level = [];
+  int getStudentLevel() {
+    int level = 0;
     for (int i = 0; i < usersList.length; i++) {
       if (user != null && usersList[i].email == user?.email) {
         match = true;
-        level = usersList[i].skillLevel ?? []; // use a default value if skillLevel is null
-        skillLevel = level;
+        level = usersList[i].studentLevel ?? 0; // use a default value if skillLevel is null
+        studentLevel = level;
       }
     }
     if (match) {
-      print('user level found');
+       print('getStudentLevel: $studentLevel');
     } else {
       print('user level NOT found');
     }

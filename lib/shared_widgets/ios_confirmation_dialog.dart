@@ -7,8 +7,8 @@ import '../controllers/home_page_notifier.dart';
 import '../controllers/user_notifier.dart';
 import '../utils/firebase_data_management.dart';
 
-class iOSConfirmationDialog extends StatelessWidget {
-  const iOSConfirmationDialog({
+class IOSConfirmationDialog extends StatelessWidget {
+  const IOSConfirmationDialog({
     Key? key,
     required CourseNotifier courseNotifier,
     required this.preReqs,
@@ -32,8 +32,8 @@ class iOSConfirmationDialog extends StatelessWidget {
         child: RichText(
           textAlign: TextAlign.center,
           text: TextSpan(children: [
-            TextSpan(text: 'Confirm you want to enrol on the course: ${_courseNotifier.currentCourse.courseName}',
-                style: TextStyle(color: Colors.black)),
+            TextSpan(text: 'Confirm you want to enrol on the course: ${_courseNotifier.currentCourse.courseName} ',
+                style: const TextStyle(color: Colors.black)),
             TextSpan(
                 text: preReqs,
                 style: const TextStyle(

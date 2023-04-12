@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class iOSLimitationDialog extends StatelessWidget {
-  const iOSLimitationDialog({
+class IOSLimitationDialog extends StatelessWidget {
+  const IOSLimitationDialog({
     Key? key,
     required this.preReqs,
   }) : super(key: key);

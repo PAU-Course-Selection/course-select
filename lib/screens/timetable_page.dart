@@ -24,6 +24,7 @@ class _TimetableState extends State<Timetable> {
   late final UserNotifier userNotifier;
   late List<Lesson> lessons= [];
 
+
   @override
   void initState() {
     lessonNotifier = Provider.of<LessonNotifier>(context, listen: false);
@@ -42,7 +43,8 @@ class _TimetableState extends State<Timetable> {
 
   @override
   Widget build(BuildContext context) {
-    // print(lessons.first.startTime.toString());
+     // print(lessons.first.startTime.toString());
+    print(lessonNotifier.lessonsList);
     return Scaffold(
       appBar: AppBar(
         title: Text(
