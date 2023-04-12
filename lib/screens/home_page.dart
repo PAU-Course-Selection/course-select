@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
     await _db.getUsers(userNotifier);
     await _db.getCourses(_courseNotifier);
     setState(() {
-      forYouList = filterCoursesByIterests(userNotifier.getInterests(), _courseNotifier.courseList);
+      forYouList = filterCoursesByInterests(userNotifier.getInterests(), _courseNotifier.courseList);
     });
   }
 
@@ -96,7 +96,7 @@ class _HomePageState extends State<HomePage> {
     return filteredCourses;
   }
 
-  List<Course> filterCoursesByIterests(List interests, List<Course> courses) {
+  List<Course> filterCoursesByInterests(List interests, List<Course> courses) {
     List<Course> filteredCourses = [];
     for (var course in courses) {
       //print(course.courseId);

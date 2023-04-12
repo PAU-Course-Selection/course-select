@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:course_select/utils/color_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -157,8 +158,9 @@ class _MiniCourseCardState extends State<MiniCourseCard> {
                 bottom: 0,
                 child: Container(
                   decoration: BoxDecoration(
-                      color: kPrimaryColour
-                          .withOpacity(0.2),
+                      color: ColourPicker().selectSkillColor(widget.displayList[widget.index]
+                          .level)
+                          .withOpacity(0.5),
                       borderRadius:
                       const BorderRadius.only(
                           topLeft:
