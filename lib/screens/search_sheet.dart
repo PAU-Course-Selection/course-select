@@ -130,7 +130,6 @@ class _SearchSheetState extends State<SearchSheet>
 
   void updateAllList(String value) {
     /// filter courses list
-    print(value);
     setState(() {
       displayAllList = courseNotifier.courseList
           .where((element) =>
@@ -142,13 +141,13 @@ class _SearchSheetState extends State<SearchSheet>
           .toList();
     });
   }
-
   void updateBeginnerList(String value) {
     /// filter courses list
-    print(value);
     setState(() {
-      displayBeginnerList
+      displayBeginnerList = courseNotifier.courseList
           .where((element) =>
+      element.level.toLowerCase().
+      contains(getSearchKeyword(CategorySearchFilter.beginner))&&
       element.courseName!.toLowerCase().contains(value.toLowerCase()) ||
           element.subjectArea!
               .toLowerCase()
@@ -157,6 +156,112 @@ class _SearchSheetState extends State<SearchSheet>
           .toList();
     });
   }
+  void updateIntermediateList(String value) {
+    /// filter courses list
+    setState(() {
+      displayIntermediateList = courseNotifier.courseList
+          .where((element) =>
+      element.level.toLowerCase().
+      contains(getSearchKeyword(CategorySearchFilter.intermediate))&&
+      element.courseName!.toLowerCase().contains(value.toLowerCase()) ||
+          element.subjectArea!
+              .toLowerCase()
+              .contains(value.toLowerCase()) ||
+          element.level!.toLowerCase().contains(value.toLowerCase()))
+          .toList();
+    });
+  }
+  void updateAdvancedList(String value) {
+    /// filter courses list
+    setState(() {
+      displayAdvancedList = courseNotifier.courseList
+          .where((element) =>
+      element.level.toLowerCase().
+      contains(getSearchKeyword(CategorySearchFilter.advanced))&&
+      element.courseName!.toLowerCase().contains(value.toLowerCase()) ||
+          element.subjectArea!
+              .toLowerCase()
+              .contains(value.toLowerCase()) ||
+          element.level!.toLowerCase().contains(value.toLowerCase()))
+          .toList();
+    });
+  }
+  void updateFrontendList(String value) {
+    /// filter courses list
+    setState(() {
+      displayFrontedList = courseNotifier.courseList
+          .where((element) =>
+      element.subjectArea.toLowerCase().
+      contains(getSearchKeyword(CategorySearchFilter.frontend))&&
+      element.courseName.toLowerCase().contains(value.toLowerCase()) ||
+          element.subjectArea
+              .toLowerCase()
+              .contains(value.toLowerCase()) ||
+          element.level.toLowerCase().contains(value.toLowerCase()))
+          .toList();
+    });
+  }
+  void updateBackendList(String value) {
+    /// filter courses list
+    setState(() {
+      displayBackendList = courseNotifier.courseList
+          .where((element) =>
+      element.subjectArea.toLowerCase().
+      contains(getSearchKeyword(CategorySearchFilter.backend))&&
+      element.courseName.toLowerCase().contains(value.toLowerCase()) ||
+          element.subjectArea
+              .toLowerCase()
+              .contains(value.toLowerCase()) ||
+          element.level.toLowerCase().contains(value.toLowerCase()))
+          .toList();
+    });
+  }
+  void updateProgrammingList(String value) {
+    /// filter courses list
+    setState(() {
+      displayProgrammingList = courseNotifier.courseList
+          .where((element) =>
+      element.subjectArea.toLowerCase().
+      contains(getSearchKeyword(CategorySearchFilter.programming))&&
+      element.courseName.toLowerCase().contains(value.toLowerCase()) ||
+          element.subjectArea
+              .toLowerCase()
+              .contains(value.toLowerCase()) ||
+          element.level.toLowerCase().contains(value.toLowerCase()))
+          .toList();
+    });
+  }
+  void updateDevOpsList(String value) {
+    /// filter courses list
+    setState(() {
+      displayDevOpsList = courseNotifier.courseList
+          .where((element) =>
+      element.subjectArea.toLowerCase().
+      contains(getSearchKeyword(CategorySearchFilter.devOps))&&
+      element.courseName.toLowerCase().contains(value.toLowerCase()) ||
+          element.subjectArea
+              .toLowerCase()
+              .contains(value.toLowerCase()) ||
+          element.level.toLowerCase().contains(value.toLowerCase()))
+          .toList();
+    });
+  }
+  void updateSoftwareList(String value) {
+    /// filter courses list
+    setState(() {
+      displaySoftwareList = courseNotifier.courseList
+          .where((element) =>
+      element.subjectArea.toLowerCase().
+      contains(getSearchKeyword(CategorySearchFilter.software))&&
+      element.courseName.toLowerCase().contains(value.toLowerCase()) ||
+          element.subjectArea
+              .toLowerCase()
+              .contains(value.toLowerCase()) ||
+          element.level.toLowerCase().contains(value.toLowerCase()))
+          .toList();
+    });
+  }
+
 
   Future getModels() {
     //db.getUsers(userNotifier);
@@ -247,7 +352,35 @@ class _SearchSheetState extends State<SearchSheet>
                       padding: const EdgeInsets.symmetric(horizontal: 25.0),
                       child: TextField(
                         onChanged: (value) {
-                          updateAllList(value);
+                          switch(widget.categoryFilterKeyword){
+                            case CategorySearchFilter.all:
+                              updateAllList(value);
+                              break;
+                            case CategorySearchFilter.beginner:
+                              updateBeginnerList(value);
+                              break;
+                            case CategorySearchFilter.intermediate:
+                              updateIntermediateList(value);
+                              break;
+                            case CategorySearchFilter.advanced:
+                              updateAdvancedList(value);
+                              break;
+                            case CategorySearchFilter.frontend:
+                              updateFrontendList(value);
+                              break;
+                            case CategorySearchFilter.backend:
+                              updateBackendList(value);
+                              break;
+                            case CategorySearchFilter.programming:
+                              updateProgrammingList(value);
+                              break;
+                            case CategorySearchFilter.devOps:
+                              updateDevOpsList(value);
+                              break;
+                            case CategorySearchFilter.software:
+                              updateSoftwareList(value);
+                              break;
+                          }
                         },
                         decoration: InputDecoration(
                             border: OutlineInputBorder(
@@ -351,7 +484,7 @@ class _SearchSheetState extends State<SearchSheet>
                                   .length
                                   : isDevOps
                                   ? displayDevOpsList.length
-                                  : isSoftware ? displaySoftwareList.length: displayAllList.length,
+                                  : isSoftware ? displaySoftwareList.length: isAdvanced? displayAdvancedList.length: displayAllList.length,
                               itemBuilder: (context, index) {
                                 return MiniCourseCard(
                                   displayList: isAll
@@ -364,7 +497,6 @@ class _SearchSheetState extends State<SearchSheet>
                                     HapticFeedback.heavyImpact();
                                     setState(() {
                                       _saveCourse(index);
-
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                         SnackBar(
