@@ -33,6 +33,7 @@ class _SearchSheetState extends State<SearchSheet>
   //late final UserNotifier userNotifier;
   late Future futureData;
   late final AnimationController _animationController;
+  late CategorySearchFilter searchFilter;
 
   late List<Course> displayAllList;
   late List<Course> displayBeginnerList;
@@ -46,39 +47,39 @@ class _SearchSheetState extends State<SearchSheet>
   int duplicateCount = 0;
 
   get isAll {
-    return widget.categoryFilterKeyword == CategorySearchFilter.all;
+    return searchFilter == CategorySearchFilter.all;
   }
 
   get isBeginner {
-    return widget.categoryFilterKeyword == CategorySearchFilter.beginner;
+    return searchFilter == CategorySearchFilter.beginner;
   }
 
   get isIntermediate {
-    return widget.categoryFilterKeyword == CategorySearchFilter.intermediate;
+    return searchFilter == CategorySearchFilter.intermediate;
   }
 
   get isAdvanced {
-    return widget.categoryFilterKeyword == CategorySearchFilter.advanced;
+    return searchFilter == CategorySearchFilter.advanced;
   }
 
   get isFrontend {
-    return widget.categoryFilterKeyword == CategorySearchFilter.frontend;
+    return searchFilter == CategorySearchFilter.frontend;
   }
 
   get isBackend {
-    return widget.categoryFilterKeyword == CategorySearchFilter.backend;
+    return searchFilter == CategorySearchFilter.backend;
   }
 
   get isProgramming {
-    return widget.categoryFilterKeyword == CategorySearchFilter.programming;
+    return searchFilter == CategorySearchFilter.programming;
   }
 
   get isDevOps {
-    return widget.categoryFilterKeyword == CategorySearchFilter.devOps;
+    return searchFilter == CategorySearchFilter.devOps;
   }
 
   get isSoftware {
-    return widget.categoryFilterKeyword == CategorySearchFilter.software;
+    return searchFilter == CategorySearchFilter.software;
   }
 
   void initialiseLists() {
@@ -304,6 +305,7 @@ class _SearchSheetState extends State<SearchSheet>
 
   @override
   void initState() {
+    searchFilter = widget.categoryFilterKeyword;
     savedCoursesNotifier =
         Provider.of<SavedCoursesNotifier>(context, listen: false);
     _animationController = AnimationController(vsync: this);
@@ -323,6 +325,7 @@ class _SearchSheetState extends State<SearchSheet>
 
   @override
   Widget build(BuildContext context) {
+    print('searchFilter: $searchFilter');
     return Scaffold(
       body: FutureBuilder(
           future: futureData,
@@ -338,7 +341,7 @@ class _SearchSheetState extends State<SearchSheet>
                       padding: const EdgeInsets.only(left: 25.0, top: 25),
                       child: Text(
                         'Search for ${getSearchKeyword(
-                            widget.categoryFilterKeyword)} courses',
+                            searchFilter)} courses',
                         style: const TextStyle(
                             fontSize: 22.0,
                             fontWeight: FontWeight.bold,
@@ -352,7 +355,7 @@ class _SearchSheetState extends State<SearchSheet>
                       padding: const EdgeInsets.symmetric(horizontal: 25.0),
                       child: TextField(
                         onChanged: (value) {
-                          switch(widget.categoryFilterKeyword){
+                          switch(searchFilter){
                             case CategorySearchFilter.all:
                               updateAllList(value);
                               break;
@@ -420,37 +423,63 @@ class _SearchSheetState extends State<SearchSheet>
                       child: Column(
                         children: [
                           Row(
-                            children: const [
+                            children: [
                               CatPill(
                                   categoryName: 'Programming',
                                   categoryColour: Color(0xffd5f1d3),
-                                  categoryIcon: 'assets/icons/analysis.png'),
+                                  categoryIcon: 'assets/icons/analysis.png',
+                                onPressed: (){
+                                    print('programming');
+                                    setState(() {
+                                      searchFilter = CategorySearchFilter.programming;
+                                    });
+                                },),
                               Flexible(
                                   child: CatPill(
                                       categoryName: 'Software Engineering',
                                       categoryColour: Color(0xffffd0ef),
                                       categoryIcon:
-                                      'assets/icons/software.png')),
+                                      'assets/icons/software.png', onPressed: (){
+                                    setState(() {
+                                      searchFilter = CategorySearchFilter.software;
+                                    });
+
+                                  },)),
                             ],
                           ),
                           const SizedBox(
                             height: 10,
                           ),
                           Row(
-                            children: const [
+                            children: [
                               CatPill(
                                   categoryName: 'DevOps',
                                   categoryColour: Color(0xffffeeca),
-                                  categoryIcon: 'assets/icons/devops.png'),
+                                  categoryIcon: 'assets/icons/devops.png', onPressed: (){
+                                setState(() {
+                                  searchFilter = CategorySearchFilter.devOps;
+                                });
+
+                              },),
                               CatPill(
                                   categoryName: 'Backend',
                                   categoryColour: Color(0xfffcfcc3),
-                                  categoryIcon: 'assets/icons/security.png'),
+                                  categoryIcon: 'assets/icons/security.png', onPressed: (){
+                                setState(() {
+                                  searchFilter = CategorySearchFilter.backend;
+                                });
+
+                              },),
                               Flexible(
                                   child: CatPill(
                                       categoryName: 'Frontend',
                                       categoryColour: Color(0xfff4e1fe),
-                                      categoryIcon: 'assets/icons/ui.png')),
+                                      categoryIcon: 'assets/icons/ui.png', onPressed: (){
+                                    setState(() {
+                                      searchFilter = CategorySearchFilter.frontend;
+                                    });
+
+                                  },)),
                             ],
                           ),
                         ],
@@ -544,7 +573,7 @@ class _SearchSheetState extends State<SearchSheet>
 
   _showInfoScreen(int index){
 
-    switch(widget.categoryFilterKeyword){
+    switch(searchFilter){
       case CategorySearchFilter.all:
         courseNotifier.currentCourse =
         displayAllList[index];
@@ -614,7 +643,7 @@ class _SearchSheetState extends State<SearchSheet>
     var devOpsItem = displayDevOpsList[index];
     var softwareItem = displaySoftwareList[index];
 
-    switch (widget.categoryFilterKeyword) {
+    switch (searchFilter) {
       case CategorySearchFilter.all:
         allItem.isSaved = !allItem.isSaved;
         courseNotifier.currentCourse = allItem;
@@ -713,39 +742,44 @@ class CatPill extends StatelessWidget {
   final String categoryName;
   final Color categoryColour;
   final String categoryIcon;
+  final Function onPressed;
 
   const CatPill({
     Key? key,
     required this.categoryName,
     required this.categoryColour,
-    required this.categoryIcon,
+    required this.categoryIcon, required this.onPressed,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 5.0),
-      child: Container(
-        padding: const EdgeInsets.all(15.0),
-        decoration: BoxDecoration(
-            color: categoryColour,
-            borderRadius: const BorderRadius.all(Radius.circular(15.0))),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Padding(
-                padding: const EdgeInsets.only(right: 5),
-                child: Image.asset(
-                  categoryIcon,
-                  width: 24,
-                  height: 20,
-                )),
-            Text(
-              categoryName,
-              style: const TextStyle(fontSize: 16),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
+    return InkWell(
+      splashColor: kSaraLightPink,
+      onTap: ()=> onPressed.call(),
+      child: Padding(
+        padding: const EdgeInsets.only(right: 5.0),
+        child: Container(
+          padding: const EdgeInsets.all(15.0),
+          decoration: BoxDecoration(
+              color: categoryColour,
+              borderRadius: const BorderRadius.all(Radius.circular(15.0))),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Padding(
+                  padding: const EdgeInsets.only(right: 5),
+                  child: Image.asset(
+                    categoryIcon,
+                    width: 24,
+                    height: 20,
+                  )),
+              Text(
+                categoryName,
+                style: const TextStyle(fontSize: 16),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
         ),
       ),
     );
