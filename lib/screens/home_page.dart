@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:course_select/controllers/home_page_notifier.dart';
 import 'package:course_select/controllers/user_notifier.dart';
 import 'package:course_select/screens/search_sheet.dart';
+import 'package:course_select/utils/enums.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -61,6 +62,7 @@ class _HomePageState extends State<HomePage> {
   Future getForYouList() async{
     await _db.getUsers(userNotifier);
     await _db.getCourses(_courseNotifier);
+    userNotifier.getInterests();
     setState(() {
       forYouList = filterCoursesByInterests(userNotifier.getInterests(), _courseNotifier.courseList);
     });
@@ -187,7 +189,7 @@ class _HomePageState extends State<HomePage> {
                                         barrierColor: Colors.black54,
                                         elevation: 8,
                                         context: context,
-                                        builder: (context) => const Material(child: SearchSheet(filter: 'all',)),
+                                        builder: (context) => const Material(child: SearchSheet(categoryFilterKeyword: CategorySearchFilter.all,)),
                                       );
                                     },
                                     child: RaisedContainer(child: Row(

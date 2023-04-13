@@ -370,7 +370,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
           Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
               child: Container(
-                  height: 120.h,
+                  height: 110.h,
                   width: double.infinity,
                   padding: const EdgeInsets.all(10.0),
                   decoration: BoxDecoration(
@@ -384,8 +384,10 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
                           itemBuilder: (context, index) {
                             return Padding(
                               padding:
-                                  const EdgeInsets.only(right: 15.0, top: 10.0),
+                                  const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10),
                               child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   CircleAvatar(
                                       radius: 30,

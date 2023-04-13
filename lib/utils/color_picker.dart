@@ -12,7 +12,7 @@ class ColourPicker {
     } else if (level == SkillLevel.intermediate.toString()) {
       color = kLightYellow;
     } else if (level == SkillLevel.advanced.toString()) {
-      color = kLightRed;
+      color = kSaraAccent;
     } else {
       color = Colors.white;
     }
