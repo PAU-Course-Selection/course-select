@@ -12,6 +12,18 @@ enum SkillLevel{
   advanced
 }
 
+enum CategorySearchFilter{
+  all,
+  beginner,
+  intermediate,
+  advanced,
+  frontend,
+  backend,
+  programming,
+  devOps,
+  software
+}
+
 enum StudentType{
   fullTime,
   partTime,

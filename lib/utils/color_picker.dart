@@ -6,7 +6,6 @@ class ColourPicker {
   Color selectSkillColor(String level) {
     Color color;
     level = "SkillLevel."+level;
-
     if (level == SkillLevel.beginner.toString()) {
       color = kLightGreen;
     } else if (level == SkillLevel.intermediate.toString()) {
@@ -16,7 +15,6 @@ class ColourPicker {
     } else {
       color = Colors.white;
     }
-
     return color;
   }
 }
