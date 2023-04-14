@@ -35,15 +35,15 @@ class _SearchSheetState extends State<SearchSheet>
   late final AnimationController _animationController;
   late CategorySearchFilter searchFilter;
 
-  late List<Course> displayAllList;
-  late List<Course> displayBeginnerList;
-  late List<Course> displayIntermediateList;
-  late List<Course> displayAdvancedList;
-  late List<Course> displayFrontedList;
-  late List<Course> displayBackendList;
-  late List<Course> displayProgrammingList;
-  late List<Course> displayDevOpsList;
-  late List<Course> displaySoftwareList;
+  static late List<Course> displayAllList = [];
+  static late List<Course> displayBeginnerList= [];
+  static late List<Course> displayIntermediateList= [];
+  static late List<Course> displayAdvancedList= [];
+  static late List<Course> displayFrontedList= [];
+  static late List<Course> displayBackendList= [];
+  static late List<Course> displayProgrammingList= [];
+  static late List<Course> displayDevOpsList= [];
+  static late List<Course> displaySoftwareList= [];
   int duplicateCount = 0;
 
   get isAll {
@@ -311,8 +311,8 @@ class _SearchSheetState extends State<SearchSheet>
     _animationController = AnimationController(vsync: this);
     courseNotifier = Provider.of<CourseNotifier>(context, listen: false);
     //userNotifier = Provider.of<UserNotifier>(context, listen: false);
-    futureData = getModels();
     initialiseLists();
+    futureData = getModels();
 
     super.initState();
   }
@@ -571,171 +571,79 @@ class _SearchSheetState extends State<SearchSheet>
     );
   }
 
+  final Map<CategorySearchFilter, List<Course>> filterToList = {
+    CategorySearchFilter.all: displayAllList,
+    CategorySearchFilter.beginner: displayBeginnerList,
+    CategorySearchFilter.intermediate: displayIntermediateList,
+    CategorySearchFilter.advanced: displayAdvancedList,
+    CategorySearchFilter.frontend: displayFrontedList,
+    CategorySearchFilter.backend: displayBackendList,
+    CategorySearchFilter.programming: displayProgrammingList,
+    CategorySearchFilter.devOps: displayDevOpsList,
+    CategorySearchFilter.software: displaySoftwareList,
+  };
+
   _showInfoScreen(int index){
-
-    switch(searchFilter){
-      case CategorySearchFilter.all:
-        courseNotifier.currentCourse =
-        displayAllList[index];
-        Navigator.pushNamed(
-            context, PageRoutes.courseInfo);
-        break;
-      case CategorySearchFilter.beginner:
-        courseNotifier.currentCourse =
-        displayBeginnerList[index];
-        Navigator.pushNamed(
-            context, PageRoutes.courseInfo);
-        break;
-      case CategorySearchFilter.intermediate:
-        courseNotifier.currentCourse =
-        displayIntermediateList[index];
-        Navigator.pushNamed(
-            context, PageRoutes.courseInfo);
-        break;
-      case CategorySearchFilter.advanced:
-        courseNotifier.currentCourse =
-        displayAdvancedList[index];
-        Navigator.pushNamed(
-            context, PageRoutes.courseInfo);
-        break;
-      case CategorySearchFilter.frontend:
-        courseNotifier.currentCourse =
-        displayFrontedList[index];
-        Navigator.pushNamed(
-            context, PageRoutes.courseInfo);
-        break;
-      case CategorySearchFilter.backend:
-        courseNotifier.currentCourse =
-        displayBackendList[index];
-        Navigator.pushNamed(
-            context, PageRoutes.courseInfo);
-        break;
-      case CategorySearchFilter.programming:
-        courseNotifier.currentCourse =
-        displayProgrammingList[index];
-        Navigator.pushNamed(
-            context, PageRoutes.courseInfo);
-        break;
-      case CategorySearchFilter.devOps:
-        courseNotifier.currentCourse =
-        displayDevOpsList[index];
-        Navigator.pushNamed(
-            context, PageRoutes.courseInfo);
-        break;
-      case CategorySearchFilter.software:
-        courseNotifier.currentCourse =
-        displaySoftwareList[index];
-        Navigator.pushNamed(
-            context, PageRoutes.courseInfo);
-        break;
+    final selectedList = filterToList[searchFilter];
+    if (selectedList == null || index >= selectedList.length) {
+      return;
     }
-
+    courseNotifier.currentCourse = selectedList[index];
+    Navigator.pushNamed(context, PageRoutes.courseInfo);
   }
 
   _saveCourse(int index) {
-    var allItem = displayAllList[index];
-    var beginnerItem = displayBeginnerList[index];
-    var intermediateItem = displayIntermediateList[index];
-    var advancedItem = displayAdvancedList[index];
-    var frontendItem = displayFrontedList[index];
-    var backendItem = displayBackendList[index];
-    var programmingItem = displayProgrammingList[index];
-    var devOpsItem = displayDevOpsList[index];
-    var softwareItem = displaySoftwareList[index];
-
+    var displayList, item;
     switch (searchFilter) {
       case CategorySearchFilter.all:
-        allItem.isSaved = !allItem.isSaved;
-        courseNotifier.currentCourse = allItem;
-        db.addSavedCourseSubCollection(
-            index: index,
-            displayList: displayAllList,
-            duplicateCount: duplicateCount,
-            savedCourses: savedCoursesNotifier,
-            courseNotifier: courseNotifier);
+        displayList = displayAllList;
+        item = displayList[index];
         break;
       case CategorySearchFilter.beginner:
-        beginnerItem.isSaved = !beginnerItem.isSaved;
-        courseNotifier.currentCourse = beginnerItem;
-        db.addSavedCourseSubCollection(
-            index: index,
-            displayList: displayBeginnerList,
-            duplicateCount: duplicateCount,
-            savedCourses: savedCoursesNotifier,
-            courseNotifier: courseNotifier);
+        displayList = displayBeginnerList;
+        item = displayList[index];
         break;
       case CategorySearchFilter.intermediate:
-        intermediateItem.isSaved = !intermediateItem.isSaved;
-        courseNotifier.currentCourse = intermediateItem;
-        db.addSavedCourseSubCollection(
-            index: index,
-            displayList: displayIntermediateList,
-            duplicateCount: duplicateCount,
-            savedCourses: savedCoursesNotifier,
-            courseNotifier: courseNotifier);
+        displayList = displayIntermediateList;
+        item = displayList[index];
         break;
       case CategorySearchFilter.advanced:
-        advancedItem.isSaved = !advancedItem.isSaved;
-        courseNotifier.currentCourse = advancedItem;
-        db.addSavedCourseSubCollection(
-            index: index,
-            displayList: displayAdvancedList,
-            duplicateCount: duplicateCount,
-            savedCourses: savedCoursesNotifier,
-            courseNotifier: courseNotifier);
+        displayList = displayAdvancedList;
+        item = displayList[index];
         break;
       case CategorySearchFilter.frontend:
-        frontendItem.isSaved = !frontendItem.isSaved;
-        courseNotifier.currentCourse = frontendItem;
-        db.addSavedCourseSubCollection(
-            index: index,
-            displayList: displayFrontedList,
-            duplicateCount: duplicateCount,
-            savedCourses: savedCoursesNotifier,
-            courseNotifier: courseNotifier);
+        displayList = displayFrontedList;
+        item = displayList[index];
         break;
       case CategorySearchFilter.backend:
-        backendItem.isSaved = !backendItem.isSaved;
-        courseNotifier.currentCourse = backendItem;
-        db.addSavedCourseSubCollection(
-            index: index,
-            displayList: displayBackendList,
-            duplicateCount: duplicateCount,
-            savedCourses: savedCoursesNotifier,
-            courseNotifier: courseNotifier);
+        displayList = displayBackendList;
+        item = displayList[index];
         break;
       case CategorySearchFilter.programming:
-        programmingItem.isSaved = !programmingItem.isSaved;
-        courseNotifier.currentCourse = programmingItem;
-        db.addSavedCourseSubCollection(
-            index: index,
-            displayList: displayProgrammingList,
-            duplicateCount: duplicateCount,
-            savedCourses: savedCoursesNotifier,
-            courseNotifier: courseNotifier);
+        displayList = displayProgrammingList;
+        item = displayList[index];
         break;
       case CategorySearchFilter.devOps:
-        devOpsItem.isSaved = !devOpsItem.isSaved;
-        courseNotifier.currentCourse = devOpsItem;
-        db.addSavedCourseSubCollection(
-            index: index,
-            displayList: displayDevOpsList,
-            duplicateCount: duplicateCount,
-            savedCourses: savedCoursesNotifier,
-            courseNotifier: courseNotifier);
+        displayList = displayDevOpsList;
+        item = displayList[index];
         break;
       case CategorySearchFilter.software:
-        softwareItem.isSaved = !softwareItem.isSaved;
-        courseNotifier.currentCourse = softwareItem;
-        db.addSavedCourseSubCollection(
-            index: index,
-            displayList: displaySoftwareList,
-            duplicateCount: duplicateCount,
-            savedCourses: savedCoursesNotifier,
-            courseNotifier: courseNotifier);
+        displayList = displaySoftwareList;
+        item = displayList[index];
         break;
     }
+    setState(() {
+      item.isSaved = !item.isSaved;
+    });
+    courseNotifier.currentCourse = item;
+    db.addSavedCourseSubCollection(
+        index: index,
+        displayList: displayList,
+        duplicateCount: duplicateCount,
+        savedCourses: savedCoursesNotifier,
+        courseNotifier: courseNotifier);
   }
+
 }
 
 class CatPill extends StatelessWidget {

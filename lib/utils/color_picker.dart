@@ -6,17 +6,15 @@ class ColourPicker {
   Color selectSkillColor(String level) {
     Color color;
     level = "SkillLevel."+level;
-
     if (level == SkillLevel.beginner.toString()) {
       color = kLightGreen;
     } else if (level == SkillLevel.intermediate.toString()) {
       color = kLightYellow;
     } else if (level == SkillLevel.advanced.toString()) {
-      color = kSaraAccent;
+      color = kLightRed;
     } else {
       color = Colors.white;
     }
-
     return color;
   }
 }
