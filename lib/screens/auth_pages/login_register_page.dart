@@ -30,6 +30,7 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
 
   DatabaseManager db = DatabaseManager();
 
+  /// Signs in a user with their email and password if they exist
   Future<void> signInWithEmailAndPassword() async {
     try {
       await Auth().signInWithEmailAndPassword(
@@ -44,6 +45,7 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
     }
   }
 
+  /// Displays an error message if sign in fails
   Widget _errorMessage() {
     return Padding(
       padding: const EdgeInsets.all(4.0),
@@ -51,6 +53,7 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
     );
   }
 
+  /// Displays an error if a text field is left empty
   Widget _emptyFieldError() {
     return Padding(
       padding: const EdgeInsets.all(4.0),
@@ -58,6 +61,7 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
     );
   }
 
+  /// Registers a new user with a name, email and password and sets them up in the database
   Future<void> createUserWithEmailAndPassword() async {
     try {
       if(_controllerName.text != ''){
@@ -82,6 +86,7 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
     }
   }
 
+  /// Responsible for toggling between login or registration screens
   Widget _loginOrRegisterButton() {
     return TextButton(
       onPressed: () {
@@ -94,6 +99,7 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
     );
   }
 
+  /// Submits login or registration details
   Widget _submitButton() {
     return GradientButton(
       onPressed:
@@ -102,6 +108,7 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
     );
   }
 
+  /// Disposes of controllers after navigation
   @override
   void dispose() {
     _controllerName.dispose();

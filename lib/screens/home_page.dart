@@ -107,6 +107,17 @@ class _HomePageState extends State<HomePage> {
     return filteredCourses;
   }
 
+  List<Course> filterCoursesByIterests(List interests, List<Course> courses) {
+    List<Course> filteredCourses = [];
+    for (var course in courses) {
+      //print(course.courseId);
+      if (interests.contains(course.subjectArea)) {
+        filteredCourses.add(course);
+      }
+    }
+    return filteredCourses;
+  }
+
   @override
   Widget build(BuildContext context) {
     valueNotifier.value = 80.0;

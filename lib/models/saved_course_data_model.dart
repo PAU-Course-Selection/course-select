@@ -16,12 +16,12 @@ class SavedCoursesNotifier extends ChangeNotifier {
     _savedCourses = list;
     notifyListeners();
   }
-
+/// Adds a new course to the saved courses list
   void add(Course course) {
     _savedCourses.add(course);
     notifyListeners();
   }
-
+  /// Removes a  course from the saved courses list
   void remove(Course course) {
     _savedCourses.remove(course);
     notifyListeners();
