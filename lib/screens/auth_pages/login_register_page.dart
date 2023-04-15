@@ -8,6 +8,7 @@ import '../../routes/routes.dart';
 import '../../shared_widgets/gradient_button.dart';
 import '../../utils/auth.dart';
 
+///The [LoginRegisterPage] is responsible for taking and verifying new or existing users auth details as well as checking their validity
 class LoginRegisterPage extends StatefulWidget {
   static const screenId = 'login_screen';
 
@@ -30,7 +31,7 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
 
   DatabaseManager db = DatabaseManager();
 
-  /// Signs in a user with their email and password if they exist
+  /// Signs in a user with their email and password if they exist using details from text editing controllers [_controllerEmail] and [_controllerPassword]
   Future<void> signInWithEmailAndPassword() async {
     try {
       await Auth().signInWithEmailAndPassword(
@@ -45,7 +46,7 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
     }
   }
 
-  /// Displays an error message if sign in fails
+  /// Encapsulates code for displaying an error message if sign in fails containing text from [errorMessage]
   Widget _errorMessage() {
     return Padding(
       padding: const EdgeInsets.all(4.0),
@@ -53,7 +54,7 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
     );
   }
 
-  /// Displays an error if a text field is left empty
+  /// Displays an error if a text field is left empty based on flag from [_showError]
   Widget _emptyFieldError() {
     return Padding(
       padding: const EdgeInsets.all(4.0),
@@ -61,7 +62,7 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
     );
   }
 
-  /// Registers a new user with a name, email and password and sets them up in the database
+  /// Registers a new user with a name [_controllerName], email [_controllerEmail] and password [_controllerPassword] and sets them up in the database.
   Future<void> createUserWithEmailAndPassword() async {
     try {
       if(_controllerName.text != ''){
@@ -86,7 +87,7 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
     }
   }
 
-  /// Responsible for toggling between login or registration screens
+  /// Responsible for toggling between login or registration screens using flag [isLogin].
   Widget _loginOrRegisterButton() {
     return TextButton(
       onPressed: () {
@@ -99,7 +100,7 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
     );
   }
 
-  /// Submits login or registration details
+  /// Submits login or registration after verification based on [isLogin] flag
   Widget _submitButton() {
     return GradientButton(
       onPressed:
@@ -288,6 +289,7 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
   }
 }
 
+///class [RegisterOrLogin] encapsulates text to do with registration or login beneath submit button
 class RegisterOrLogin extends StatelessWidget {
   final String text1;
   final String text2;
