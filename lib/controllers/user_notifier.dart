@@ -108,6 +108,10 @@ class UserNotifier extends ChangeNotifier {
     _userName = value;
     notifyListeners();
   }
+
+  set password(value){
+
+  }
   /// A setter for the current user's avatar image
   /// updates [_avatar]
   set avatar(value) {
