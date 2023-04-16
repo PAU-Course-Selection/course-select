@@ -11,6 +11,8 @@ import '../constants/constants.dart';
 import '../controllers/user_notifier.dart';
 import '../utils/enums.dart';
 
+/// Allows a user to select their interests and level after registering.
+/// These then affect the content of the "for you" list on the home page
 class SelectInterestsPage extends StatefulWidget {
   const SelectInterestsPage({Key? key}) : super(key: key);
 
@@ -25,6 +27,7 @@ class _SelectInterestsPageState extends State<SelectInterestsPage> {
   var _selectedInterests = [];
   late List userInterests;
 
+  /// Initialise controllers and get data for display on screen from database
   @override
   void initState() {
     userNotifier = Provider.of<UserNotifier>(context, listen: false);
@@ -34,6 +37,8 @@ class _SelectInterestsPageState extends State<SelectInterestsPage> {
     super.initState();
   }
 
+
+  /// Builds UI elements for display on the screen
   @override
   Widget build(BuildContext context) {
     List<String> subjects = SubjectArea.values

@@ -16,6 +16,7 @@ import '../utils/auth.dart';
 import '../utils/firebase_data_management.dart';
 import '../models/saved_course_data_model.dart';
 
+/// The [SavedCourses] page allows a user to view the courses they have saved/bookmarked
 class SavedCourses extends StatefulWidget {
   const SavedCourses({Key? key}) : super(key: key);
 
@@ -37,6 +38,8 @@ class _SavedCoursesState extends State<SavedCourses> {
   late final DocumentReference<Map<String, dynamic>>? userRef;
   late Query<Map<String, dynamic>>? favoritesQuery;
 
+
+  /// Initialise controllers and get data from the database for user's saved courses
   @override
   void initState() {
     super.initState();
@@ -54,6 +57,7 @@ class _SavedCoursesState extends State<SavedCourses> {
     }).whenComplete(() {});
   }
 
+  /// Get the users document ID to retrieve their saved courses from the database
   Future<String> getDocId() async {
     var myUser = await FirebaseFirestore.instance
         .collection('Users')
@@ -66,11 +70,14 @@ class _SavedCoursesState extends State<SavedCourses> {
     throw Exception('User document not found');
   }
 
+  /// Get the current user's saved courses
   Future getModels() {
     //db.getUsers(userNotifier);
     return db.getSavedCourses(savedCoursesNotifier, myDocId);
   }
 
+
+  /// Remove a saved course from the database
    Future<dynamic> _deleteDocument() async {
     print('called');
     await db.test();
@@ -81,6 +88,7 @@ class _SavedCoursesState extends State<SavedCourses> {
     }
   }
 
+  /// Ensures state is mounted
   @override
   void setState(fn) {
     if(mounted) {
@@ -88,6 +96,8 @@ class _SavedCoursesState extends State<SavedCourses> {
     }
   }
 
+
+  /// Builds the saved course list or else displays a button prompting the user to save courses from the main list
   @override
   Widget build(BuildContext context) {
     print('rebuilt');
@@ -158,6 +168,8 @@ class _SavedCoursesState extends State<SavedCourses> {
   }
 }
 
+/// Encapsulated the tiles that make up saved course list items
+/// Saved courses can be shared or deleted
 class SavedCourseTile extends StatefulWidget {
   final SavedCoursesNotifier savedCoursesNotifier;
   final CourseNotifier courseNotifier;
@@ -232,6 +244,8 @@ class _SavedCourseTileState extends State<SavedCourseTile> {
           }),
     );
   }
+
+  /// Deals with the removal of a saved course when the user slides the course off the list or taps delete
    _handleRemoveSavedCourse(int index) {
     widget.courseNotifier.currentCourse = widget.savedList[index];
     widget.db.removeSavedCourseSubCollection(

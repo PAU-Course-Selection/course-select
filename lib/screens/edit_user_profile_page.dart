@@ -33,8 +33,9 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
   }
 
   Widget _title() {
-    return const Text(
+    return Text(
       "Edit Account",
+      style: kHeadlineMedium,
     );
   }
 
