@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import '../constants/constants.dart';
 import '../routes/routes.dart';
 
+/// [EditUserProfilePage] displays the user settings screen that allows a user to edit their information
+// TODO: Implement account info editing
 class EditUserProfilePage extends StatefulWidget {
   const EditUserProfilePage({Key? key}) : super(key: key);
 

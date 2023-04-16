@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+
+/// [IntroPage3] Shows the second welcome page in the slide show
 class IntroPage3 extends StatelessWidget {
   const IntroPage3({Key? key}) : super(key: key);
 

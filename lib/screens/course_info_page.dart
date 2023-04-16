@@ -27,6 +27,7 @@ import '../shared_widgets/ios_confirmation_dialog.dart';
 import '../shared_widgets/ios_limitation_dialog.dart';
 import '../utils/enums.dart';
 
+/// [CourseInfoPage] shows the information for the clicked course and allows users to enroll on the course
 class CourseInfoPage extends StatefulWidget {
   const CourseInfoPage({
     Key? key,
@@ -50,6 +51,8 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
   final ScrollController _controller =
       ScrollController(initialScrollOffset: 60.w);
 
+  /// Initialise all members for use on this screen
+  /// Initialises notifiers and gets data from the database for the course
   @override
   void initState() {
     _courseNotifier = Provider.of<CourseNotifier>(context, listen: false);
@@ -85,7 +88,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
       body: _courseInfo(),
     );
   }
-
+  /// gets classmates on the course from the database
   getClassmates() async {
     await _db
         .getClassmates(_courseNotifier.currentCourse.courseId, _userNotifier)
@@ -96,6 +99,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     });
   }
 
+  /// Gets recommended courses to take before the current course
   List<Course> getRecommendation(List<Course> courses, List prereqs) {
     List<Course> filteredCourses = [];
     try {
@@ -113,6 +117,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     return filteredCourses;
   }
 
+  /// Gets the number of lessons in the course
   getNumLessons() async {
     await _db.getTotalLessons(_courseNotifier).then((value) {
       setState(() {
@@ -121,6 +126,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     });
   }
 
+  /// Formats the prerequisites popup when a user goes to enroll on a course
   String formatPrerequisites(
       List prerequisites, List<Course> courses, List enrolledCourses) {
     final reqCourseIds = <String>{};
@@ -160,6 +166,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     return formattedCourses;
   }
 
+  /// Returns the enroll button and shows the prerequisites popup before enrollment
   Widget _conditionalBottomButton() {
     var preReqs = formatPrerequisites(_courseNotifier.currentCourse.prereqs,
         _courseNotifier.courseList, _userNotifier.userCourseIds);
@@ -240,6 +247,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     }
   }
 
+  /// Notifies the screen of changes to student information and updates
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -247,6 +255,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     _userNotifier.getStudentLevel();
   }
 
+  /// Responsible for formatting the main sections of the course information screen
   Widget _courseInfo() {
     return SingleChildScrollView(
       child: Column(
@@ -476,11 +485,13 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     );
   }
 
+  /// returns the formatted hours per week string for the course
   String _hoursPerWeek() {
     String hpw = _courseNotifier.currentCourse.hoursPerWeek.toString();
     return "$hpw Weeks ";
   }
 
+  /// returns a flag for whether an item in the preview list is a photo or a video
   Widget _photoVideoView(int index) {
     var type = '';
     if (index == 0) {
@@ -499,6 +510,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     }
   }
 
+  /// Formats an image item in the course media list
   Widget _courseImage(int index) {
     var current = _courseNotifier.currentCourse;
 
@@ -521,6 +533,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     return courseMedia;
   }
 
+  /// Formats a video item in the course media list
   Widget _courseVideo() {
     return Padding(
         padding: const EdgeInsets.all(16.0),
@@ -538,6 +551,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
 
 }
 
+/// Encapsulates the course info pill view that displays hours per week etc.
 class InfoPill extends StatelessWidget {
   final String icon;
   final String text;
