@@ -1,3 +1,4 @@
+import 'package:course_select/utils/enums.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -34,7 +35,7 @@ class _EmptyFavouritesPageState extends State<EmptyFavouritesPage> {
               context: context,
               builder: (context) => const Material(
                   child: SearchSheet(
-                filter: 'all',
+                categoryFilterKeyword: CategorySearchFilter.all,
               )),
             ).whenComplete(() => widget.onAdd.call());
           },

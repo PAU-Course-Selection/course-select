@@ -1,7 +1,6 @@
 import 'package:course_select/controllers/home_page_notifier.dart';
 import 'package:course_select/constants/constants.dart';
 import 'package:course_select/models/saved_course_data_model.dart';
-import 'package:course_select/shared_widgets/courses_filter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,11 +9,14 @@ import '../controllers/course_notifier.dart';
 import '../models/course_data_model.dart';
 import '../routes/routes.dart';
 import '../shared_widgets/mini_course_card.dart';
+import '../utils/enums.dart';
 import '../utils/firebase_data_management.dart';
 
 class SearchSheet extends StatefulWidget {
-  final String filter;
-  const SearchSheet({Key? key,required this.filter}) : super(key: key);
+  final CategorySearchFilter categoryFilterKeyword;
+
+  const SearchSheet({Key? key, required this.categoryFilterKeyword})
+      : super(key: key);
 
   @override
   State<SearchSheet> createState() => _SearchSheetState();
@@ -26,43 +28,292 @@ class _SearchSheetState extends State<SearchSheet>
   HomePageNotifier homePageNotifier = HomePageNotifier();
   late final CourseNotifier courseNotifier;
   late final SavedCoursesNotifier savedCoursesNotifier;
-  //late List<Course> savedList = [];
 
+  //late List<Course> savedList = [];
   //late final UserNotifier userNotifier;
   late Future futureData;
+  late final AnimationController _animationController;
+  late CategorySearchFilter searchFilter;
 
-  late List<Course> displayList;
+  static late List<Course> displayAllList = [];
+  static late List<Course> displayBeginnerList= [];
+  static late List<Course> displayIntermediateList= [];
+  static late List<Course> displayAdvancedList= [];
+  static late List<Course> displayFrontedList= [];
+  static late List<Course> displayBackendList= [];
+  static late List<Course> displayProgrammingList= [];
+  static late List<Course> displayDevOpsList= [];
+  static late List<Course> displaySoftwareList= [];
   int duplicateCount = 0;
 
-  void updateList(String value) {
+  get isAll {
+    return searchFilter == CategorySearchFilter.all;
+  }
+
+  get isBeginner {
+    return searchFilter == CategorySearchFilter.beginner;
+  }
+
+  get isIntermediate {
+    return searchFilter == CategorySearchFilter.intermediate;
+  }
+
+  get isAdvanced {
+    return searchFilter == CategorySearchFilter.advanced;
+  }
+
+  get isFrontend {
+    return searchFilter == CategorySearchFilter.frontend;
+  }
+
+  get isBackend {
+    return searchFilter == CategorySearchFilter.backend;
+  }
+
+  get isProgramming {
+    return searchFilter == CategorySearchFilter.programming;
+  }
+
+  get isDevOps {
+    return searchFilter == CategorySearchFilter.devOps;
+  }
+
+  get isSoftware {
+    return searchFilter == CategorySearchFilter.software;
+  }
+
+  void initialiseLists() {
+    displayAllList = List.from(courseNotifier.courseList);
+
+    displayBeginnerList = List.from(courseNotifier.courseList.where((element) =>
+        element.level
+            .toLowerCase()
+            .contains(getSearchKeyword(CategorySearchFilter.beginner))));
+
+    displayIntermediateList = List.from(courseNotifier.courseList.where(
+            (element) =>
+            element.level
+                .toLowerCase()
+                .contains(
+                getSearchKeyword(CategorySearchFilter.intermediate))));
+
+    displayAdvancedList = List.from(courseNotifier.courseList.where((element) =>
+        element.level
+            .toLowerCase()
+            .contains(getSearchKeyword(CategorySearchFilter.advanced))));
+
+    displayFrontedList = List.from(courseNotifier.courseList.where((element) =>
+        element.subjectArea
+            .toLowerCase()
+            .contains(getSearchKeyword(CategorySearchFilter.frontend))));
+
+    displayBackendList = List.from(courseNotifier.courseList.where((element) =>
+        element.subjectArea
+            .toLowerCase()
+            .contains(getSearchKeyword(CategorySearchFilter.backend))));
+
+    displayProgrammingList = List.from(courseNotifier.courseList.where(
+            (element) =>
+            element.subjectArea
+                .toLowerCase()
+                .contains(getSearchKeyword(CategorySearchFilter.programming))));
+
+    displayDevOpsList = List.from(courseNotifier.courseList.where((element) =>
+        element.subjectArea
+            .toLowerCase()
+            .contains(getSearchKeyword(CategorySearchFilter.devOps))));
+
+    displaySoftwareList = List.from(courseNotifier.courseList.where((element) =>
+        element.subjectArea
+            .toLowerCase()
+            .contains(getSearchKeyword(CategorySearchFilter.software))));
+  }
+
+  void updateAllList(String value) {
     /// filter courses list
-    print(value);
     setState(() {
-      displayList = courseNotifier.courseList
+      displayAllList = courseNotifier.courseList
           .where((element) =>
-      element.courseName!.toLowerCase().contains(value.toLowerCase())
-          || element.subjectArea!.toLowerCase().contains(value.toLowerCase())
-          || element.level!.toLowerCase().contains(value.toLowerCase())
-      )
+      element.courseName!.toLowerCase().contains(value.toLowerCase()) ||
+          element.subjectArea!
+              .toLowerCase()
+              .contains(value.toLowerCase()) ||
+          element.level!.toLowerCase().contains(value.toLowerCase()))
           .toList();
     });
   }
+  void updateBeginnerList(String value) {
+    /// filter courses list
+    setState(() {
+      displayBeginnerList = courseNotifier.courseList
+          .where((element) =>
+      element.level.toLowerCase().
+      contains(getSearchKeyword(CategorySearchFilter.beginner))&&
+      element.courseName!.toLowerCase().contains(value.toLowerCase()) ||
+          element.subjectArea!
+              .toLowerCase()
+              .contains(value.toLowerCase()) ||
+          element.level!.toLowerCase().contains(value.toLowerCase()))
+          .toList();
+    });
+  }
+  void updateIntermediateList(String value) {
+    /// filter courses list
+    setState(() {
+      displayIntermediateList = courseNotifier.courseList
+          .where((element) =>
+      element.level.toLowerCase().
+      contains(getSearchKeyword(CategorySearchFilter.intermediate))&&
+      element.courseName!.toLowerCase().contains(value.toLowerCase()) ||
+          element.subjectArea!
+              .toLowerCase()
+              .contains(value.toLowerCase()) ||
+          element.level!.toLowerCase().contains(value.toLowerCase()))
+          .toList();
+    });
+  }
+  void updateAdvancedList(String value) {
+    /// filter courses list
+    setState(() {
+      displayAdvancedList = courseNotifier.courseList
+          .where((element) =>
+      element.level.toLowerCase().
+      contains(getSearchKeyword(CategorySearchFilter.advanced))&&
+      element.courseName!.toLowerCase().contains(value.toLowerCase()) ||
+          element.subjectArea!
+              .toLowerCase()
+              .contains(value.toLowerCase()) ||
+          element.level!.toLowerCase().contains(value.toLowerCase()))
+          .toList();
+    });
+  }
+  void updateFrontendList(String value) {
+    /// filter courses list
+    setState(() {
+      displayFrontedList = courseNotifier.courseList
+          .where((element) =>
+      element.subjectArea.toLowerCase().
+      contains(getSearchKeyword(CategorySearchFilter.frontend))&&
+      element.courseName.toLowerCase().contains(value.toLowerCase()) ||
+          element.subjectArea
+              .toLowerCase()
+              .contains(value.toLowerCase()) ||
+          element.level.toLowerCase().contains(value.toLowerCase()))
+          .toList();
+    });
+  }
+  void updateBackendList(String value) {
+    /// filter courses list
+    setState(() {
+      displayBackendList = courseNotifier.courseList
+          .where((element) =>
+      element.subjectArea.toLowerCase().
+      contains(getSearchKeyword(CategorySearchFilter.backend))&&
+      element.courseName.toLowerCase().contains(value.toLowerCase()) ||
+          element.subjectArea
+              .toLowerCase()
+              .contains(value.toLowerCase()) ||
+          element.level.toLowerCase().contains(value.toLowerCase()))
+          .toList();
+    });
+  }
+  void updateProgrammingList(String value) {
+    /// filter courses list
+    setState(() {
+      displayProgrammingList = courseNotifier.courseList
+          .where((element) =>
+      element.subjectArea.toLowerCase().
+      contains(getSearchKeyword(CategorySearchFilter.programming))&&
+      element.courseName.toLowerCase().contains(value.toLowerCase()) ||
+          element.subjectArea
+              .toLowerCase()
+              .contains(value.toLowerCase()) ||
+          element.level.toLowerCase().contains(value.toLowerCase()))
+          .toList();
+    });
+  }
+  void updateDevOpsList(String value) {
+    /// filter courses list
+    setState(() {
+      displayDevOpsList = courseNotifier.courseList
+          .where((element) =>
+      element.subjectArea.toLowerCase().
+      contains(getSearchKeyword(CategorySearchFilter.devOps))&&
+      element.courseName.toLowerCase().contains(value.toLowerCase()) ||
+          element.subjectArea
+              .toLowerCase()
+              .contains(value.toLowerCase()) ||
+          element.level.toLowerCase().contains(value.toLowerCase()))
+          .toList();
+    });
+  }
+  void updateSoftwareList(String value) {
+    /// filter courses list
+    setState(() {
+      displaySoftwareList = courseNotifier.courseList
+          .where((element) =>
+      element.subjectArea.toLowerCase().
+      contains(getSearchKeyword(CategorySearchFilter.software))&&
+      element.courseName.toLowerCase().contains(value.toLowerCase()) ||
+          element.subjectArea
+              .toLowerCase()
+              .contains(value.toLowerCase()) ||
+          element.level.toLowerCase().contains(value.toLowerCase()))
+          .toList();
+    });
+  }
+
 
   Future getModels() {
     //db.getUsers(userNotifier);
     return db.getCourses(courseNotifier);
   }
 
-  late final AnimationController _animationController;
+  String getSearchKeyword(CategorySearchFilter filter) {
+    String result;
+    switch (filter) {
+      case CategorySearchFilter.all:
+        result = 'all';
+        break;
+      case CategorySearchFilter.beginner:
+        result = 'beginner';
+        break;
+      case CategorySearchFilter.intermediate:
+        result = 'intermediate';
+        break;
+      case CategorySearchFilter.advanced:
+        result = 'advanced';
+        break;
+      case CategorySearchFilter.frontend:
+        result = 'frontend';
+        break;
+      case CategorySearchFilter.backend:
+        result = 'backend';
+        break;
+      case CategorySearchFilter.programming:
+        result = 'programming';
+        break;
+      case CategorySearchFilter.devOps:
+        result = 'devOps';
+        break;
+      case CategorySearchFilter.software:
+        result = 'software';
+        break;
+    }
+    return result;
+  }
 
   @override
   void initState() {
-    savedCoursesNotifier = Provider.of<SavedCoursesNotifier>(context, listen: false);
+    searchFilter = widget.categoryFilterKeyword;
+    savedCoursesNotifier =
+        Provider.of<SavedCoursesNotifier>(context, listen: false);
     _animationController = AnimationController(vsync: this);
     courseNotifier = Provider.of<CourseNotifier>(context, listen: false);
     //userNotifier = Provider.of<UserNotifier>(context, listen: false);
+    initialiseLists();
     futureData = getModels();
-    displayList = List.from(courseNotifier.courseList);
+
     super.initState();
   }
 
@@ -74,6 +325,7 @@ class _SearchSheetState extends State<SearchSheet>
 
   @override
   Widget build(BuildContext context) {
+    print('searchFilter: $searchFilter');
     return Scaffold(
       body: FutureBuilder(
           future: futureData,
@@ -85,10 +337,11 @@ class _SearchSheetState extends State<SearchSheet>
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                     Padding(
+                    Padding(
                       padding: const EdgeInsets.only(left: 25.0, top: 25),
                       child: Text(
-                        'Search for ${widget.filter} courses',
+                        'Search for ${getSearchKeyword(
+                            searchFilter)} courses',
                         style: const TextStyle(
                             fontSize: 22.0,
                             fontWeight: FontWeight.bold,
@@ -102,7 +355,35 @@ class _SearchSheetState extends State<SearchSheet>
                       padding: const EdgeInsets.symmetric(horizontal: 25.0),
                       child: TextField(
                         onChanged: (value) {
-                          updateList(value);
+                          switch(searchFilter){
+                            case CategorySearchFilter.all:
+                              updateAllList(value);
+                              break;
+                            case CategorySearchFilter.beginner:
+                              updateBeginnerList(value);
+                              break;
+                            case CategorySearchFilter.intermediate:
+                              updateIntermediateList(value);
+                              break;
+                            case CategorySearchFilter.advanced:
+                              updateAdvancedList(value);
+                              break;
+                            case CategorySearchFilter.frontend:
+                              updateFrontendList(value);
+                              break;
+                            case CategorySearchFilter.backend:
+                              updateBackendList(value);
+                              break;
+                            case CategorySearchFilter.programming:
+                              updateProgrammingList(value);
+                              break;
+                            case CategorySearchFilter.devOps:
+                              updateDevOpsList(value);
+                              break;
+                            case CategorySearchFilter.software:
+                              updateSoftwareList(value);
+                              break;
+                          }
                         },
                         decoration: InputDecoration(
                             border: OutlineInputBorder(
@@ -110,10 +391,10 @@ class _SearchSheetState extends State<SearchSheet>
                             ),
                             hintText: 'eg. Data Science',
                             focusedBorder: OutlineInputBorder(
-                                borderRadius:
-                                const BorderRadius.all(Radius.circular(8.0)),
-                                borderSide:
-                                BorderSide(width: 1, color: kPrimaryColour)),
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(8.0)),
+                                borderSide: BorderSide(
+                                    width: 1, color: kPrimaryColour)),
                             prefixIcon: const Icon(
                               Icons.search,
                               color: Colors.grey,
@@ -142,21 +423,63 @@ class _SearchSheetState extends State<SearchSheet>
                       child: Column(
                         children: [
                           Row(
-                            children: const [
-                              CatPill(categoryName: 'Programming', categoryColour: Color(0xffd5f1d3),categoryIcon:'assets/icons/analysis.png'),
-                              Flexible(child: CatPill(categoryName: 'Software Engineering', categoryColour: Color(0xffffd0ef),categoryIcon:'assets/icons/software.png')),
+                            children: [
+                              CatPill(
+                                  categoryName: 'Programming',
+                                  categoryColour: Color(0xffd5f1d3),
+                                  categoryIcon: 'assets/icons/analysis.png',
+                                onPressed: (){
+                                    print('programming');
+                                    setState(() {
+                                      searchFilter = CategorySearchFilter.programming;
+                                    });
+                                },),
+                              Flexible(
+                                  child: CatPill(
+                                      categoryName: 'Software Engineering',
+                                      categoryColour: Color(0xffffd0ef),
+                                      categoryIcon:
+                                      'assets/icons/software.png', onPressed: (){
+                                    setState(() {
+                                      searchFilter = CategorySearchFilter.software;
+                                    });
 
+                                  },)),
                             ],
                           ),
                           const SizedBox(
                             height: 10,
                           ),
                           Row(
-                            children: const [
-                              CatPill(categoryName: 'DevOps', categoryColour: Color(0xffffeeca),categoryIcon:'assets/icons/devops.png'),
-                              CatPill(categoryName: 'Backend', categoryColour: Color(0xfffcfcc3),categoryIcon:'assets/icons/security.png'),
-                              Flexible(child: CatPill(categoryName: 'Frontend', categoryColour: Color(0xfff4e1fe),categoryIcon:'assets/icons/ui.png')),
+                            children: [
+                              CatPill(
+                                  categoryName: 'DevOps',
+                                  categoryColour: Color(0xffffeeca),
+                                  categoryIcon: 'assets/icons/devops.png', onPressed: (){
+                                setState(() {
+                                  searchFilter = CategorySearchFilter.devOps;
+                                });
 
+                              },),
+                              CatPill(
+                                  categoryName: 'Backend',
+                                  categoryColour: Color(0xfffcfcc3),
+                                  categoryIcon: 'assets/icons/security.png', onPressed: (){
+                                setState(() {
+                                  searchFilter = CategorySearchFilter.backend;
+                                });
+
+                              },),
+                              Flexible(
+                                  child: CatPill(
+                                      categoryName: 'Frontend',
+                                      categoryColour: Color(0xfff4e1fe),
+                                      categoryIcon: 'assets/icons/ui.png', onPressed: (){
+                                    setState(() {
+                                      searchFilter = CategorySearchFilter.frontend;
+                                    });
+
+                                  },)),
                             ],
                           ),
                         ],
@@ -166,29 +489,43 @@ class _SearchSheetState extends State<SearchSheet>
                       height: 20.0,
                     ),
                     Expanded(
-                        child: displayList.isEmpty
+                        child: isAll && displayAllList.isEmpty ||
+                            isBeginner && displayBeginnerList.isEmpty||isIntermediate && displayIntermediateList.isEmpty||
+                            isAdvanced && displayAdvancedList.isEmpty||isFrontend && displayFrontedList.isEmpty||
+                            isBackend && displayBackendList.isEmpty ||isDevOps && displayDevOpsList.isEmpty||
+                            isProgramming && displayProgrammingList.isEmpty||isSoftware && displaySoftwareList.isEmpty
                             ? const Center(
                           child: Text('No results found...'),
                         )
                             : Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 25.0),
                           child: ListView.builder(
                               scrollDirection: Axis.vertical,
-                              itemCount: displayList.length,
+                              itemCount: isAll
+                                  ? displayAllList.length
+                                  : isBeginner ? displayBeginnerList.length
+                                  : isIntermediate ? displayIntermediateList
+                                  .length
+                                  : isFrontend ? displayFrontedList.length
+                                  : isBackend ? displayBackendList.length
+                                  : isProgramming ? displayProgrammingList
+                                  .length
+                                  : isDevOps
+                                  ? displayDevOpsList.length
+                                  : isSoftware ? displaySoftwareList.length: isAdvanced? displayAdvancedList.length: displayAllList.length,
                               itemBuilder: (context, index) {
                                 return MiniCourseCard(
-                                  displayList: displayList,
+                                  displayList: isAll
+                                      ? displayAllList
+                                      : isBeginner? displayBeginnerList: isIntermediate? displayIntermediateList
+                                  :isAdvanced? displayAdvancedList: isProgramming? displayProgrammingList: isDevOps?displayDevOpsList
+                                  :isSoftware? displaySoftwareList: isBackend? displayBackendList: isFrontend? displayFrontedList: displayAllList,
                                   index: index,
                                   onBookmarkTapped: () {
+                                    HapticFeedback.heavyImpact();
                                     setState(() {
-                                      HapticFeedback.heavyImpact();
-                                      displayList[index].isSaved =
-                                      !displayList[index].isSaved;
-
-                                      courseNotifier.currentCourse = displayList[index];
-                                      db.addSavedCourseSubCollection(index: index, displayList: displayList,
-                                          duplicateCount: duplicateCount, savedCourses: savedCoursesNotifier, courseNotifier: courseNotifier);
-
+                                      _saveCourse(index);
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                         SnackBar(
@@ -202,7 +539,11 @@ class _SearchSheetState extends State<SearchSheet>
                                                   5)),
                                           content: Center(
                                               child: Text(
-                                                displayList[index].isSaved
+                                                displayAllList[index].isSaved||
+                                                displayBeginnerList[index].isSaved||displayIntermediateList[index].isSaved||
+                                              displayAdvancedList[index].isSaved||displayFrontedList[index].isSaved||
+                                              displayBackendList[index].isSaved || displayDevOpsList[index].isSaved||
+                                              displayProgrammingList[index].isSaved||displaySoftwareList[index].isSaved
                                                     ? 'Added to saved courses'
                                                     : 'Removed from saved courses',
                                                 style: const TextStyle(
@@ -215,10 +556,11 @@ class _SearchSheetState extends State<SearchSheet>
                                         ),
                                       );
                                     });
-                                  }, onCardPressed: (){
-                                  courseNotifier.currentCourse = displayList[index];
-                                  Navigator.pushNamed(context, PageRoutes.courseInfo);
-                                },);
+                                  },
+                                  onCardPressed: () {
+                                    _showInfoScreen(index);
+                                  },
+                                );
                               }),
                         )),
                   ],
@@ -228,34 +570,124 @@ class _SearchSheetState extends State<SearchSheet>
           }),
     );
   }
+
+  final Map<CategorySearchFilter, List<Course>> filterToList = {
+    CategorySearchFilter.all: displayAllList,
+    CategorySearchFilter.beginner: displayBeginnerList,
+    CategorySearchFilter.intermediate: displayIntermediateList,
+    CategorySearchFilter.advanced: displayAdvancedList,
+    CategorySearchFilter.frontend: displayFrontedList,
+    CategorySearchFilter.backend: displayBackendList,
+    CategorySearchFilter.programming: displayProgrammingList,
+    CategorySearchFilter.devOps: displayDevOpsList,
+    CategorySearchFilter.software: displaySoftwareList,
+  };
+
+  _showInfoScreen(int index){
+    final selectedList = filterToList[searchFilter];
+    if (selectedList == null || index >= selectedList.length) {
+      return;
+    }
+    courseNotifier.currentCourse = selectedList[index];
+    Navigator.pushNamed(context, PageRoutes.courseInfo);
+  }
+
+  _saveCourse(int index) {
+    var displayList, item;
+    switch (searchFilter) {
+      case CategorySearchFilter.all:
+        displayList = displayAllList;
+        item = displayList[index];
+        break;
+      case CategorySearchFilter.beginner:
+        displayList = displayBeginnerList;
+        item = displayList[index];
+        break;
+      case CategorySearchFilter.intermediate:
+        displayList = displayIntermediateList;
+        item = displayList[index];
+        break;
+      case CategorySearchFilter.advanced:
+        displayList = displayAdvancedList;
+        item = displayList[index];
+        break;
+      case CategorySearchFilter.frontend:
+        displayList = displayFrontedList;
+        item = displayList[index];
+        break;
+      case CategorySearchFilter.backend:
+        displayList = displayBackendList;
+        item = displayList[index];
+        break;
+      case CategorySearchFilter.programming:
+        displayList = displayProgrammingList;
+        item = displayList[index];
+        break;
+      case CategorySearchFilter.devOps:
+        displayList = displayDevOpsList;
+        item = displayList[index];
+        break;
+      case CategorySearchFilter.software:
+        displayList = displaySoftwareList;
+        item = displayList[index];
+        break;
+    }
+    setState(() {
+      item.isSaved = !item.isSaved;
+    });
+    courseNotifier.currentCourse = item;
+    db.addSavedCourseSubCollection(
+        index: index,
+        displayList: displayList,
+        duplicateCount: duplicateCount,
+        savedCourses: savedCoursesNotifier,
+        courseNotifier: courseNotifier);
+  }
+
 }
 
 class CatPill extends StatelessWidget {
   final String categoryName;
   final Color categoryColour;
   final String categoryIcon;
+  final Function onPressed;
+
   const CatPill({
-    Key? key, required this.categoryName, required this.categoryColour, required this.categoryIcon,
+    Key? key,
+    required this.categoryName,
+    required this.categoryColour,
+    required this.categoryIcon, required this.onPressed,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 5.0),
-      child: Container(
-        padding: const EdgeInsets.all(15.0),
-        decoration:  BoxDecoration(
-            color: categoryColour,
-            borderRadius: const BorderRadius.all(Radius.circular(15.0))),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children:  [
+    return InkWell(
+      splashColor: kSaraLightPink,
+      onTap: ()=> onPressed.call(),
+      child: Padding(
+        padding: const EdgeInsets.only(right: 5.0),
+        child: Container(
+          padding: const EdgeInsets.all(15.0),
+          decoration: BoxDecoration(
+              color: categoryColour,
+              borderRadius: const BorderRadius.all(Radius.circular(15.0))),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
               Padding(
-              padding: const EdgeInsets.only(right: 5),
-              child: Image.asset(categoryIcon, width: 24, height: 20,)
-            ),
-            Text(categoryName, style: const TextStyle(fontSize: 16),overflow: TextOverflow.ellipsis,),
-          ],
+                  padding: const EdgeInsets.only(right: 5),
+                  child: Image.asset(
+                    categoryIcon,
+                    width: 24,
+                    height: 20,
+                  )),
+              Text(
+                categoryName,
+                style: const TextStyle(fontSize: 16),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
         ),
       ),
     );

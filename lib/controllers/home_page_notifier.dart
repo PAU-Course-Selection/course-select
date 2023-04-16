@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
 class HomePageNotifier extends ChangeNotifier{
-  bool _isFilterVisible = false;
+  bool _isFilterVisible = true;
   bool _isAllSelected = false;
   bool _isOngoingSelected = false;
   bool _isCompletedSelected = false;

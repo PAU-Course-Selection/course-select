@@ -1,5 +1,6 @@
 import 'package:course_select/screens/search_sheet.dart';
 import 'package:course_select/shared_widgets/category_pill.dart';
+import 'package:course_select/utils/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -37,7 +38,7 @@ class _CoursesFilterState extends State<CoursesFilter> {
       context: context,
       builder: (context) => SizedBox(
           height: MediaQuery.of(context).size.height * 0.7,
-          child: Material(child: SearchSheet(filter: filter))),
+          child: Material(child: SearchSheet(categoryFilterKeyword: filter))),
     );
   }
 
@@ -157,7 +158,7 @@ class _CoursesFilterState extends State<CoursesFilter> {
                   b3 = false;
                   b4 = false;
                 });
-                _showSearchSheet('all').whenComplete(() {
+                _showSearchSheet(CategorySearchFilter.all).whenComplete(() {
                   setState(() {
                     b1 = false;
                   });
@@ -177,7 +178,7 @@ class _CoursesFilterState extends State<CoursesFilter> {
                   b3 = false;
                   b4 = false;
                 });
-                _showSearchSheet('beginner').whenComplete(() {
+                _showSearchSheet(CategorySearchFilter.beginner).whenComplete(() {
                   setState(() {
                     b2 = false;
                   });
@@ -206,7 +207,7 @@ class _CoursesFilterState extends State<CoursesFilter> {
                   b3 = !b3 ;
                   b4 = false;
                 });
-                _showSearchSheet('intermediate').whenComplete(() {
+                _showSearchSheet(CategorySearchFilter.intermediate).whenComplete(() {
                   setState(() {
                     b3 = false;
                   });
@@ -227,7 +228,7 @@ class _CoursesFilterState extends State<CoursesFilter> {
                   b3 = false;
                   b4 = !b4 ;
                 });
-                _showSearchSheet('advanced').whenComplete(() {
+                _showSearchSheet(CategorySearchFilter.advanced).whenComplete(() {
                   setState(() {
                     b4 = false;
                   });

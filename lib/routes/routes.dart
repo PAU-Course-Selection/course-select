@@ -10,6 +10,7 @@ import '../screens/app_main_navigation.dart';
 import '../screens/my_courses_page.dart';
 import '../screens/user_profile_page.dart';
 import '../screens/intro_pages/welcome_page.dart';
+import '../utils/enums.dart';
 
 ///Creates a class with accessible routes to all screens of the app
 class PageRoutes{
@@ -36,7 +37,7 @@ class PageRoutes{
       courseInfo: (context) => const CourseInfoPage(),
       userProfile: (context) => const UserProfilePage(),
       forgotPassword: (context) => const ForgotPasswordPage(),
-      searchSheet: (context) => const SearchSheet(filter: '',),
+      searchSheet: (context) =>  const SearchSheet(categoryFilterKeyword: CategorySearchFilter.all,),
       filterSheet: (context) => const FilterSheet(),
       courses: (context) => const MyCourses(),
       edit: (context) => const EditUserProfilePage(),
