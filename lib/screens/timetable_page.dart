@@ -133,6 +133,7 @@ class _TimetableState extends State<Timetable> {
     );
   }
 
+  /// Get lesson data from the database
   List<Meeting> _getDataSource() {
     final List<Meeting> meetings = <Meeting>[];
     final DateTime today = DateTime.now();
@@ -148,6 +149,7 @@ class _TimetableState extends State<Timetable> {
   }
 }
 
+/// [LessonCard] represents a single lesson item above the timetable
 class LessonCard extends StatelessWidget {
   final String? title;
   final String startTime;
@@ -244,31 +246,36 @@ class MeetingDataSource extends CalendarDataSource {
     appointments = source;
   }
 
+  /// Gets the lesson start time
   @override
   DateTime getStartTime(int index) {
     return _getMeetingData(index).from;
   }
 
+  /// Gets the lesson end time
   @override
   DateTime getEndTime(int index) {
     return _getMeetingData(index).to;
   }
 
+  /// Gets the lesson subject
   @override
   String getSubject(int index) {
     return _getMeetingData(index).eventName;
   }
 
+  /// Gets the lesson color
   @override
   Color getColor(int index) {
     return _getMeetingData(index).background;
   }
-
+  /// Flag for whether a lesson is all day
   @override
   bool isAllDay(int index) {
     return _getMeetingData(index).isAllDay;
   }
 
+  /// Get meeting information from list of meetings
   Meeting _getMeetingData(int index) {
     final dynamic meeting = appointments![index];
     late final Meeting meetingData;

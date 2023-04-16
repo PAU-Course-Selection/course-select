@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 import '../models/course_data_model.dart';
 import '../utils/auth.dart';
 
-///Creates a controller class with user attributes which notify all widgets of changes
+///[UserNotifier] creates a controller class with user attributes which notify all widgets of changes
 class UserNotifier extends ChangeNotifier {
   final User? user = Auth().currentUser;
   final DatabaseManager db = DatabaseManager();
@@ -20,44 +20,63 @@ class UserNotifier extends ChangeNotifier {
   var _email = 'example@gmail.com';
   var _joinDate = '00-00-0000';
 
-  get email => _email;
-  get avatar => _avatar;
-  ///A getter for the authenticated user's name
-  get userName => _userName;
-
   List<student.UserModel> _usersList = [];
+  List<student.UserModel> _userClassmates = [];
+
   List _userCourseIds = [];
   List _userInterests = [];
   List _skillLevel = [];
   int _studentLevel = 0;
 
+  /// A getter for the authenticated email
+  /// returns [_email]
+  get email => _email;
+
+  /// A getter for the authenticated user's avatar image
+  /// returns [_avatar]
+  get avatar => _avatar;
+
+  /// A getter for the authenticated user's name
+  /// returns [_userName]
+  get userName => _userName;
+
+  /// A getter for the authenticated user's name
+  /// returns [_studentLevel]
   int get studentLevel => _studentLevel;
 
+  /// A setter for the authenticated user's skill level
+  /// sets value for [_studentLevel]
   set studentLevel(int value) {
     _studentLevel = value;
     notifyListeners();
   }
 
+  /// A setter for the authenticated user's list of subject areas they are interested in
+  /// sets values for list of interests [_userInterests]
   set userInterests(List value) {
     _userInterests = value;
     notifyListeners();
   }
 
-  List<student.UserModel> _userClassmates = [];
 
   ///A getter for the list of interests
+  /// returns [_userInterests]
   List get userInterests => (_userInterests);
 
-  ///A getter for the list of users
+  ///A getter for the list of users registered on the same course as the current user
+  /// returns [_userClassmates]
   UnmodifiableListView<student.UserModel> get userClassmates =>
       UnmodifiableListView(_userClassmates);
 
-  ///Sets or updates list downloaded from the database using the model api
+  ///A setter for the list of users registered on the same course as the current user
+  /// updates [_userClassmates]
   set userClassmates(List<student.UserModel> list) {
     _userClassmates = list;
     notifyListeners();
   }
 
+  ///A getter for the list of ids of courses the current user is registered on
+  /// returns [_userCourseIds]
   List get userCourseIds => _userCourseIds;
 
   set userCourseIds(List value) {
@@ -66,11 +85,13 @@ class UserNotifier extends ChangeNotifier {
   }
 
 
-  ///A getter for the list of users
+  /// A getter for the list of users
+  /// returns [_usersList]
   UnmodifiableListView<student.UserModel> get usersList =>
       UnmodifiableListView(_usersList);
 
-
+  /// A setter for the current user's email address
+  /// updates [_email]
   set email(value) {
     _email = value;
     notifyListeners();
@@ -81,12 +102,18 @@ class UserNotifier extends ChangeNotifier {
     _userName;
     notifyListeners();
   }
-
+  /// A setter for the current user's name
+  /// updates [_userName]
   set userName(value) {
     _userName = value;
     notifyListeners();
   }
 
+  set password(value){
+
+  }
+  /// A setter for the current user's avatar image
+  /// updates [_avatar]
   set avatar(value) {
     _avatar = value;
     notifyListeners();
@@ -98,6 +125,9 @@ class UserNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// updates the current users details in the database
+  /// updates name, email, password, avatar and join date
+  /// This is used on registration
   void updateUserDetails() {
     try{
       FirebaseAuth.instance.authStateChanges().listen((User? user) {
@@ -122,7 +152,12 @@ class UserNotifier extends ChangeNotifier {
     }
   }
 
+  /// gets the current users join data
+  /// return [_joinDate]
   get joinDate => _joinDate;
+
+  /// sets the current users join data
+  /// updates [_joinDate]
   set joinDate(value) {
     _joinDate = value;
     notifyListeners();
@@ -130,6 +165,8 @@ class UserNotifier extends ChangeNotifier {
 
   bool match = false;
 
+  ///Gets a list of course ids for the current user from the database
+  ///  returns a list of course ids
   List getCourseIds() {
     List ids = [];
     for (int i = 0; i < usersList.length; i++) {
@@ -148,7 +185,8 @@ class UserNotifier extends ChangeNotifier {
     }
     return ids;
   }
-
+  /// Gets a list of interests from the database for the current user if found
+  /// Returns a list of interests
   List getInterests() {
     List interests = [];
     for (int i = 0; i < usersList.length; i++) {
@@ -167,6 +205,8 @@ class UserNotifier extends ChangeNotifier {
     }
     return interests.toList();
   }
+
+  /// returns the current student's skill level as an integer from 1 to 3 or sets to 0 if not found
   int getStudentLevel() {
     int level = 0;
     for (int i = 0; i < usersList.length; i++) {
@@ -184,9 +224,8 @@ class UserNotifier extends ChangeNotifier {
     return level;
   }
 
-
-
-
+  /// Filters courses from [getCourseIds] by id
+  /// returns a list of filtered courses
   List<Course> filterCoursesByIds(List<Course> courses) {
     List ids = getCourseIds();
     List<Course> filteredCourses = [];
@@ -203,7 +242,8 @@ class UserNotifier extends ChangeNotifier {
   List get skillLevel => (_skillLevel);
 
 
-
+  /// A setter for the current user's skill level
+  /// updates [_skillLevel]
   set skillLevel(List value) {
     _skillLevel = value;
     notifyListeners();

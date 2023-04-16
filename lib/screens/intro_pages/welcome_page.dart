@@ -10,6 +10,8 @@ import '../select_interests_page.dart';
 import 'intro_page2.dart';
 import 'intro_page3.dart';
 
+/// [WelcomePage] Controls the welcome page slideshow.
+/// This only displays when the app is first opened
 class WelcomePage extends StatelessWidget {
   const WelcomePage({Key? key}) : super(key: key);
   static const screenId = 'welcome_screen';
@@ -28,6 +30,7 @@ class WelcomePage extends StatelessWidget {
   }
 }
 
+/// [Onboarding] controls the pagination of the slide show and tracks when the last page is reached through the [_onLastPage] flag
 class Onboarding extends StatefulWidget {
   const Onboarding({
     Key? key,

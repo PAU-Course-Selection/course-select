@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../models/user_data_model.dart';
 
 ///Encapsulates all needed FirebaseAuth methods and useful getters for later use
-class Auth{
+class Auth {
   ///Creates a  firebase instance for the whole app
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
@@ -40,6 +40,15 @@ class Auth{
       email: email,
       password: password,
     );
+  }
+
+  /// Changes the password of the currently logged in user and re-authenticates them
+  //TODO: implement change password
+  Future<void> updateUserPassword(
+      {required String email, required String password,}) async{
+    AuthCredential credential = EmailAuthProvider
+        .credential(email: email, password: '');
+
   }
 
   ///Logs out a current user

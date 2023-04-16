@@ -1,7 +1,6 @@
 import 'package:course_select/controllers/home_page_notifier.dart';
 import 'package:course_select/constants/constants.dart';
 import 'package:course_select/models/saved_course_data_model.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +11,7 @@ import '../shared_widgets/mini_course_card.dart';
 import '../utils/enums.dart';
 import '../utils/firebase_data_management.dart';
 
+/// [SearchSheet] is responsible for search filtering by subject area. skill level and using search terms in search boxes across the app.
 class SearchSheet extends StatefulWidget {
   final CategorySearchFilter categoryFilterKeyword;
 
@@ -583,6 +583,7 @@ class _SearchSheetState extends State<SearchSheet>
     CategorySearchFilter.software: displaySoftwareList,
   };
 
+  /// Handles clicks on the filtered list of course to display course info
   _showInfoScreen(int index){
     final selectedList = filterToList[searchFilter];
     if (selectedList == null || index >= selectedList.length) {
@@ -592,6 +593,7 @@ class _SearchSheetState extends State<SearchSheet>
     Navigator.pushNamed(context, PageRoutes.courseInfo);
   }
 
+  /// Allows course saving on the filtered lists
   _saveCourse(int index) {
     var displayList, item;
     switch (searchFilter) {
@@ -645,7 +647,7 @@ class _SearchSheetState extends State<SearchSheet>
   }
 
 }
-
+/// [CatPill] encapsulates the UI elements of the category pills to filter courses
 class CatPill extends StatelessWidget {
   final String categoryName;
   final Color categoryColour;
@@ -659,6 +661,7 @@ class CatPill extends StatelessWidget {
     required this.categoryIcon, required this.onPressed,
   }) : super(key: key);
 
+  /// Builds ui elements for the search page
   @override
   Widget build(BuildContext context) {
     return InkWell(

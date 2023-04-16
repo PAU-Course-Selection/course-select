@@ -6,6 +6,7 @@ import 'package:course_select/constants/constants.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'my_courses_page.dart';
 
+/// The [AppMainNav] class controls the navigation of the app around the bottom navigation bar
 class AppMainNav extends StatefulWidget {
   const AppMainNav({Key? key}) : super(key: key);
 
@@ -67,6 +68,7 @@ class _AppMainNavState extends State<AppMainNav> {
   }
 }
 
+/// The [RaisedContainer] class defines custom styling for the filter box.
 class RaisedContainer extends StatelessWidget {
   final Widget child;
   final double width;
