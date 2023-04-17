@@ -410,7 +410,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
           ),
           //Classmates Box
           Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
               child: Container(
                   height: 110.h,
                   width: double.infinity,
