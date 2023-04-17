@@ -412,7 +412,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
           Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
               child: Container(
-                  height: 110.h,
+                  height: 120.h,
                   width: double.infinity,
                   padding: const EdgeInsets.all(10.0),
                   decoration: BoxDecoration(
