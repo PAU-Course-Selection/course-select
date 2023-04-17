@@ -210,34 +210,76 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
             print('isMatching $isMatching');
           }
           showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return Platform.isAndroid == true
-                    ? preReqs.isNotEmpty && !isMatching
-                        ? androidLimitationDialog(preReqs: preReqs)
-                        : androidConfirmationDialog(
-                            courseNotifier: _courseNotifier,
-                            preReqs: isMatching
-                                ? 'with prerequisites: $preReqs'
-                                : preReqs,
-                            db: _db,
-                            userNotifier: _userNotifier,
-                            homePageNotifier: _homePageNotifier)
-                    : preReqs.isNotEmpty && !isMatching
-                        ? IOSLimitationDialog(preReqs: preReqs)
-                        : IOSConfirmationDialog(
-                            courseNotifier: _courseNotifier,
-                            preReqs: isMatching
-                                ? 'with prerequisites: $preReqs'
-                                : preReqs,
-                            db: _db,
-                            userNotifier: _userNotifier,
-                            homePageNotifier: _homePageNotifier);
-              });
+            context: context,
+            builder: (BuildContext context) {
+              if (Platform.isAndroid) {
+                return androidDialog(
+                  courseNotifier: _courseNotifier,
+                  preReqs: preReqs,
+                  isMatching: isMatching,
+                  db: _db,
+                  userNotifier: _userNotifier,
+                  homePageNotifier: _homePageNotifier,
+                );
+              } else {
+                return iosDialog(
+                  courseNotifier: _courseNotifier,
+                  preReqs: preReqs,
+                  isMatching: isMatching,
+                  db: _db,
+                  userNotifier: _userNotifier,
+                  homePageNotifier: _homePageNotifier,
+                );
+              }
+            },
+          );
         },
         buttonText: 'Enroll',
       );
     }
+  }
+
+  Widget androidDialog({
+    required CourseNotifier courseNotifier,
+    required String preReqs,
+    required bool isMatching,
+    required DatabaseManager db,
+    required UserNotifier userNotifier,
+    required HomePageNotifier homePageNotifier,
+  }) {
+    if (preReqs.isNotEmpty && !isMatching) {
+      return AndroidLimitationDialog(preReqs: preReqs);
+    } else {
+      return AndroidConfirmationDialog(
+        courseNotifier: courseNotifier,
+        preReqs: isMatching && preReqs.isNotEmpty ? 'with prerequisites: $preReqs' : preReqs,
+        db: db,
+        userNotifier: userNotifier,
+        homePageNotifier: homePageNotifier,
+      );
+    }
+  }
+
+  Widget iosDialog({
+    required CourseNotifier courseNotifier,
+    required String preReqs,
+    required bool isMatching,
+    required DatabaseManager db,
+    required UserNotifier userNotifier,
+    required HomePageNotifier homePageNotifier,
+  }) {
+    if (preReqs.isNotEmpty && !isMatching) {
+      return IOSLimitationDialog(preReqs: preReqs);
+    } else {
+      return IOSConfirmationDialog(
+        courseNotifier: courseNotifier,
+        preReqs: isMatching && preReqs.isNotEmpty ? ' with prerequisites: $preReqs' : preReqs,
+        db: db,
+        userNotifier: userNotifier,
+        homePageNotifier: homePageNotifier,
+      );
+    }
+
   }
 
   @override

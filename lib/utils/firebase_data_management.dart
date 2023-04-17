@@ -207,9 +207,19 @@ class DatabaseManager {
 
         ids = userNotifier.getCourseIds();
 
-        DocumentReference docRef =
-            FirebaseFirestore.instance.collection("Users").doc(docId);
+        // Add the current course to the list of enrolled courses
         ids.add(courseNotifier.currentCourse.courseId);
+
+        // Check the total weekly hours of the enrolled courses
+        int totalWeeklyHours = getTotalWeeklyHours(ids, courseNotifier);
+
+        if (totalWeeklyHours > 20) {
+          throw Exception("Total weekly hours exceed 20. Please remove some courses before adding more.");
+        }
+
+        // Update the user's enrolled courses
+        DocumentReference docRef =
+        FirebaseFirestore.instance.collection("Users").doc(docId);
         await docRef.update({"courses": ids});
         print('total user courses: $ids');
         // getUsers(userNotifier);
@@ -217,6 +227,25 @@ class DatabaseManager {
     } catch (e) {
       print("Error updating user courses: $e");
     }
+  }
+
+  int getTotalWeeklyHours(List courseIds, CourseNotifier courseNotifier) {
+    int total = 0;
+    for (String courseId in courseIds) {
+      Course course = getCourseById(courseId, courseNotifier); // Retrieve the course based on the id
+      total += course.hoursPerWeek; // Add the weekly hours to the total
+    }
+    return total;
+  }
+
+  Course getCourseById(String courseId, CourseNotifier courseNotifier) {
+    var res;
+    for(var course in courseNotifier.courseList){
+      if(course.courseId.contains(courseId)){
+        res = course;
+      }
+    }
+    return res;
   }
 
   Future<void> updateUserInterests(

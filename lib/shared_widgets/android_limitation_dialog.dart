@@ -2,8 +2,8 @@ import 'package:course_select/constants/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class androidLimitationDialog extends StatelessWidget {
-  const androidLimitationDialog({
+class AndroidLimitationDialog extends StatelessWidget {
+  const AndroidLimitationDialog({
     Key? key,
     required this.preReqs,
   }) : super(key: key);

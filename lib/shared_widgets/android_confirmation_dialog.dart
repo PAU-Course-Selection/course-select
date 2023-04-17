@@ -7,8 +7,8 @@ import '../controllers/home_page_notifier.dart';
 import '../controllers/user_notifier.dart';
 import '../utils/firebase_data_management.dart';
 
-class androidConfirmationDialog extends StatelessWidget {
-  const androidConfirmationDialog({
+class AndroidConfirmationDialog extends StatelessWidget {
+  const AndroidConfirmationDialog({
     Key? key,
     required CourseNotifier courseNotifier,
     required this.preReqs,
