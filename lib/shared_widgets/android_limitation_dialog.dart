@@ -3,9 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AndroidLimitationDialog extends StatelessWidget {
+  final String message;
   const AndroidLimitationDialog({
     Key? key,
-    required this.preReqs,
+    required this.preReqs, required this.message,
   }) : super(key: key);
 
   final String preReqs;
@@ -20,9 +21,8 @@ class AndroidLimitationDialog extends StatelessWidget {
         child: RichText(
           textAlign: TextAlign.center,
           text: TextSpan(children: [
-            const TextSpan(
-                text: 'Based on your skill level and this course\'s prerequisite requirements, '
-                    'we recommend that you take ',
+             TextSpan(
+                text: message,
                 style: TextStyle(color: Colors.black)),
             TextSpan(
                 text: preReqs,

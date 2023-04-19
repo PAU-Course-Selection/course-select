@@ -15,6 +15,15 @@ class CourseNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+   bool _isHourlyLimitReached = false;
+
+  bool get isHourlyLimitReached => _isHourlyLimitReached;
+
+  set isHourlyLimitReached(bool value) {
+    _isHourlyLimitReached = value;
+    notifyListeners();
+  }
+
   Course get currentCourse => _currentCourse;
 
 

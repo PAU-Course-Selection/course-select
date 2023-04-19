@@ -193,8 +193,11 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     } else {
       return GradientButton(
         onPressed: () {
-          // _db.updateUserCourses(_userNotifier, _courseNotifier);
-          // _homePageNotifier.isStateChanged = true;
+
+          if(_db.getTotalWeeklyHours(_userNotifier.userCourseIds, _courseNotifier) + _courseNotifier.currentCourse.hoursPerWeek > 19){
+              _courseNotifier.isHourlyLimitReached = true;
+          }
+          _homePageNotifier.isStateChanged = true;
           final skillLevels = {0: 'beginner', 1: 'intermediate', 2: 'advanced'};
           final userLevel = _userNotifier.studentLevel;
           final courseLevel = _courseNotifier.currentCourse.level.toLowerCase();
@@ -247,8 +250,12 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     required UserNotifier userNotifier,
     required HomePageNotifier homePageNotifier,
   }) {
+    if( _courseNotifier.isHourlyLimitReached == true){
+      return const AndroidLimitationDialog(preReqs: '', message: 'Enrolling on this course will cause you to exceed the 20 hours weekly limit. Please complete some courses before adding more.',);
+    }
     if (preReqs.isNotEmpty && !isMatching) {
-      return AndroidLimitationDialog(preReqs: preReqs);
+      return AndroidLimitationDialog(preReqs: preReqs, message: 'Based on your skill level and this course\'s prerequisite requirements, '
+          'we recommend that you take ',);
     } else {
       return AndroidConfirmationDialog(
         courseNotifier: courseNotifier,
@@ -268,8 +275,12 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     required UserNotifier userNotifier,
     required HomePageNotifier homePageNotifier,
   }) {
+    if( _courseNotifier.isHourlyLimitReached == true){
+      return const IOSLimitationDialog(preReqs: '', message: 'Enrolling on this course will cause you to exceed the 20 hours weekly limit. Please complete some courses before adding more.',);
+    }
     if (preReqs.isNotEmpty && !isMatching) {
-      return IOSLimitationDialog(preReqs: preReqs);
+      return IOSLimitationDialog(preReqs: preReqs, message: 'Based on your skill level and this course\'s prerequisite requirements, '
+          'we recommend that you take ',);
     } else {
       return IOSConfirmationDialog(
         courseNotifier: courseNotifier,
@@ -279,6 +290,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
         homePageNotifier: homePageNotifier,
       );
     }
+
 
   }
 

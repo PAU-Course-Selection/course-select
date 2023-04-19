@@ -42,6 +42,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    super.initState();
     _courseNotifier = Provider.of<CourseNotifier>(context, listen: false);
     userNotifier = Provider.of<UserNotifier>(context, listen: false);
     _db.getTotalLessons(_courseNotifier);
@@ -50,7 +51,6 @@ class _HomePageState extends State<HomePage> {
     valueNotifier = ValueNotifier(0.0);
     print(user?.email);
     getForYouList();
-    super.initState();
   }
 
   Future getModels() async{
@@ -71,7 +71,7 @@ class _HomePageState extends State<HomePage> {
   late List userCourseIds = [];
    bool match = false;
 
-  void getCourseIds(UserNotifier userNotifier) {
+   getCourseIds(UserNotifier userNotifier) {
     for (int i = 0; i < userNotifier.usersList.length; i++) {
       if (userNotifier.usersList[i].email == user?.email) {
         match = true;
@@ -85,6 +85,7 @@ class _HomePageState extends State<HomePage> {
     } else {
       print('user not found');
     }
+    return userCourseIds;
   }
 
   List<Course> filterCoursesByIds(List courseIds, List<Course> courses) {

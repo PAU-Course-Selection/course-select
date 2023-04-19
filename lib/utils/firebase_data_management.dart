@@ -213,16 +213,17 @@ class DatabaseManager {
         // Check the total weekly hours of the enrolled courses
         int totalWeeklyHours = getTotalWeeklyHours(ids, courseNotifier);
 
-        if (totalWeeklyHours > 20) {
-          throw Exception("Total weekly hours exceed 20. Please remove some courses before adding more.");
-        }
 
-        // Update the user's enrolled courses
-        DocumentReference docRef =
-        FirebaseFirestore.instance.collection("Users").doc(docId);
-        await docRef.update({"courses": ids});
-        print('total user courses: $ids');
-        // getUsers(userNotifier);
+        if (totalWeeklyHours + courseNotifier.currentCourse.hoursPerWeek > 19) {
+          courseNotifier.isHourlyLimitReached = true;
+          throw Exception("Total weekly hours exceed 20. Please complete some courses before adding more.");
+        }else{
+          // Update the user's enrolled courses
+          DocumentReference docRef =
+          FirebaseFirestore.instance.collection("Users").doc(docId);
+          await docRef.update({"courses": ids});
+          print('total user courses: $ids');
+        }
       }
     } catch (e) {
       print("Error updating user courses: $e");
