@@ -3,6 +3,7 @@ import 'package:course_select/shared_widgets/category_pill.dart';
 import 'package:course_select/utils/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
@@ -53,7 +54,7 @@ class _CoursesFilterState extends State<CoursesFilter> {
           iconBgColour: kPrimaryColour,
           icon: Icons.library_books,
           iconColour: Colors.white,
-          text: 'All courses',
+          text: 'all_courses'.tr,
           onTap: (){
             setState(() {
               b1 = !b1;
@@ -73,7 +74,7 @@ class _CoursesFilterState extends State<CoursesFilter> {
           iconBgColour: kTeal,
           icon: Icons.person_add_alt_1_rounded,
           iconColour: Colors.white,
-          text: 'Enrolled',
+          text: 'enrolled'.tr,
           onTap: (){
             setState(() {
               b1 = false;
@@ -93,7 +94,7 @@ class _CoursesFilterState extends State<CoursesFilter> {
           iconBgColour: Colors.blueGrey,
           icon: Icons.class_rounded,
           iconColour: Colors.white,
-          text: 'Ongoing',
+          text: 'ongoing'.tr,
           onTap: (){
             setState(() {
               b1 = false;
@@ -115,7 +116,7 @@ class _CoursesFilterState extends State<CoursesFilter> {
           iconBgColour: Colors.blueAccent,
           icon: Icons.check_circle_rounded,
           iconColour: Colors.white,
-          text: 'Completed',
+          text: 'completed'.tr,
           onTap: (){
             setState(() {
               b1 = false;
@@ -150,7 +151,7 @@ class _CoursesFilterState extends State<CoursesFilter> {
               iconBgColour: Colors.blue,
               icon: Icons.school_rounded,
               iconColour: Colors.white,
-              text: 'All courses',
+              text: 'all_courses'.tr,
               onTap: (){
                 setState(() {
                   b1 = !b1;
@@ -170,7 +171,7 @@ class _CoursesFilterState extends State<CoursesFilter> {
               iconBgColour: Colors.orange,
               icon: Icons.child_care,
               iconColour: Colors.white,
-              text: 'Beginner',
+              text: 'beginner'.tr,
               onTap: (){
                 setState(() {
                   b1 = false;
@@ -199,7 +200,7 @@ class _CoursesFilterState extends State<CoursesFilter> {
               iconBgColour: Colors.pinkAccent,
               icon: Icons.sports_gymnastics,
               iconColour: Colors.white,
-              text: 'Intermediate',
+              text: 'intermediate'.tr,
               onTap: (){
                 setState(() {
                   b1 = false;
@@ -220,7 +221,7 @@ class _CoursesFilterState extends State<CoursesFilter> {
               iconBgColour: Colors.green,
               icon: Icons.celebration,
               iconColour: Colors.white,
-              text: 'Advanced',
+              text: 'advanced'.tr,
               onTap: (){
                 setState(() {
                   b1 = false;

@@ -3,6 +3,7 @@ import 'package:course_select/constants/constants.dart';
 import 'package:course_select/models/saved_course_data_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import '../controllers/course_notifier.dart';
 import '../models/course_data_model.dart';
@@ -273,16 +274,16 @@ class _SearchSheetState extends State<SearchSheet>
     String result;
     switch (filter) {
       case CategorySearchFilter.all:
-        result = 'all';
+        result = 'all'.tr;
         break;
       case CategorySearchFilter.beginner:
-        result = 'beginner';
+        result = 'beginner'.tr;
         break;
       case CategorySearchFilter.intermediate:
-        result = 'intermediate';
+        result = 'intermediate'.tr;
         break;
       case CategorySearchFilter.advanced:
-        result = 'advanced';
+        result = 'advanced'.tr;
         break;
       case CategorySearchFilter.frontend:
         result = 'frontend';
@@ -340,8 +341,8 @@ class _SearchSheetState extends State<SearchSheet>
                     Padding(
                       padding: const EdgeInsets.only(left: 25.0, top: 25),
                       child: Text(
-                        'Search for ${getSearchKeyword(
-                            searchFilter)} courses',
+                        'Search_for'.tr + getSearchKeyword(
+                            searchFilter)+'courses'.tr,
                         style: const TextStyle(
                             fontSize: 22.0,
                             fontWeight: FontWeight.bold,
@@ -389,7 +390,7 @@ class _SearchSheetState extends State<SearchSheet>
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8.0),
                             ),
-                            hintText: 'eg. Data Science',
+                            hintText: 'eg. Data Science'.tr,
                             focusedBorder: OutlineInputBorder(
                                 borderRadius: const BorderRadius.all(
                                     Radius.circular(8.0)),
@@ -405,11 +406,11 @@ class _SearchSheetState extends State<SearchSheet>
                     const SizedBox(
                       height: 15.0,
                     ),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 25.0),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 25.0),
                       child: Text(
-                        'Categories',
-                        style: TextStyle(
+                        'categories'.tr,
+                        style: const TextStyle(
                             fontSize: 18.0,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'Roboto'),
@@ -426,7 +427,7 @@ class _SearchSheetState extends State<SearchSheet>
                             children: [
                               CatPill(
                                   categoryName: 'Programming',
-                                  categoryColour: Color(0xffd5f1d3),
+                                  categoryColour: const Color(0xffd5f1d3),
                                   categoryIcon: 'assets/icons/analysis.png',
                                 onPressed: (){
                                     print('programming');
@@ -494,8 +495,8 @@ class _SearchSheetState extends State<SearchSheet>
                             isAdvanced && displayAdvancedList.isEmpty||isFrontend && displayFrontedList.isEmpty||
                             isBackend && displayBackendList.isEmpty ||isDevOps && displayDevOpsList.isEmpty||
                             isProgramming && displayProgrammingList.isEmpty||isSoftware && displaySoftwareList.isEmpty
-                            ? const Center(
-                          child: Text('No results found...'),
+                            ? Center(
+                          child: Text('no_result'.tr),
                         )
                             : Padding(
                           padding: const EdgeInsets.symmetric(
@@ -544,8 +545,8 @@ class _SearchSheetState extends State<SearchSheet>
                                               displayAdvancedList[index].isSaved||displayFrontedList[index].isSaved||
                                               displayBackendList[index].isSaved || displayDevOpsList[index].isSaved||
                                               displayProgrammingList[index].isSaved||displaySoftwareList[index].isSaved
-                                                    ? 'Added to saved courses'
-                                                    : 'Removed from saved courses',
+                                                    ? 'Added_to_saved_courses'.tr
+                                                    : 'remove_save_courses'.tr,
                                                 style: const TextStyle(
                                                     color: Colors.black,
                                                     fontWeight:

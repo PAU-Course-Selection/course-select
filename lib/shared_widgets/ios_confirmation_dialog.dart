@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../constants/constants.dart';
 import '../controllers/course_notifier.dart';
@@ -60,10 +61,10 @@ class IOSConfirmationDialog extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                     borderRadius:
                     BorderRadius.circular(5)),
-                content: const Center(
+                content:  Center(
                     child: Text(
-                      'Enrolment successful',
-                      style: TextStyle(
+                      'Enrolment_successful'.tr,
+                      style: const TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold),
                     )),
@@ -80,7 +81,7 @@ class IOSConfirmationDialog extends StatelessWidget {
           onPressed: () {
             Navigator.pop(context);
           },
-          child: const Text('Cancel'),
+          child:  Text('Cancel'.tr),
         ),
       ],
     );

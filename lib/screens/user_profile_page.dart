@@ -45,7 +45,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
   /// Displays formatted page title
   Widget _title() {
     return Text(
-      'Profile',
+      'Profile'.tr,
       style: kHeadlineMedium,
     );
   }
@@ -184,7 +184,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                         MainAxisAlignment.spaceEvenly,
                                     children: [
                                       EditImageOptionsItem(
-                                        text: 'Take Photo',
+                                        text: 'take_photo'.tr,
                                         onPressed: () async {
                                           await loadAvatar(true);
                                           setState(() {
@@ -196,7 +196,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                         height: 0,
                                       ),
                                       EditImageOptionsItem(
-                                        text: 'Choose Image',
+                                        text: 'choose_image'.tr,
                                         onPressed: () async {
                                           await loadAvatar(false);
                                           setState(() {
@@ -208,7 +208,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                         height: 0,
                                       ),
                                       EditImageOptionsItem(
-                                        text: 'Cancel',
+                                        text: 'Cancel'.tr,
                                         onPressed: () {
                                           setState(() {
                                             futureData = getData();
@@ -263,7 +263,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       userNotifier.userName,
                       style: kHeadlineMedium,
                     ),
-                    Text(userNotifier.email ?? 'User email'),
+                    Text(userNotifier.email ?? 'User_email'.tr),
                     Text(userNotifier.joinDate),
                     const SizedBox(
                       height: 15,
@@ -278,21 +278,21 @@ class _UserProfilePageState extends State<UserProfilePage> {
                               userNotifier.userCourseIds.length.toString(),
                               style: kHeadlineMedium.copyWith(color: kTeal),
                             ),
-                            const Text('Enrolled'),
+                            Text('Enrolled'.tr),
                           ],
                         ),
                         Column(
                           children: [
                             Text('2',
                                 style: kHeadlineMedium.copyWith(color: kTeal)),
-                            const Text('Active'),
+                            Text('Active'.tr),
                           ],
                         ),
                         Column(
                           children: [
                             Text('1',
                                 style: kHeadlineMedium.copyWith(color: kTeal)),
-                            const Text('Completed'),
+                            Text('Completed'.tr),
                           ],
                         ),
                       ],
@@ -330,18 +330,18 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                           Colors.transparent),
                                   sections: [
                                     SettingsSection(
-                                      title: const Text('Common'),
+                                      title: Text('Common'.tr),
                                       tiles: <SettingsTile>[
                                         SettingsTile.navigation(
                                           leading: const Icon(Icons.language),
-                                          title: const Text('Language'),
-                                          value: const Text('English'),
+                                          title: Text('Language'.tr),
+                                          value: Text('English'.tr),
                                         ),
                                         SettingsTile.navigation(
                                           leading: const Icon(
                                               Icons.settings_suggest_rounded),
                                           title:
-                                              const Text('Student Preferences'),
+                                              Text('Student_preferences'.tr),
                                           onPressed: (context) {
                                             setState(() {
                                               getData();
@@ -358,15 +358,15 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                       ],
                                     ),
                                     SettingsSection(
-                                      title: const Text(
-                                          'Security & Account Settings'),
+                                      title: Text(
+                                          'Security'.tr),
                                       tiles: <SettingsTile>[
                                         SettingsTile(
                                           leading: const Icon(
                                             Icons.delete_forever,
                                             color: Colors.red,
                                           ),
-                                          title: const Text('Delete Account'),
+                                          title: Text('Delete_account'.tr),
                                           onPressed: (context) {
                                             var currentUser = FirebaseAuth
                                                 .instance.currentUser;
@@ -377,9 +377,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                                   overlayColor:
                                                       MaterialStatePropertyAll(
                                                           kSaraLightPink)),
-                                              child: const Text(
-                                                "Cancel",
-                                                style: TextStyle(
+                                              child: Text(
+                                                'Cancel'.tr,
+                                                style: const TextStyle(
                                                     color: Colors.red),
                                               ),
                                               onPressed: () {
@@ -391,7 +391,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                                   overlayColor:
                                                       MaterialStatePropertyAll(
                                                           kSaraLightPink)),
-                                              child: Text('Confirm',
+                                              child: Text('Confirm'.tr,
                                                   style: TextStyle(
                                                       color: kDeepGreen)),
                                               onPressed: () async {
@@ -414,18 +414,18 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                                                     BorderRadius
                                                                         .circular(
                                                                             15.0)),
-                                                            title: const Text(
-                                                                "Delete Account"),
-                                                            content: const Text(
-                                                                "Are you sure you would like to delete your account?"),
+                                                            title:  Text(
+                                                                'Delete_account'.tr),
+                                                            content:  Text(
+                                                                'delete_sure'.tr),
                                                             actions: [
                                                               cancelButton,
                                                               confirmButton,
                                                             ],
                                                           )
                                                         : CupertinoAlertDialog(
-                                                            title: const Text(
-                                                                'This action is irreversible. Are you sure?'),
+                                                            title: Text(
+                                                                'irreversible'.tr),
                                                             actions: [
                                                               CupertinoDialogAction(
                                                                 /// This parameter indicates this action is the default,
@@ -436,8 +436,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                                                   Navigator.pop(
                                                                       context);
                                                                 },
-                                                                child: const Text(
-                                                                    'Cancel'),
+                                                                child: Text(
+                                                                    'Cancel'.tr),
                                                               ),
                                                               CupertinoDialogAction(
                                                                 /// This parameter indicates the action would perform
@@ -458,8 +458,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                                                   await currentUser
                                                                       ?.reload();
                                                                 },
-                                                                child: const Text(
-                                                                    'Confirm'),
+                                                                child: Text(
+                                                                    'Confirm'.tr),
                                                               ),
                                                             ],
                                                           );
@@ -473,13 +473,13 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                           onToggle: (value) {},
                                           initialValue: true,
                                           leading: const Icon(Icons.security),
-                                          title: const Text(
-                                              'Allow activity sharing'),
+                                          title: Text(
+                                              'allow_share'.tr),
                                         ),
                                         SettingsTile(
                                           leading: const Icon(Icons.logout,
                                               color: Colors.red),
-                                          title: const Text('Log out'),
+                                          title:  Text('Log_out'.tr),
                                           onPressed: (context) => {
                                             Auth().signOut(),
                                             Get.offAndToNamed(
@@ -592,16 +592,16 @@ _showMultiSelect(
                       color: kSaraLightPink,
                     ),
                   ),
-                  const Padding(
+                   Padding(
                     padding: EdgeInsets.only(top: 10.0, bottom: 10),
                     child: Text(
-                      'Personalise your experience',
+                      'personal'.tr,
                       style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                          const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                     ),
                   ),
                   Text(
-                    'Select Interests',
+                    'interest'.tr,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: kDeepGreen,
@@ -611,9 +611,8 @@ _showMultiSelect(
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 15),
                     width: 320.w,
-                    child: const Text(
-                      'You will be offered appropriate courses and groups of '
-                      'interrelated courses for a full immersion in the noted area of interest',
+                    child:  Text(
+                      'interest_hint'.tr,
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -622,14 +621,14 @@ _showMultiSelect(
                       width: 280.w,
                       child: RichText(
                         textAlign: TextAlign.center,
-                        text: const TextSpan(children: [
+                        text: TextSpan(children: [
                           TextSpan(
                               text:
-                                  'Allowable time limit for full time students is ',
-                              style: TextStyle(color: Colors.black)),
+                                  'time_allow'.tr,
+                              style: const TextStyle(color: Colors.black)),
                           TextSpan(
-                              text: '10 hours per week',
-                              style: TextStyle(
+                              text: 'time_limit'.tr,
+                              style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black)),
                         ]),
@@ -643,7 +642,7 @@ _showMultiSelect(
                 padding: const EdgeInsets.only(top: 10),
                 child: MultiSelectChipField(
                     // showHeader: false,
-                    title: const Text('Subject Areas'),
+                    title: Text('subject_areas'.tr),
                     headerColor: Colors.white,
                     selectedChipColor: kTeal,
                     selectedTextStyle: const TextStyle(color: Colors.white),
@@ -674,9 +673,9 @@ _showMultiSelect(
                         const SizedBox(
                           width: 8,
                         ),
-                        const Text(
-                          'Student\'s Level',
-                          style: TextStyle(fontSize: 18),
+                         Text(
+                          'level_s'.tr,
+                          style: const TextStyle(fontSize: 18),
                         ),
                       ],
                     ),
@@ -744,11 +743,11 @@ Widget getLevelPill(int count) {
         borderRadius: BorderRadius.circular(15), color: kSaraLightPink),
     child: Text(
       count == 0
-          ? 'Beginner'
+          ? 'beginner'.tr
           : count == 1
-              ? 'Intermediate'
-              : 'Advanced',
-      style: TextStyle(fontWeight: FontWeight.w500),
+              ? 'intermediate'.tr
+              : 'advanced'.tr,
+      style: const TextStyle(fontWeight: FontWeight.w500),
     ),
   );
 

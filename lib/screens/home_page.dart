@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import '../constants/constants.dart';
@@ -155,9 +156,9 @@ class _HomePageState extends State<HomePage> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        const Text(
-                                          'Hello,',
-                                          style: TextStyle(
+                                         Text(
+                                          'hello,'.tr,
+                                          style: const TextStyle(
                                               color: Colors.grey,
                                               fontSize: 16,
                                               fontFamily: 'Roboto'),
@@ -209,8 +210,9 @@ class _HomePageState extends State<HomePage> {
                                     child: RaisedContainer(child: Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        const Text('Search',
-                                            style: TextStyle(
+                                         Text(
+                                            'Search'.tr,
+                                            style: const TextStyle(
                                                 color: Colors.grey,
                                                 fontSize: 16,
                                                 fontFamily: 'Roboto')),
@@ -256,7 +258,7 @@ class _HomePageState extends State<HomePage> {
                                 child: Animate(
                                   effects: const [FadeEffect(), SlideEffect(duration: Duration(milliseconds: 50))],
                                     child:  const CoursesFilter(isListView: false))), //Course Filters
-                             CategoryTitle(text: 'Currently Active', onPressed: (){
+                             CategoryTitle(text: 'currently_active'.tr, onPressed: (){
                                homePageNotifier.isOngoingSelected = true;
                                homePageNotifier.tabIndex = 1;
                                Navigator.pushNamed(context, PageRoutes.courses);
@@ -265,7 +267,7 @@ class _HomePageState extends State<HomePage> {
                               padding: const EdgeInsets.symmetric(horizontal: 25.0),
                               child: ActiveCourseTile(valueNotifier: valueNotifier, courseImage: 'assets/images/html.jpg', courseName: 'Symmetry Theory', remainingLessons: 10,),
                             ),
-                             CategoryTitle(text: forYouList.isEmpty? 'Top Picks':'For You', onPressed: (){
+                             CategoryTitle(text: forYouList.isEmpty? 'top_picks'.tr:'for_you'.tr, onPressed: (){
                                homePageNotifier.isAllSelected = true;
                                homePageNotifier.tabIndex = 0;
                                Navigator.pushNamed(context, PageRoutes.courses);
@@ -305,10 +307,10 @@ class _HomePageState extends State<HomePage> {
                 ],
               );
             } else if (snapshot.hasError) {
-              return const Center(
+              return  Center(
                 child: Text(
-                  'Oops...something happened',
-                  style: TextStyle(color: Colors.black),
+                  'oops'.tr,
+                  style: const TextStyle(color: Colors.black),
                 ),
               );
             }
@@ -320,7 +322,7 @@ class _HomePageState extends State<HomePage> {
             // }
 
             /// While there is no data or error show some shimmer
-            return const Center(child: Text('No data'));
+            return Center(child: Text('No_data'.tr));
           }),
     );
   }

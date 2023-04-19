@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../constants/constants.dart';
 
 class CategoryTitle extends StatelessWidget {
@@ -27,7 +28,7 @@ class CategoryTitle extends StatelessWidget {
               onPressed: ()=> onPressed.call(),
               child:  Padding(
             padding: const EdgeInsets.only(right: 25.0),
-            child: Text('View all', style: TextStyle(fontSize: 18, fontFamily: 'Roboto', color: kPrimaryColour),),
+            child: Text('view_all'.tr, style: TextStyle(fontSize: 18, fontFamily: 'Roboto', color: kPrimaryColour),),
           )),
         )
       ],

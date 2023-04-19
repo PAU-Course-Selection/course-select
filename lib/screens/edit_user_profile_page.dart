@@ -1,6 +1,7 @@
 import 'package:course_select/controllers/user_notifier.dart';
 import 'package:course_select/shared_widgets/gradient_button.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 import '../constants/constants.dart';
@@ -34,7 +35,7 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
 
   Widget _title() {
     return Text(
-      "Edit Account",
+      'Edit_account'.tr,
       style: kHeadlineMedium,
     );
   }
@@ -48,11 +49,11 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
         children: [
           TextField(
             controller: _nameController,
-            decoration: const InputDecoration(hintText: 'Name'),
+            decoration:  InputDecoration(hintText: 'name'.tr),
           ),
           TextField(
             controller: _emailController,
-            decoration: const InputDecoration(hintText: 'Email'),
+            decoration:  InputDecoration(hintText: 'Email'.tr),
           ),
           // TextField(
           //   controller: _passwordController,
@@ -67,7 +68,7 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
                 Container(
                   padding: const EdgeInsets.all(20.0),
                   child: ElevatedButton(
-                      child: const Text("Confirm"),
+                      child:  Text('Confirm'.tr),
                       onPressed: () {
                         _showConfirmationDialog();
                       }),
@@ -78,7 +79,7 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
                       style: const ButtonStyle(
                           backgroundColor:
                               MaterialStatePropertyAll<Color>(Colors.red)),
-                      child: const Text("Cancel"),
+                      child: Text('Cancel'.tr),
                       onPressed: () {
                         _cancelChanges();
                       }),
@@ -114,17 +115,17 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: const Text("Confirm Changes"),
-            content: const Text(
-                "Are you sure you would like to make these changes?"),
+            title: Text('Confirm_Changes'.tr),
+            content:  Text(
+                'change_sure'.tr),
             actions: [
               TextButton(
                 onPressed: _confirmChanges,
-                child: const Text("Confirm"),
+                child:  Text('Confirm'.tr),
               ),
               TextButton(
                 onPressed: _cancelChanges,
-                child: const Text("Cancel"),
+                child:  Text('Cancel'.tr),
               ),
             ],
           );

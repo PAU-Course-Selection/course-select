@@ -4,6 +4,7 @@ import 'package:course_select/utils/firebase_data_management.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -62,7 +63,7 @@ class _SelectInterestsPageState extends State<SelectInterestsPage> {
             db.updateStudentLevel(userNotifier, studentLevel);
             Navigator.of(context).pushNamed('home');
           },
-          buttonText: 'Start Learning!',
+          buttonText: 'start_l'.tr,
         ),
       ),
       body: SafeArea(
@@ -80,15 +81,15 @@ class _SelectInterestsPageState extends State<SelectInterestsPage> {
                 ),
               ).shimmer(duration: 100.ms)
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(top: 10.0, bottom: 10),
               child: Text(
-                'Personalise your experience',
+                'personal'.tr,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
             ),
             Text(
-              'Select Interests',
+              'interest'.tr,
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: kDeepGreen,
@@ -98,9 +99,8 @@ class _SelectInterestsPageState extends State<SelectInterestsPage> {
             Container(
               padding: const EdgeInsets.symmetric(vertical: 15),
               width: 320.w,
-              child: const Text(
-                'You will be offered appropriate courses and groups of '
-                'interrelated courses for a full immersion in the noted area of interest',
+              child: Text(
+                'interest_hint'.tr,
                 textAlign: TextAlign.center,
               ),
             ),
@@ -109,13 +109,13 @@ class _SelectInterestsPageState extends State<SelectInterestsPage> {
                 width: 280.w,
                 child: RichText(
                   textAlign: TextAlign.center,
-                  text: const TextSpan(children: [
+                  text: TextSpan(children: [
                     TextSpan(
-                        text: 'Allowable time limit for full time students is ',
-                        style: TextStyle(color: Colors.black)),
+                        text: 'time_allow'.tr,
+                        style: const TextStyle(color: Colors.black)),
                     TextSpan(
-                        text: '10 hours per week',
-                        style: TextStyle(
+                        text: 'time_limit'.tr,
+                        style: const TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.black)),
                   ]),
                 )),
@@ -125,7 +125,7 @@ class _SelectInterestsPageState extends State<SelectInterestsPage> {
             Container(
               padding: const EdgeInsets.only(top: 10),
               child: MultiSelectChipField(
-                title: const Text('Subject Areas'),
+                title: Text('subject_areas'.tr),
                 headerColor: Colors.white,
                 selectedChipColor: kTeal,
                 selectedTextStyle: const TextStyle(color: Colors.white),
@@ -156,7 +156,7 @@ class _SelectInterestsPageState extends State<SelectInterestsPage> {
                     children: [
                       Image.asset('assets/icons/speedometer.png',width: 20, height: 20,),
                       const SizedBox(width: 8,),
-                      const Text('Skill Level', style: TextStyle(fontSize: 18),),
+                      Text('Skill_level'.tr, style: const TextStyle(fontSize: 18),),
                     ],
                   ),
                 ),

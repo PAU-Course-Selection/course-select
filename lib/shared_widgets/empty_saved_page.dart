@@ -2,6 +2,7 @@ import 'package:course_select/utils/enums.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../constants/constants.dart';
@@ -25,7 +26,7 @@ class _EmptyFavouritesPageState extends State<EmptyFavouritesPage> {
       floatingActionButton: Padding(
         padding: EdgeInsets.symmetric(horizontal: 25.0.h, vertical: 30.0.h),
         child: GradientButton(
-          buttonText: 'Add Courses',
+          buttonText: 'add_courses'.tr,
           onPressed: () {
             showCupertinoModalBottomSheet(
               duration: const Duration(milliseconds: 100),
@@ -66,7 +67,7 @@ class _EmptyFavouritesPageState extends State<EmptyFavouritesPage> {
                     height: 10,
                   ),
                   Text(
-                    'Create a shortlist',
+                    'create_shortlist'.tr,
                     style: kHeadlineMedium.copyWith(fontSize: 16),
                   ),
                   const SizedBox(
@@ -74,8 +75,8 @@ class _EmptyFavouritesPageState extends State<EmptyFavouritesPage> {
                   ),
                   SizedBox(
                       width: 200.w,
-                      child: const Text(
-                        'Make it easier with less options to choose from',
+                      child:  Text(
+                        'easier_to_choose'.tr,
                         textAlign: TextAlign.center,
                       ))
                 ],

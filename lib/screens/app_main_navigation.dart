@@ -4,6 +4,7 @@ import 'package:course_select/screens/saved_courses_page.dart';
 import 'package:course_select/screens/timetable_page.dart';
 import 'package:course_select/constants/constants.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
+import 'package:get/get.dart';
 import 'my_courses_page.dart';
 
 /// The [AppMainNav] class controls the navigation of the app around the bottom navigation bar
@@ -37,27 +38,27 @@ class _AppMainNavState extends State<AppMainNav> {
         items: <BottomNavyBarItem>[
           BottomNavyBarItem(
             icon: const Icon(Icons.library_books_outlined),
-            title: const Text('Home'),
+            title: Text('home'.tr),
             activeColor: kPrimaryColour,
             textAlign: TextAlign.center,
           ),
           BottomNavyBarItem(
             icon: const ImageIcon(AssetImage('assets/icons/book.png')),
-            title: const Text('Courses'),
+            title: Text('course'.tr),
             activeColor: kPrimaryColour,
             textAlign: TextAlign.center,
           ),
           BottomNavyBarItem(
             icon: const Icon(Icons.bookmarks_outlined),
-            title: const Text(
-              'Saved',
+            title: Text(
+              'saved'.tr,
             ),
             activeColor: kPrimaryColour,
             textAlign: TextAlign.center,
           ),
           BottomNavyBarItem(
             icon: const Icon(Icons.calendar_month),
-            title: const Text('Timetable'),
+            title: Text('timetable'.tr),
             activeColor: kPrimaryColour,
             textAlign: TextAlign.center,
           ),

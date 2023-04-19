@@ -4,6 +4,7 @@ import 'package:course_select/controllers/lesson_notifier.dart';
 import 'package:course_select/utils/firebase_data_management.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -48,7 +49,7 @@ class _TimetableState extends State<Timetable> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Schedule',
+          'Schedule'.tr,
           style: kHeadlineMedium,
         ),
         backgroundColor: Colors.transparent,
@@ -68,14 +69,14 @@ class _TimetableState extends State<Timetable> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    children: const [
+                    children: [
                       Text(
-                        'Lessons',
-                        style: TextStyle(
+                        'Lessons'.tr,
+                        style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 18),
                       ),
                       Flexible(
-                        child: Text('3 lessons today'),
+                        child: Text('lesson_today'.tr),
                       )
                     ],
                   ),
@@ -211,7 +212,7 @@ class LessonCard extends StatelessWidget {
                 top: 60,
                 child: ElevatedButton(
                   onPressed: () {},
-                  child: const Text('Join Now'),
+                  child: Text('join'.tr),
                   style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(
                         const Color(0xff408E91),

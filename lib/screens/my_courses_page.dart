@@ -5,6 +5,7 @@ import 'package:course_select/utils/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import '../constants/constants.dart';
 import '../controllers/course_notifier.dart';
@@ -100,8 +101,8 @@ class _MyCoursesState extends State<MyCourses>
       case 0:
         return Expanded(
             child: displayList.isEmpty
-                ? const Center(
-                    child: Text('No results found...'),
+                ?  Center(
+                    child: Text('no_result'.tr),
                   )
                 : Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -136,8 +137,8 @@ class _MyCoursesState extends State<MyCourses>
                                     content: Center(
                                         child: Text(
                                       displayList[index].isSaved
-                                          ? 'Added to saved courses'
-                                          : 'Removed from saved courses',
+                                          ? 'Added_to_saved_courses'.tr
+                                          : 'remove_save_courses'.tr,
                                       style: const TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold),
@@ -158,8 +159,8 @@ class _MyCoursesState extends State<MyCourses>
       case 1:
         return Expanded(
             child: myList.isEmpty
-                ? const Center(
-                    child: Text('You are not enrolled on any courses...'),
+                ?  Center(
+                    child: Text('you_not_enroll'.tr),
                   )
                 : RefreshIndicator(
                     color: kPrimaryColour,
@@ -205,8 +206,8 @@ class _MyCoursesState extends State<MyCourses>
                                       content: Center(
                                           child: Text(
                                         displayList[index].isSaved
-                                            ? 'Added to saved courses'
-                                            : 'Removed from saved courses',
+                                            ? 'Added_to_saved_courses'.tr
+                                            : 'remove_save_courses'.tr,
                                         style: const TextStyle(
                                             color: Colors.black,
                                             fontWeight: FontWeight.bold),
@@ -229,8 +230,8 @@ class _MyCoursesState extends State<MyCourses>
       case 2:
         return Expanded(
             child: displayOngoingList.isEmpty
-                ? const Center(
-                    child: Text('No ongoing courses found...'),
+                ? Center(
+                    child: Text('no_ongoing'.tr),
                   )
                 : Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -252,8 +253,8 @@ class _MyCoursesState extends State<MyCourses>
       case 3:
         return Expanded(
             child: displayOngoingList.isEmpty
-                ? const Center(
-                    child: Text('No completed courses found...'),
+                ? Center(
+                    child: Text('no_complete'.tr),
                   )
                 : Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -272,8 +273,8 @@ class _MyCoursesState extends State<MyCourses>
       default:
         return Expanded(
             child: displayList.isEmpty
-                ? const Center(
-                    child: Text('No results found...'),
+                ?  Center(
+                    child: Text('no_result'.tr),
                   )
                 : Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -300,8 +301,8 @@ class _MyCoursesState extends State<MyCourses>
                                     content: Center(
                                         child: Text(
                                       displayList[index].isSaved
-                                          ? 'Added to saved courses'
-                                          : 'Removed from saved courses',
+                                          ? 'Added_to_saved_courses'.tr
+                                          : 'remove_save_courses'.tr,
                                       style: const TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold),
@@ -373,7 +374,7 @@ class _MyCoursesState extends State<MyCourses>
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Courses',
+          'courses'.tr,
           style: kHeadlineMedium,
         ),
         backgroundColor: Colors.transparent,
@@ -405,7 +406,7 @@ class _MyCoursesState extends State<MyCourses>
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
-                              hintText: 'eg. Introduction to HTML',
+                              hintText: 'eg_introduction'.tr,
                               focusedBorder: OutlineInputBorder(
                                   borderRadius: const BorderRadius.all(
                                       Radius.circular(8.0)),
@@ -436,12 +437,12 @@ class _MyCoursesState extends State<MyCourses>
                       padding: const EdgeInsets.only(left: 25.0, bottom: 10),
                       child: Text(
                         tabIndex == 0
-                            ? 'All courses'
+                            ? 'all_courses'.tr
                             : tabIndex == 1
-                                ? 'Enrolled'
+                                ? 'enrolled'.tr
                                 : tabIndex == 2
-                                    ? 'Ongoing'
-                                    : 'Completed',
+                                    ? 'ongoing'.tr
+                                    : 'completed'.tr,
                         style: const TextStyle(
                             fontSize: 22.0,
                             fontWeight: FontWeight.bold,

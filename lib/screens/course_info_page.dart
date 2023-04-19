@@ -13,6 +13,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
@@ -72,7 +73,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Course Info',
+          'Course_Info'.tr,
           style: kHeadlineMedium,
         ),
         backgroundColor: Colors.transparent,
@@ -182,10 +183,10 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
               backgroundColor: kKindaGreen,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5)),
-              content: const Center(
+              content:  Center(
                   child: Text(
-                "Yayy! Course Completed!",
-                style: TextStyle(
+                'Yayy!'.tr,
+                style: const TextStyle(
                     color: Colors.black,
                     fontSize: 15.0,
                     fontFamily: "Robots",
@@ -195,14 +196,14 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
             ),
           );
         },
-        buttonText: 'Complete Course',
+        buttonText: 'Complete_Course'.tr,
       );
     } else {
       return GradientButton(
         onPressed: () {
           // _db.updateUserCourses(_userNotifier, _courseNotifier);
           // _homePageNotifier.isStateChanged = true;
-          final skillLevels = {0: 'beginner', 1: 'intermediate', 2: 'advanced'};
+          final skillLevels = {0: 'beginner'.tr, 1: 'intermediate'.tr, 2: 'advanced'.tr};
           final userLevel = _userNotifier.studentLevel;
           final courseLevel = _courseNotifier.currentCourse.level.toLowerCase();
           final courseLevelIndex = skillLevels.entries
@@ -242,7 +243,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
                             homePageNotifier: _homePageNotifier);
               });
         },
-        buttonText: 'Enroll',
+        buttonText: 'Enroll'.tr,
       );
     }
   }
@@ -276,7 +277,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
                       fontWeight: FontWeight.bold),
                   textAlign: TextAlign.left,
                 ),
-              ).fadeIn(duration: 1.seconds),
+              ).fadeIn(duration: GetNumUtils(1).seconds),
             ),
           ),
           Padding(
@@ -328,7 +329,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
                   ),
                   InfoPill(
                       icon: 'assets/icons/lesson.png',
-                      text: '$numLessons Lessons',
+                      text: "$numLessons Lessons",
                       bgColour: const Color(0xffd5f1d3)),
                   const SizedBox(
                     width: 10,
@@ -371,7 +372,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
           Padding(
             padding: const EdgeInsets.only(left: 25.0),
             child: Text(
-              "Classmates",
+              'Classmates'.tr,
               style: kHeadlineMedium,
             ),
           ),
@@ -428,8 +429,8 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
                               ),
                             );
                           })
-                      : const Center(
-                          child: Text('No one has enrolled on this course yet'),
+                      :  Center(
+                          child: Text('no_one_enroll'.tr),
                         ))),
           recommendations.isNotEmpty
               ? Column(
@@ -439,7 +440,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
                       padding: const EdgeInsets.only(
                           left: 25.0, bottom: 10, top: 10),
                       child: Text(
-                        "Recommended",
+                        'Recommended'.tr,
                         style: kHeadlineMedium,
                       ),
                     ),
