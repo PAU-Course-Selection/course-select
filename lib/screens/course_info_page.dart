@@ -48,7 +48,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
   late int numLessons;
   Image img = Image.asset('assets/images/c2.jpg');
   String videoUrl = '';
-  var courses;
+  var userCourses;
 
   final ScrollController _controller =
       ScrollController(initialScrollOffset: 60.w);
@@ -64,7 +64,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     videoUrl = _courseNotifier.currentCourse.media[0];
     getNumLessons();
     getClassmates();
-    courses = _userNotifier.getCourseIds();
+    userCourses = _userNotifier.getCourseIds();
 
     recommendations = getRecommendation(
         _courseNotifier.courseList, _courseNotifier.currentCourse.prereqs);
@@ -169,7 +169,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
   Widget _conditionalBottomButton() {
     var preReqs = formatPrerequisites(_courseNotifier.currentCourse.prereqs,
         _courseNotifier.courseList, _userNotifier.userCourseIds);
-    if (courses.contains(_courseNotifier.currentCourse.courseId)) {
+    if (userCourses.contains(_courseNotifier.currentCourse.courseId)) {
       return GradientButton(
         onPressed: () {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -197,14 +197,13 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     } else {
       return GradientButton(
         onPressed: () {
-          print('_userNotifier.isConflict: ${_userNotifier.isConflict}');
           if (_db.getTotalWeeklyHours(
                       _userNotifier.userCourseIds, _courseNotifier) +
                   _courseNotifier.currentCourse.hoursPerWeek >
               19) {
             _courseNotifier.isHourlyLimitReached = true;
           }
-          _homePageNotifier.isStateChanged = true;
+          // _homePageNotifier.isStateChanged = true;
           final skillLevels = {0: 'beginner', 1: 'intermediate', 2: 'advanced'};
           final userLevel = _userNotifier.studentLevel;
           final courseLevel = _courseNotifier.currentCourse.level.toLowerCase();
@@ -294,17 +293,19 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     required LessonNotifier lessonNotifier,
   }) {
     if (_courseNotifier.isHourlyLimitReached == true) {
-      return const IOSLimitationDialog(
+      return IOSLimitationDialog(
         preReqs: '',
         message:
             'Enrolling on this course will cause you to exceed the 20 hours weekly limit. Please complete some courses before adding more.',
+        onTap: _setConflictState,
       );
     }
     if (_userNotifier.isConflict == true) {
-      return const IOSLimitationDialog(
+      return IOSLimitationDialog(
         preReqs: '',
         message:
         'Course conflicts with enrolled lessons.',
+        onTap: _setConflictState,
       );
     }
     if (preReqs.isNotEmpty && !isMatching) {
@@ -313,6 +314,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
         message:
             'Based on your skill level and this course\'s prerequisite requirements, '
             'we recommend that you take ',
+        onTap: _setConflictState,
       );
     } else {
       return IOSConfirmationDialog(
@@ -326,6 +328,16 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
       );
     }
   }
+
+   _setConflictState(){
+    Navigator.pop(context);
+    setState(() {
+      _userNotifier.isConflict =false;
+      print('called');
+      _userNotifier.getCourseIds();
+      print(_userNotifier.isConflict);
+    });
+   }
 
   @override
   void didChangeDependencies() {

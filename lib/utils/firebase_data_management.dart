@@ -195,20 +195,44 @@ class DatabaseManager {
     return Future.delayed(const Duration(seconds: 1));
   }
 
-  bool checkConflicts(
-      List<Lesson> allLessonsList, List<Lesson> userLessonsList) {
-    for (var lesson in userLessonsList) {
-      if (allLessonsList.any((l) =>
-          l.courseId == lesson.courseId && l.startTime == lesson.startTime)) {
-        return true;
+  bool checkConflicts(List<Lesson> allLessonsList, List<Lesson> userLessonsList,
+      Course currentCourse) {
+    List<Lesson> currentLessons = [];
+    for (var lesson in allLessonsList) {
+      if (lesson.courseId == currentCourse.courseId) {
+        currentLessons.add(lesson);
       }
     }
+    for (var lesson in currentLessons) {
+      print('current lessons: ${lesson.lessonName}');
+    }
+
+    for (var userLesson in userLessonsList) {
+      print(
+          'User Lesson Name: ${userLesson.lessonName} and ${userLesson.courseId} and time: ${userLesson.startTime!.toDate()}');
+      for (var currentLesson in currentLessons) {
+        print(
+            "Current Lesson name: ${currentLesson.lessonName} and id: ${currentLesson.courseId} and time:${currentLesson.startTime!.toDate()} ");
+        if ((userLesson.startTime!.toDate().isBefore(currentLesson.endTime!.toDate()) &&
+            userLesson.endTime!.toDate().isAfter(currentLesson.startTime!.toDate()))) {
+          return true;
+        }
+      }
+    }
+    // for (var userLesson in userLessonsList) {
+    //   if (currentLessons.any((cl) {
+    //     cl.startTime == userLesson.startTime;
+    //     return
+    //   }
+    //       )) {
+    //     return true;
+    //   }
+    // }
     return false;
   }
 
   Future<void> updateUserCourses(UserNotifier userNotifier,
       CourseNotifier courseNotifier, LessonNotifier lessonNotifier) async {
-    try {
       var myUser = await FirebaseFirestore.instance
           .collection("Users")
           .where("uid", isEqualTo: user?.uid)
@@ -217,7 +241,7 @@ class DatabaseManager {
         var docId = myUser.docs.first.id;
 
         var ids = userNotifier.getCourseIds();
-        ids.add(courseNotifier.currentCourse.courseId);
+
 
         var allLessonsList =
             await getAllLessons(ids, lessonNotifier, userNotifier);
@@ -227,28 +251,35 @@ class DatabaseManager {
         print(allLessonsList);
         print(userLessonsList);
 
-        if (checkConflicts(allLessonsList, userLessonsList)) {
-          ids.remove(courseNotifier.currentCourse.courseId);
-          userNotifier.isConflict = true;
-          throw Exception("Course conflicts with enrolled lessons.");
-        }
-
         int totalWeeklyHours = getTotalWeeklyHours(ids, courseNotifier);
 
-        if (totalWeeklyHours + courseNotifier.currentCourse.hoursPerWeek > 19) {
+        if (checkConflicts(
+            allLessonsList, userLessonsList, courseNotifier.currentCourse)) {
+          print(
+              'checkConflicts decision: ${checkConflicts(allLessonsList, userLessonsList, courseNotifier.currentCourse)}');
+          // ids.remove(courseNotifier.currentCourse.courseId);
+          userNotifier.isConflict = true;
+
+          print('_userNotifier.isConflict: ${userNotifier.isConflict}');
+          throw Exception("Course conflicts with enrolled lessons.");
+        } else if (totalWeeklyHours +
+                courseNotifier.currentCourse.hoursPerWeek >
+            19) {
+          print("Weekly Hours Check Ran");
           courseNotifier.isHourlyLimitReached = true;
           throw Exception(
               "Total weekly hours exceed 20. Please complete some courses before adding more.");
-        }
-        else{
+        } else {
+          print("Else statement Ran");
           DocumentReference docRef =
-          FirebaseFirestore.instance.collection("Users").doc(docId);
+              FirebaseFirestore.instance.collection("Users").doc(docId);
+          print(docId);
+          ids.add(courseNotifier.currentCourse.courseId);
+          userNotifier.userCourseIds = ids;
           await docRef.update({"courses": ids});
           print('total user courses: $ids');
         }
-      }
-    } catch (e) {
-      print("Error updating user courses: $e");
+
     }
   }
 
@@ -398,7 +429,7 @@ class DatabaseManager {
       for (var document in snapshot.docs) {
         //final data = document as Map<String, dynamic>;
         Lesson lesson = Lesson.fromMap(document.data());
-        //print(lesson.lessonName);
+     //  print("Added lesson ${lesson.lessonName} and ${lesson.courseId}");
         _lessons.add(lesson);
       }
       lessonNotifier.allLessonsList = _lessons;
