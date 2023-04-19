@@ -135,8 +135,6 @@ class UserNotifier extends ChangeNotifier {
     for (int i = 0; i < usersList.length; i++) {
       if (usersList[i].email == user?.email) {
         match = true;
-        // print(match);
-        // print(usersList[i].email);
         ids = usersList[i].courses!;
         userCourseIds = ids;
       }

@@ -46,12 +46,14 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
   late int numLessons;
   Image img = Image.asset('assets/images/c2.jpg');
   String videoUrl = '';
+  var courses;
 
   final ScrollController _controller =
       ScrollController(initialScrollOffset: 60.w);
 
   @override
   void initState() {
+    super.initState();
     _courseNotifier = Provider.of<CourseNotifier>(context, listen: false);
     numLessons = _courseNotifier.currentCourse.totalLessons;
     _homePageNotifier = Provider.of<HomePageNotifier>(context, listen: false);
@@ -59,9 +61,10 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     videoUrl = _courseNotifier.currentCourse.media[0];
     getNumLessons();
     getClassmates();
+    courses = _userNotifier.getCourseIds();
+
     recommendations = getRecommendation(
         _courseNotifier.courseList, _courseNotifier.currentCourse.prereqs);
-    super.initState();
   }
 
   @override
@@ -163,9 +166,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
   Widget _conditionalBottomButton() {
     var preReqs = formatPrerequisites(_courseNotifier.currentCourse.prereqs,
         _courseNotifier.courseList, _userNotifier.userCourseIds);
-    if (_userNotifier
-        .getCourseIds()
-        .contains(_courseNotifier.currentCourse.courseId)) {
+    if (courses.contains(_courseNotifier.currentCourse.courseId)) {
       return GradientButton(
         onPressed: () {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -193,9 +194,11 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     } else {
       return GradientButton(
         onPressed: () {
-
-          if(_db.getTotalWeeklyHours(_userNotifier.userCourseIds, _courseNotifier) + _courseNotifier.currentCourse.hoursPerWeek > 19){
-              _courseNotifier.isHourlyLimitReached = true;
+          if (_db.getTotalWeeklyHours(
+                      _userNotifier.userCourseIds, _courseNotifier) +
+                  _courseNotifier.currentCourse.hoursPerWeek >
+              19) {
+            _courseNotifier.isHourlyLimitReached = true;
           }
           _homePageNotifier.isStateChanged = true;
           final skillLevels = {0: 'beginner', 1: 'intermediate', 2: 'advanced'};
@@ -250,16 +253,26 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     required UserNotifier userNotifier,
     required HomePageNotifier homePageNotifier,
   }) {
-    if( _courseNotifier.isHourlyLimitReached == true){
-      return const AndroidLimitationDialog(preReqs: '', message: 'Enrolling on this course will cause you to exceed the 20 hours weekly limit. Please complete some courses before adding more.',);
+    if (_courseNotifier.isHourlyLimitReached == true) {
+      return const AndroidLimitationDialog(
+        preReqs: '',
+        message:
+            'Enrolling on this course will cause you to exceed the 20 hours weekly limit. Please complete some courses before adding more.',
+      );
     }
     if (preReqs.isNotEmpty && !isMatching) {
-      return AndroidLimitationDialog(preReqs: preReqs, message: 'Based on your skill level and this course\'s prerequisite requirements, '
-          'we recommend that you take ',);
+      return AndroidLimitationDialog(
+        preReqs: preReqs,
+        message:
+            'Based on your skill level and this course\'s prerequisite requirements, '
+            'we recommend that you take ',
+      );
     } else {
       return AndroidConfirmationDialog(
         courseNotifier: courseNotifier,
-        preReqs: isMatching && preReqs.isNotEmpty ? 'with prerequisites: $preReqs' : preReqs,
+        preReqs: isMatching && preReqs.isNotEmpty
+            ? 'with prerequisites: $preReqs'
+            : preReqs,
         db: db,
         userNotifier: userNotifier,
         homePageNotifier: homePageNotifier,
@@ -275,23 +288,31 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     required UserNotifier userNotifier,
     required HomePageNotifier homePageNotifier,
   }) {
-    if( _courseNotifier.isHourlyLimitReached == true){
-      return const IOSLimitationDialog(preReqs: '', message: 'Enrolling on this course will cause you to exceed the 20 hours weekly limit. Please complete some courses before adding more.',);
+    if (_courseNotifier.isHourlyLimitReached == true) {
+      return const IOSLimitationDialog(
+        preReqs: '',
+        message:
+            'Enrolling on this course will cause you to exceed the 20 hours weekly limit. Please complete some courses before adding more.',
+      );
     }
     if (preReqs.isNotEmpty && !isMatching) {
-      return IOSLimitationDialog(preReqs: preReqs, message: 'Based on your skill level and this course\'s prerequisite requirements, '
-          'we recommend that you take ',);
+      return IOSLimitationDialog(
+        preReqs: preReqs,
+        message:
+            'Based on your skill level and this course\'s prerequisite requirements, '
+            'we recommend that you take ',
+      );
     } else {
       return IOSConfirmationDialog(
         courseNotifier: courseNotifier,
-        preReqs: isMatching && preReqs.isNotEmpty ? ' with prerequisites: $preReqs' : preReqs,
+        preReqs: isMatching && preReqs.isNotEmpty
+            ? ' with prerequisites: $preReqs'
+            : preReqs,
         db: db,
         userNotifier: userNotifier,
         homePageNotifier: homePageNotifier,
       );
     }
-
-
   }
 
   @override
@@ -329,8 +350,8 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
             child: Container(
                 padding: EdgeInsets.all(10.0),
                 decoration: BoxDecoration(
-                    color:
-                        ColourPicker().selectSkillColor(_courseNotifier.currentCourse.level),
+                    color: ColourPicker()
+                        .selectSkillColor(_courseNotifier.currentCourse.level),
                     borderRadius: BorderRadius.all(
                       Radius.circular(25.0),
                     )),
@@ -437,8 +458,8 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
                           itemCount: classmates.length,
                           itemBuilder: (context, index) {
                             return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 5.0, horizontal: 10),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -590,8 +611,6 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
           ),
         ));
   }
-
-
 }
 
 class InfoPill extends StatelessWidget {

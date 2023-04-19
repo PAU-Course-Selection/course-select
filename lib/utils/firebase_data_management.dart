@@ -5,7 +5,9 @@ import 'package:course_select/models/lesson_data_model.dart';
 import 'package:course_select/models/user_data_model.dart' as student;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
+import 'package:intl/intl.dart';
 
 import '../controllers/user_notifier.dart';
 import '../models/saved_course_data_model.dart';
@@ -300,16 +302,71 @@ class DatabaseManager {
       print("Error updating student level: $e");
     }
   }
+  /// Calculates number of weeks for a given year as per https://en.wikipedia.org/wiki/ISO_week_date#Weeks_per_year
+  int numOfWeeks(int year) {
+    DateTime dec28 = DateTime(year, 12, 28);
+    int dayOfDec28 = int.parse(DateFormat("D").format(dec28));
+    return ((dayOfDec28 - dec28.weekday + 10) / 7).floor();
+  }
+
+  /// Calculates week number from a date as per https://en.wikipedia.org/wiki/ISO_week_date#Calculation
+  int weekNumber(DateTime date) {
+    int dayOfYear = int.parse(DateFormat("D").format(date));
+    int woy =  ((dayOfYear - date.weekday + 10) / 7).floor();
+    if (woy < 1) {
+      woy = numOfWeeks(date.year - 1);
+    } else if (woy > numOfWeeks(date.year)) {
+      woy = 1;
+    }
+    return woy;
+  }
+
+  Future<void> updateLessonDates(List courseIds) async {
+    final coursesRef = FirebaseFirestore.instance.collection('Courses');
+
+    final now = DateTime.now();
+    final currentWeek = weekNumber(now);
+
+    for (final courseId in courseIds) {
+      final courseRef = coursesRef.doc(courseId);
+      final lessonsRef = courseRef.collection('Lessons');
+
+      await lessonsRef.get().then((querySnapshot) {
+        for (var lessonDoc in querySnapshot.docs) {
+          final startDate = (lessonDoc.data()['startTime'] as Timestamp).toDate();
+          print(startDate);
+          if (startDate.isBefore(now)) {
+            final elapsedWeeks = currentWeek - weekNumber(startDate);
+            final newStartDate = startDate.add(Duration(days: elapsedWeeks * 7));
+            final newEndDate = (lessonDoc.data()['endTime'] as Timestamp).toDate().add(Duration(days: elapsedWeeks * 7));
+
+            lessonsRef
+                .doc(lessonDoc.id)
+                .update({
+              'startTime': newStartDate,
+              'endTime': newEndDate,
+            })
+                .then((value) => print('Lesson updated successfully'))
+                .catchError((error) => print('Failed to update lesson: $error'));
+          }
+        }
+      });
+    }
+  }
+
+
+
+
+
 
 
   Future<List<Lesson>> getLessons(
-      List userCourses, LessonNotifier lessonNotifier) async {
+      List userCourses, LessonNotifier lessonNotifier, UserNotifier userNotifier) async {
     final courseCollection = FirebaseFirestore.instance.collection('Courses');
-    //final snapshots = [];
     List<Lesson> _lessons = [];
+    await updateLessonDates(userNotifier.userCourseIds);
 
-    final coursesQuery =
-        courseCollection.where('courseId', whereIn: userCourses);
+    final coursesQuery = courseCollection.where('courseId', whereIn: userCourses);
     final coursesSnapshot = await coursesQuery.get();
 
     for (final courseDoc in coursesSnapshot.docs) {
@@ -324,9 +381,11 @@ class DatabaseManager {
       }
       lessonNotifier.lessonsList = _lessons;
     }
+
     return _lessons;
     // print(lessonNotifier.lessonsList);
   }
+
 
   getClassmates(String courseId, UserNotifier userNotifier) async {
     List<student.UserModel> _users = [];
