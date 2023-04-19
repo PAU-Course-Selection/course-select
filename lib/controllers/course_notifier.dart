@@ -8,19 +8,25 @@ class CourseNotifier extends ChangeNotifier {
   late Course _currentCourse;
   late int _totalLessons = 0;
 
-  /// Gets the total number of lessons in the course
   get totalLessons => _totalLessons;
 
-  ///Sets the total number of lessons in the course
   set totalLessons(value) {
     _totalLessons = value;
     notifyListeners();
   }
 
-  ///Gets the current course
+   bool _isHourlyLimitReached = false;
+
+  bool get isHourlyLimitReached => _isHourlyLimitReached;
+
+  set isHourlyLimitReached(bool value) {
+    _isHourlyLimitReached = value;
+    notifyListeners();
+  }
+
   Course get currentCourse => _currentCourse;
 
-  ///Sets the current course
+
   set currentCourse(Course course) {
     _currentCourse = course;
     notifyListeners();

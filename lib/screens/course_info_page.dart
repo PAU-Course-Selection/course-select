@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:course_select/controllers/course_notifier.dart';
 import 'package:course_select/constants/constants.dart';
 import 'package:course_select/controllers/home_page_notifier.dart';
+import 'package:course_select/controllers/lesson_notifier.dart';
 import 'package:course_select/models/user_data_model.dart';
 import 'package:course_select/shared_widgets/android_confirmation_dialog.dart';
 import 'package:course_select/shared_widgets/android_limitation_dialog.dart';
@@ -27,7 +28,6 @@ import '../shared_widgets/ios_confirmation_dialog.dart';
 import '../shared_widgets/ios_limitation_dialog.dart';
 import '../utils/enums.dart';
 
-/// [CourseInfoPage] shows the information for the clicked course and allows users to enroll on the course
 class CourseInfoPage extends StatefulWidget {
   const CourseInfoPage({
     Key? key,
@@ -41,30 +41,33 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
   late CourseNotifier _courseNotifier;
   late UserNotifier _userNotifier;
   late HomePageNotifier _homePageNotifier;
+  late LessonNotifier _lessonNotifier;
   final DatabaseManager _db = DatabaseManager();
   late List<UserModel> classmates = [];
   late List recommendations;
   late int numLessons;
   Image img = Image.asset('assets/images/c2.jpg');
   String videoUrl = '';
+  var userCourses;
 
   final ScrollController _controller =
       ScrollController(initialScrollOffset: 60.w);
 
-  /// Initialise all members for use on this screen
-  /// Initialises notifiers and gets data from the database for the course
   @override
   void initState() {
+    super.initState();
     _courseNotifier = Provider.of<CourseNotifier>(context, listen: false);
     numLessons = _courseNotifier.currentCourse.totalLessons;
     _homePageNotifier = Provider.of<HomePageNotifier>(context, listen: false);
     _userNotifier = Provider.of<UserNotifier>(context, listen: false);
+    _lessonNotifier = Provider.of<LessonNotifier>(context, listen: false);
     videoUrl = _courseNotifier.currentCourse.media[0];
     getNumLessons();
     getClassmates();
+    userCourses = _userNotifier.getCourseIds();
+
     recommendations = getRecommendation(
         _courseNotifier.courseList, _courseNotifier.currentCourse.prereqs);
-    super.initState();
   }
 
   @override
@@ -88,7 +91,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
       body: _courseInfo(),
     );
   }
-  /// gets classmates on the course from the database
+
   getClassmates() async {
     await _db
         .getClassmates(_courseNotifier.currentCourse.courseId, _userNotifier)
@@ -99,7 +102,6 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     });
   }
 
-  /// Gets recommended courses to take before the current course
   List<Course> getRecommendation(List<Course> courses, List prereqs) {
     List<Course> filteredCourses = [];
     try {
@@ -117,7 +119,6 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     return filteredCourses;
   }
 
-  /// Gets the number of lessons in the course
   getNumLessons() async {
     await _db.getTotalLessons(_courseNotifier).then((value) {
       setState(() {
@@ -126,7 +127,6 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     });
   }
 
-  /// Formats the prerequisites popup when a user goes to enroll on a course
   String formatPrerequisites(
       List prerequisites, List<Course> courses, List enrolledCourses) {
     final reqCourseIds = <String>{};
@@ -166,13 +166,10 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     return formattedCourses;
   }
 
-  /// Returns the enroll button and shows the prerequisites popup before enrollment
   Widget _conditionalBottomButton() {
     var preReqs = formatPrerequisites(_courseNotifier.currentCourse.prereqs,
         _courseNotifier.courseList, _userNotifier.userCourseIds);
-    if (_userNotifier
-        .getCourseIds()
-        .contains(_courseNotifier.currentCourse.courseId)) {
+    if (userCourses.contains(_courseNotifier.currentCourse.courseId)) {
       return GradientButton(
         onPressed: () {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -200,7 +197,12 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     } else {
       return GradientButton(
         onPressed: () {
-          // _db.updateUserCourses(_userNotifier, _courseNotifier);
+          if (_db.getTotalWeeklyHours(
+                      _userNotifier.userCourseIds, _courseNotifier) +
+                  _courseNotifier.currentCourse.hoursPerWeek >
+              19) {
+            _courseNotifier.isHourlyLimitReached = true;
+          }
           // _homePageNotifier.isStateChanged = true;
           final skillLevels = {0: 'beginner', 1: 'intermediate', 2: 'advanced'};
           final userLevel = _userNotifier.studentLevel;
@@ -217,37 +219,126 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
             print('isMatching $isMatching');
           }
           showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return Platform.isAndroid == true
-                    ? preReqs.isNotEmpty && !isMatching
-                        ? androidLimitationDialog(preReqs: preReqs)
-                        : androidConfirmationDialog(
-                            courseNotifier: _courseNotifier,
-                            preReqs: isMatching
-                                ? 'with prerequisites: $preReqs'
-                                : preReqs,
-                            db: _db,
-                            userNotifier: _userNotifier,
-                            homePageNotifier: _homePageNotifier)
-                    : preReqs.isNotEmpty && !isMatching
-                        ? IOSLimitationDialog(preReqs: preReqs)
-                        : IOSConfirmationDialog(
-                            courseNotifier: _courseNotifier,
-                            preReqs: isMatching
-                                ? 'with prerequisites: $preReqs'
-                                : preReqs,
-                            db: _db,
-                            userNotifier: _userNotifier,
-                            homePageNotifier: _homePageNotifier);
-              });
+            context: context,
+            builder: (BuildContext context) {
+              if (Platform.isAndroid) {
+                return androidDialog(
+                  courseNotifier: _courseNotifier,
+                  preReqs: preReqs,
+                  isMatching: isMatching,
+                  db: _db,
+                  userNotifier: _userNotifier,
+                  homePageNotifier: _homePageNotifier,
+                );
+              } else {
+                return iosDialog(
+                  courseNotifier: _courseNotifier,
+                  preReqs: preReqs,
+                  isMatching: isMatching,
+                  db: _db,
+                  userNotifier: _userNotifier,
+                  homePageNotifier: _homePageNotifier, lessonNotifier: _lessonNotifier,
+                );
+              }
+            },
+          );
         },
         buttonText: 'Enroll',
       );
     }
   }
 
-  /// Notifies the screen of changes to student information and updates
+  Widget androidDialog({
+    required CourseNotifier courseNotifier,
+    required String preReqs,
+    required bool isMatching,
+    required DatabaseManager db,
+    required UserNotifier userNotifier,
+    required HomePageNotifier homePageNotifier,
+  }) {
+    if (_courseNotifier.isHourlyLimitReached == true) {
+      return const AndroidLimitationDialog(
+        preReqs: '',
+        message:
+            'Enrolling on this course will cause you to exceed the 20 hours weekly limit. Please complete some courses before adding more.',
+      );
+    }
+    if (preReqs.isNotEmpty && !isMatching) {
+      return AndroidLimitationDialog(
+        preReqs: preReqs,
+        message:
+            'Based on your skill level and this course\'s prerequisite requirements, '
+            'we recommend that you take ',
+      );
+    } else {
+      return AndroidConfirmationDialog(
+        courseNotifier: courseNotifier,
+        preReqs: isMatching && preReqs.isNotEmpty
+            ? 'with prerequisites: $preReqs'
+            : preReqs,
+        db: db,
+        userNotifier: userNotifier,
+        homePageNotifier: homePageNotifier, lessonNotifier: _lessonNotifier,
+      );
+    }
+  }
+
+  Widget iosDialog({
+    required CourseNotifier courseNotifier,
+    required String preReqs,
+    required bool isMatching,
+    required DatabaseManager db,
+    required UserNotifier userNotifier,
+    required HomePageNotifier homePageNotifier,
+    required LessonNotifier lessonNotifier,
+  }) {
+    if (_courseNotifier.isHourlyLimitReached == true) {
+      return IOSLimitationDialog(
+        preReqs: '',
+        message:
+            'Enrolling on this course will cause you to exceed the 20 hours weekly limit. Please complete some courses before adding more.',
+        onTap: _setConflictState,
+      );
+    }
+    if (_userNotifier.isConflict == true) {
+      return IOSLimitationDialog(
+        preReqs: '',
+        message:
+        'Course conflicts with enrolled lessons.',
+        onTap: _setConflictState,
+      );
+    }
+    if (preReqs.isNotEmpty && !isMatching) {
+      return IOSLimitationDialog(
+        preReqs: preReqs,
+        message:
+            'Based on your skill level and this course\'s prerequisite requirements, '
+            'we recommend that you take ',
+        onTap: _setConflictState,
+      );
+    } else {
+      return IOSConfirmationDialog(
+        courseNotifier: courseNotifier,
+        preReqs: isMatching && preReqs.isNotEmpty
+            ? ' with prerequisites: $preReqs'
+            : preReqs,
+        db: db,
+        userNotifier: userNotifier,
+        homePageNotifier: homePageNotifier, lessonNotifier: lessonNotifier,
+      );
+    }
+  }
+
+   _setConflictState(){
+    Navigator.pop(context);
+    setState(() {
+      _userNotifier.isConflict =false;
+      print('called');
+      _userNotifier.getCourseIds();
+      print(_userNotifier.isConflict);
+    });
+   }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -255,7 +346,6 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     _userNotifier.getStudentLevel();
   }
 
-  /// Responsible for formatting the main sections of the course information screen
   Widget _courseInfo() {
     return SingleChildScrollView(
       child: Column(
@@ -284,8 +374,8 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
             child: Container(
                 padding: EdgeInsets.all(10.0),
                 decoration: BoxDecoration(
-                    color:
-                        ColourPicker().selectSkillColor(_courseNotifier.currentCourse.level),
+                    color: ColourPicker()
+                        .selectSkillColor(_courseNotifier.currentCourse.level),
                     borderRadius: BorderRadius.all(
                       Radius.circular(25.0),
                     )),
@@ -377,9 +467,9 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
           ),
           //Classmates Box
           Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
               child: Container(
-                  height: 110.h,
+                  height: 120.h,
                   width: double.infinity,
                   padding: const EdgeInsets.all(10.0),
                   decoration: BoxDecoration(
@@ -392,8 +482,8 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
                           itemCount: classmates.length,
                           itemBuilder: (context, index) {
                             return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 5.0, horizontal: 10),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -487,13 +577,11 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     );
   }
 
-  /// returns the formatted hours per week string for the course
   String _hoursPerWeek() {
     String hpw = _courseNotifier.currentCourse.hoursPerWeek.toString();
     return "$hpw Weeks ";
   }
 
-  /// returns a flag for whether an item in the preview list is a photo or a video
   Widget _photoVideoView(int index) {
     var type = '';
     if (index == 0) {
@@ -512,7 +600,6 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     }
   }
 
-  /// Formats an image item in the course media list
   Widget _courseImage(int index) {
     var current = _courseNotifier.currentCourse;
 
@@ -535,7 +622,6 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     return courseMedia;
   }
 
-  /// Formats a video item in the course media list
   Widget _courseVideo() {
     return Padding(
         padding: const EdgeInsets.all(16.0),
@@ -549,11 +635,8 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
           ),
         ));
   }
-
-
 }
 
-/// Encapsulates the course info pill view that displays hours per week etc.
 class InfoPill extends StatelessWidget {
   final String icon;
   final String text;

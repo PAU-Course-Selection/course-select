@@ -11,7 +11,6 @@ import '../shared_widgets/mini_course_card.dart';
 import '../utils/enums.dart';
 import '../utils/firebase_data_management.dart';
 
-/// [SearchSheet] is responsible for search filtering by subject area. skill level and using search terms in search boxes across the app.
 class SearchSheet extends StatefulWidget {
   final CategorySearchFilter categoryFilterKeyword;
 
@@ -28,59 +27,30 @@ class _SearchSheetState extends State<SearchSheet>
   HomePageNotifier homePageNotifier = HomePageNotifier();
   late final CourseNotifier courseNotifier;
   late final SavedCoursesNotifier savedCoursesNotifier;
-
-  //late List<Course> savedList = [];
-  //late final UserNotifier userNotifier;
   late Future futureData;
   late final AnimationController _animationController;
   late CategorySearchFilter searchFilter;
-
-  static late List<Course> displayAllList = [];
-  static late List<Course> displayBeginnerList= [];
-  static late List<Course> displayIntermediateList= [];
-  static late List<Course> displayAdvancedList= [];
-  static late List<Course> displayFrontedList= [];
-  static late List<Course> displayBackendList= [];
-  static late List<Course> displayProgrammingList= [];
-  static late List<Course> displayDevOpsList= [];
-  static late List<Course> displaySoftwareList= [];
   int duplicateCount = 0;
 
-  get isAll {
-    return searchFilter == CategorySearchFilter.all;
-  }
+  late List<Course> displayAllList;
+  late List<Course> displayBeginnerList;
+  late List<Course> displayIntermediateList;
+  late List<Course> displayAdvancedList;
+  late List<Course> displayFrontedList;
+  late List<Course> displayBackendList;
+  late List<Course> displayProgrammingList;
+  late List<Course> displayDevOpsList;
+  late List<Course> displaySoftwareList;
 
-  get isBeginner {
-    return searchFilter == CategorySearchFilter.beginner;
-  }
-
-  get isIntermediate {
-    return searchFilter == CategorySearchFilter.intermediate;
-  }
-
-  get isAdvanced {
-    return searchFilter == CategorySearchFilter.advanced;
-  }
-
-  get isFrontend {
-    return searchFilter == CategorySearchFilter.frontend;
-  }
-
-  get isBackend {
-    return searchFilter == CategorySearchFilter.backend;
-  }
-
-  get isProgramming {
-    return searchFilter == CategorySearchFilter.programming;
-  }
-
-  get isDevOps {
-    return searchFilter == CategorySearchFilter.devOps;
-  }
-
-  get isSoftware {
-    return searchFilter == CategorySearchFilter.software;
-  }
+  get isAll => searchFilter == CategorySearchFilter.all;
+  get isBeginner => searchFilter == CategorySearchFilter.beginner;
+  get isIntermediate => searchFilter == CategorySearchFilter.intermediate;
+  get isAdvanced => searchFilter == CategorySearchFilter.advanced;
+  get isFrontend => searchFilter == CategorySearchFilter.frontend;
+  get isBackend => searchFilter == CategorySearchFilter.backend;
+  get isProgramming => searchFilter == CategorySearchFilter.programming;
+  get isDevOps => searchFilter == CategorySearchFilter.devOps;
+  get isSoftware => searchFilter == CategorySearchFilter.software;
 
   void initialiseLists() {
     displayAllList = List.from(courseNotifier.courseList);
@@ -91,11 +61,9 @@ class _SearchSheetState extends State<SearchSheet>
             .contains(getSearchKeyword(CategorySearchFilter.beginner))));
 
     displayIntermediateList = List.from(courseNotifier.courseList.where(
-            (element) =>
-            element.level
-                .toLowerCase()
-                .contains(
-                getSearchKeyword(CategorySearchFilter.intermediate))));
+        (element) => element.level
+            .toLowerCase()
+            .contains(getSearchKeyword(CategorySearchFilter.intermediate))));
 
     displayAdvancedList = List.from(courseNotifier.courseList.where((element) =>
         element.level
@@ -113,10 +81,9 @@ class _SearchSheetState extends State<SearchSheet>
             .contains(getSearchKeyword(CategorySearchFilter.backend))));
 
     displayProgrammingList = List.from(courseNotifier.courseList.where(
-            (element) =>
-            element.subjectArea
-                .toLowerCase()
-                .contains(getSearchKeyword(CategorySearchFilter.programming))));
+        (element) => element.subjectArea
+            .toLowerCase()
+            .contains(getSearchKeyword(CategorySearchFilter.programming))));
 
     displayDevOpsList = List.from(courseNotifier.courseList.where((element) =>
         element.subjectArea
@@ -134,135 +101,148 @@ class _SearchSheetState extends State<SearchSheet>
     setState(() {
       displayAllList = courseNotifier.courseList
           .where((element) =>
-      element.courseName!.toLowerCase().contains(value.toLowerCase()) ||
-          element.subjectArea!
-              .toLowerCase()
-              .contains(value.toLowerCase()) ||
-          element.level!.toLowerCase().contains(value.toLowerCase()))
+              element.courseName.toLowerCase().contains(value.toLowerCase()) ||
+              element.subjectArea
+                  .toLowerCase()
+                  .contains(value.toLowerCase()) ||
+              element.level.toLowerCase().contains(value.toLowerCase()))
           .toList();
     });
   }
+
   void updateBeginnerList(String value) {
     /// filter courses list
     setState(() {
       displayBeginnerList = courseNotifier.courseList
           .where((element) =>
-      element.level.toLowerCase().
-      contains(getSearchKeyword(CategorySearchFilter.beginner))&&
-      element.courseName!.toLowerCase().contains(value.toLowerCase()) ||
-          element.subjectArea!
-              .toLowerCase()
-              .contains(value.toLowerCase()) ||
-          element.level!.toLowerCase().contains(value.toLowerCase()))
+              element.level.toLowerCase().contains(
+                      getSearchKeyword(CategorySearchFilter.beginner)) &&
+                  element.courseName
+                      .toLowerCase()
+                      .contains(value.toLowerCase()) ||
+              element.subjectArea
+                  .toLowerCase()
+                  .contains(value.toLowerCase()) ||
+              element.level.toLowerCase().contains(value.toLowerCase()))
           .toList();
     });
   }
+
   void updateIntermediateList(String value) {
     /// filter courses list
     setState(() {
       displayIntermediateList = courseNotifier.courseList
           .where((element) =>
-      element.level.toLowerCase().
-      contains(getSearchKeyword(CategorySearchFilter.intermediate))&&
-      element.courseName!.toLowerCase().contains(value.toLowerCase()) ||
-          element.subjectArea!
-              .toLowerCase()
-              .contains(value.toLowerCase()) ||
-          element.level!.toLowerCase().contains(value.toLowerCase()))
+              element.level.toLowerCase().contains(
+                      getSearchKeyword(CategorySearchFilter.intermediate)) &&
+                  element.courseName
+                      .toLowerCase()
+                      .contains(value.toLowerCase()) ||
+              element.subjectArea
+                  .toLowerCase()
+                  .contains(value.toLowerCase()) ||
+              element.level.toLowerCase().contains(value.toLowerCase()))
           .toList();
     });
   }
+
   void updateAdvancedList(String value) {
     /// filter courses list
     setState(() {
       displayAdvancedList = courseNotifier.courseList
           .where((element) =>
-      element.level.toLowerCase().
-      contains(getSearchKeyword(CategorySearchFilter.advanced))&&
-      element.courseName!.toLowerCase().contains(value.toLowerCase()) ||
-          element.subjectArea!
-              .toLowerCase()
-              .contains(value.toLowerCase()) ||
-          element.level!.toLowerCase().contains(value.toLowerCase()))
+              element.level.toLowerCase().contains(
+                      getSearchKeyword(CategorySearchFilter.advanced)) &&
+                  element.courseName
+                      .toLowerCase()
+                      .contains(value.toLowerCase()) ||
+              element.subjectArea
+                  .toLowerCase()
+                  .contains(value.toLowerCase()) ||
+              element.level.toLowerCase().contains(value.toLowerCase()))
           .toList();
     });
   }
+
   void updateFrontendList(String value) {
     /// filter courses list
     setState(() {
       displayFrontedList = courseNotifier.courseList
           .where((element) =>
-      element.subjectArea.toLowerCase().
-      contains(getSearchKeyword(CategorySearchFilter.frontend))&&
-      element.courseName.toLowerCase().contains(value.toLowerCase()) ||
-          element.subjectArea
-              .toLowerCase()
-              .contains(value.toLowerCase()) ||
-          element.level.toLowerCase().contains(value.toLowerCase()))
+              element.subjectArea.toLowerCase().contains(
+                      getSearchKeyword(CategorySearchFilter.frontend)) &&
+                  element.courseName
+                      .toLowerCase()
+                      .contains(value.toLowerCase()) ||
+              element.subjectArea.toLowerCase().contains(value.toLowerCase()) ||
+              element.level.toLowerCase().contains(value.toLowerCase()))
           .toList();
     });
   }
+
   void updateBackendList(String value) {
     /// filter courses list
     setState(() {
       displayBackendList = courseNotifier.courseList
           .where((element) =>
-      element.subjectArea.toLowerCase().
-      contains(getSearchKeyword(CategorySearchFilter.backend))&&
-      element.courseName.toLowerCase().contains(value.toLowerCase()) ||
-          element.subjectArea
-              .toLowerCase()
-              .contains(value.toLowerCase()) ||
-          element.level.toLowerCase().contains(value.toLowerCase()))
+              element.subjectArea.toLowerCase().contains(
+                      getSearchKeyword(CategorySearchFilter.backend)) &&
+                  element.courseName
+                      .toLowerCase()
+                      .contains(value.toLowerCase()) ||
+              element.subjectArea.toLowerCase().contains(value.toLowerCase()) ||
+              element.level.toLowerCase().contains(value.toLowerCase()))
           .toList();
     });
   }
+
   void updateProgrammingList(String value) {
     /// filter courses list
     setState(() {
       displayProgrammingList = courseNotifier.courseList
           .where((element) =>
-      element.subjectArea.toLowerCase().
-      contains(getSearchKeyword(CategorySearchFilter.programming))&&
-      element.courseName.toLowerCase().contains(value.toLowerCase()) ||
-          element.subjectArea
-              .toLowerCase()
-              .contains(value.toLowerCase()) ||
-          element.level.toLowerCase().contains(value.toLowerCase()))
+              element.subjectArea.toLowerCase().contains(
+                      getSearchKeyword(CategorySearchFilter.programming)) &&
+                  element.courseName
+                      .toLowerCase()
+                      .contains(value.toLowerCase()) ||
+              element.subjectArea.toLowerCase().contains(value.toLowerCase()) ||
+              element.level.toLowerCase().contains(value.toLowerCase()))
           .toList();
     });
   }
+
   void updateDevOpsList(String value) {
     /// filter courses list
     setState(() {
       displayDevOpsList = courseNotifier.courseList
           .where((element) =>
-      element.subjectArea.toLowerCase().
-      contains(getSearchKeyword(CategorySearchFilter.devOps))&&
-      element.courseName.toLowerCase().contains(value.toLowerCase()) ||
-          element.subjectArea
-              .toLowerCase()
-              .contains(value.toLowerCase()) ||
-          element.level.toLowerCase().contains(value.toLowerCase()))
+              element.subjectArea.toLowerCase().contains(
+                      getSearchKeyword(CategorySearchFilter.devOps)) &&
+                  element.courseName
+                      .toLowerCase()
+                      .contains(value.toLowerCase()) ||
+              element.subjectArea.toLowerCase().contains(value.toLowerCase()) ||
+              element.level.toLowerCase().contains(value.toLowerCase()))
           .toList();
     });
   }
+
   void updateSoftwareList(String value) {
     /// filter courses list
     setState(() {
       displaySoftwareList = courseNotifier.courseList
           .where((element) =>
-      element.subjectArea.toLowerCase().
-      contains(getSearchKeyword(CategorySearchFilter.software))&&
-      element.courseName.toLowerCase().contains(value.toLowerCase()) ||
-          element.subjectArea
-              .toLowerCase()
-              .contains(value.toLowerCase()) ||
-          element.level.toLowerCase().contains(value.toLowerCase()))
+              element.subjectArea.toLowerCase().contains(
+                      getSearchKeyword(CategorySearchFilter.software)) &&
+                  element.courseName
+                      .toLowerCase()
+                      .contains(value.toLowerCase()) ||
+              element.subjectArea.toLowerCase().contains(value.toLowerCase()) ||
+              element.level.toLowerCase().contains(value.toLowerCase()))
           .toList();
     });
   }
-
 
   Future getModels() {
     //db.getUsers(userNotifier);
@@ -340,8 +320,7 @@ class _SearchSheetState extends State<SearchSheet>
                     Padding(
                       padding: const EdgeInsets.only(left: 25.0, top: 25),
                       child: Text(
-                        'Search for ${getSearchKeyword(
-                            searchFilter)} courses',
+                        'Search for ${getSearchKeyword(searchFilter)} courses',
                         style: const TextStyle(
                             fontSize: 22.0,
                             fontWeight: FontWeight.bold,
@@ -355,7 +334,7 @@ class _SearchSheetState extends State<SearchSheet>
                       padding: const EdgeInsets.symmetric(horizontal: 25.0),
                       child: TextField(
                         onChanged: (value) {
-                          switch(searchFilter){
+                          switch (searchFilter) {
                             case CategorySearchFilter.all:
                               updateAllList(value);
                               break;
@@ -425,26 +404,29 @@ class _SearchSheetState extends State<SearchSheet>
                           Row(
                             children: [
                               CatPill(
-                                  categoryName: 'Programming',
-                                  categoryColour: Color(0xffd5f1d3),
-                                  categoryIcon: 'assets/icons/analysis.png',
-                                onPressed: (){
-                                    print('programming');
-                                    setState(() {
-                                      searchFilter = CategorySearchFilter.programming;
-                                    });
-                                },),
+                                categoryName: 'Programming',
+                                categoryColour: Color(0xffd5f1d3),
+                                categoryIcon: 'assets/icons/analysis.png',
+                                onPressed: () {
+                                  print('programming');
+                                  setState(() {
+                                    searchFilter =
+                                        CategorySearchFilter.programming;
+                                  });
+                                },
+                              ),
                               Flexible(
                                   child: CatPill(
-                                      categoryName: 'Software Engineering',
-                                      categoryColour: Color(0xffffd0ef),
-                                      categoryIcon:
-                                      'assets/icons/software.png', onPressed: (){
-                                    setState(() {
-                                      searchFilter = CategorySearchFilter.software;
-                                    });
-
-                                  },)),
+                                categoryName: 'Software Engineering',
+                                categoryColour: Color(0xffffd0ef),
+                                categoryIcon: 'assets/icons/software.png',
+                                onPressed: () {
+                                  setState(() {
+                                    searchFilter =
+                                        CategorySearchFilter.software;
+                                  });
+                                },
+                              )),
                             ],
                           ),
                           const SizedBox(
@@ -453,33 +435,37 @@ class _SearchSheetState extends State<SearchSheet>
                           Row(
                             children: [
                               CatPill(
-                                  categoryName: 'DevOps',
-                                  categoryColour: Color(0xffffeeca),
-                                  categoryIcon: 'assets/icons/devops.png', onPressed: (){
-                                setState(() {
-                                  searchFilter = CategorySearchFilter.devOps;
-                                });
-
-                              },),
+                                categoryName: 'DevOps',
+                                categoryColour: Color(0xffffeeca),
+                                categoryIcon: 'assets/icons/devops.png',
+                                onPressed: () {
+                                  setState(() {
+                                    searchFilter = CategorySearchFilter.devOps;
+                                  });
+                                },
+                              ),
                               CatPill(
-                                  categoryName: 'Backend',
-                                  categoryColour: Color(0xfffcfcc3),
-                                  categoryIcon: 'assets/icons/security.png', onPressed: (){
-                                setState(() {
-                                  searchFilter = CategorySearchFilter.backend;
-                                });
-
-                              },),
+                                categoryName: 'Backend',
+                                categoryColour: Color(0xfffcfcc3),
+                                categoryIcon: 'assets/icons/security.png',
+                                onPressed: () {
+                                  setState(() {
+                                    searchFilter = CategorySearchFilter.backend;
+                                  });
+                                },
+                              ),
                               Flexible(
                                   child: CatPill(
-                                      categoryName: 'Frontend',
-                                      categoryColour: Color(0xfff4e1fe),
-                                      categoryIcon: 'assets/icons/ui.png', onPressed: (){
-                                    setState(() {
-                                      searchFilter = CategorySearchFilter.frontend;
-                                    });
-
-                                  },)),
+                                categoryName: 'Frontend',
+                                categoryColour: Color(0xfff4e1fe),
+                                categoryIcon: 'assets/icons/ui.png',
+                                onPressed: () {
+                                  setState(() {
+                                    searchFilter =
+                                        CategorySearchFilter.frontend;
+                                  });
+                                },
+                              )),
                             ],
                           ),
                         ],
@@ -490,79 +476,133 @@ class _SearchSheetState extends State<SearchSheet>
                     ),
                     Expanded(
                         child: isAll && displayAllList.isEmpty ||
-                            isBeginner && displayBeginnerList.isEmpty||isIntermediate && displayIntermediateList.isEmpty||
-                            isAdvanced && displayAdvancedList.isEmpty||isFrontend && displayFrontedList.isEmpty||
-                            isBackend && displayBackendList.isEmpty ||isDevOps && displayDevOpsList.isEmpty||
-                            isProgramming && displayProgrammingList.isEmpty||isSoftware && displaySoftwareList.isEmpty
+                                isBeginner && displayBeginnerList.isEmpty ||
+                                isIntermediate &&
+                                    displayIntermediateList.isEmpty ||
+                                isAdvanced && displayAdvancedList.isEmpty ||
+                                isFrontend && displayFrontedList.isEmpty ||
+                                isBackend && displayBackendList.isEmpty ||
+                                isDevOps && displayDevOpsList.isEmpty ||
+                                isProgramming &&
+                                    displayProgrammingList.isEmpty ||
+                                isSoftware && displaySoftwareList.isEmpty
                             ? const Center(
-                          child: Text('No results found...'),
-                        )
+                                child: Text('No results found...'),
+                              )
                             : Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 25.0),
-                          child: ListView.builder(
-                              scrollDirection: Axis.vertical,
-                              itemCount: isAll
-                                  ? displayAllList.length
-                                  : isBeginner ? displayBeginnerList.length
-                                  : isIntermediate ? displayIntermediateList
-                                  .length
-                                  : isFrontend ? displayFrontedList.length
-                                  : isBackend ? displayBackendList.length
-                                  : isProgramming ? displayProgrammingList
-                                  .length
-                                  : isDevOps
-                                  ? displayDevOpsList.length
-                                  : isSoftware ? displaySoftwareList.length: isAdvanced? displayAdvancedList.length: displayAllList.length,
-                              itemBuilder: (context, index) {
-                                return MiniCourseCard(
-                                  displayList: isAll
-                                      ? displayAllList
-                                      : isBeginner? displayBeginnerList: isIntermediate? displayIntermediateList
-                                  :isAdvanced? displayAdvancedList: isProgramming? displayProgrammingList: isDevOps?displayDevOpsList
-                                  :isSoftware? displaySoftwareList: isBackend? displayBackendList: isFrontend? displayFrontedList: displayAllList,
-                                  index: index,
-                                  onBookmarkTapped: () {
-                                    HapticFeedback.heavyImpact();
-                                    setState(() {
-                                      _saveCourse(index);
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          elevation: 1,
-                                          behavior:
-                                          SnackBarBehavior.fixed,
-                                          backgroundColor: kKindaGreen,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                              BorderRadius.circular(
-                                                  5)),
-                                          content: Center(
-                                              child: Text(
-                                                displayAllList[index].isSaved||
-                                                displayBeginnerList[index].isSaved||displayIntermediateList[index].isSaved||
-                                              displayAdvancedList[index].isSaved||displayFrontedList[index].isSaved||
-                                              displayBackendList[index].isSaved || displayDevOpsList[index].isSaved||
-                                              displayProgrammingList[index].isSaved||displaySoftwareList[index].isSaved
-                                                    ? 'Added to saved courses'
-                                                    : 'Removed from saved courses',
-                                                style: const TextStyle(
-                                                    color: Colors.black,
-                                                    fontWeight:
-                                                    FontWeight.bold),
-                                              )),
-                                          duration:
-                                          const Duration(seconds: 1),
-                                        ),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 25.0),
+                                child: ListView.builder(
+                                    scrollDirection: Axis.vertical,
+                                    itemCount: isAll
+                                        ? displayAllList.length
+                                        : isBeginner
+                                            ? displayBeginnerList.length
+                                            : isIntermediate
+                                                ? displayIntermediateList.length
+                                                : isFrontend
+                                                    ? displayFrontedList.length
+                                                    : isBackend
+                                                        ? displayBackendList
+                                                            .length
+                                                        : isProgramming
+                                                            ? displayProgrammingList
+                                                                .length
+                                                            : isDevOps
+                                                                ? displayDevOpsList
+                                                                    .length
+                                                                : isSoftware
+                                                                    ? displaySoftwareList
+                                                                        .length
+                                                                    : isAdvanced
+                                                                        ? displayAdvancedList
+                                                                            .length
+                                                                        : displayAllList
+                                                                            .length,
+                                    itemBuilder: (context, index) {
+                                      return MiniCourseCard(
+                                        displayList: isAll
+                                            ? displayAllList
+                                            : isBeginner
+                                                ? displayBeginnerList
+                                                : isIntermediate
+                                                    ? displayIntermediateList
+                                                    : isAdvanced
+                                                        ? displayAdvancedList
+                                                        : isProgramming
+                                                            ? displayProgrammingList
+                                                            : isDevOps
+                                                                ? displayDevOpsList
+                                                                : isSoftware
+                                                                    ? displaySoftwareList
+                                                                    : isBackend
+                                                                        ? displayBackendList
+                                                                        : isFrontend
+                                                                            ? displayFrontedList
+                                                                            : displayAllList,
+                                        index: index,
+                                        onBookmarkTapped: () {
+                                          HapticFeedback.heavyImpact();
+                                          setState(() {
+                                            _saveCourse(index);
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                elevation: 1,
+                                                behavior:
+                                                    SnackBarBehavior.fixed,
+                                                backgroundColor: kKindaGreen,
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5)),
+                                                content: Center(
+                                                    child: Text(
+                                                  displayAllList[index]
+                                                              .isSaved ||
+                                                          displayBeginnerList[
+                                                                  index]
+                                                              .isSaved ||
+                                                          displayIntermediateList[
+                                                                  index]
+                                                              .isSaved ||
+                                                          displayAdvancedList[
+                                                                  index]
+                                                              .isSaved ||
+                                                          displayFrontedList[
+                                                                  index]
+                                                              .isSaved ||
+                                                          displayBackendList[
+                                                                  index]
+                                                              .isSaved ||
+                                                          displayDevOpsList[
+                                                                  index]
+                                                              .isSaved ||
+                                                          displayProgrammingList[
+                                                                  index]
+                                                              .isSaved ||
+                                                          displaySoftwareList[
+                                                                  index]
+                                                              .isSaved
+                                                      ? 'Added to saved courses'
+                                                      : 'Removed from saved courses',
+                                                  style: const TextStyle(
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                )),
+                                                duration:
+                                                    const Duration(seconds: 1),
+                                              ),
+                                            );
+                                          });
+                                        },
+                                        onCardPressed: () {
+                                          _showInfoScreen(index);
+                                        },
                                       );
-                                    });
-                                  },
-                                  onCardPressed: () {
-                                    _showInfoScreen(index);
-                                  },
-                                );
-                              }),
-                        )),
+                                    }),
+                              )),
                   ],
                 ),
               ),
@@ -571,29 +611,83 @@ class _SearchSheetState extends State<SearchSheet>
     );
   }
 
-  final Map<CategorySearchFilter, List<Course>> filterToList = {
-    CategorySearchFilter.all: displayAllList,
-    CategorySearchFilter.beginner: displayBeginnerList,
-    CategorySearchFilter.intermediate: displayIntermediateList,
-    CategorySearchFilter.advanced: displayAdvancedList,
-    CategorySearchFilter.frontend: displayFrontedList,
-    CategorySearchFilter.backend: displayBackendList,
-    CategorySearchFilter.programming: displayProgrammingList,
-    CategorySearchFilter.devOps: displayDevOpsList,
-    CategorySearchFilter.software: displaySoftwareList,
-  };
-
-  /// Handles clicks on the filtered list of course to display course info
-  _showInfoScreen(int index){
-    final selectedList = filterToList[searchFilter];
-    if (selectedList == null || index >= selectedList.length) {
-      return;
+  void _showInfoScreen(int index) {
+    switch (searchFilter) {
+      case CategorySearchFilter.all:
+        _showAllCourseInfo(index);
+        break;
+      case CategorySearchFilter.beginner:
+        _showBeginnerCourseInfo(index);
+        break;
+      case CategorySearchFilter.intermediate:
+        _showIntermediateCourseInfo(index);
+        break;
+      case CategorySearchFilter.advanced:
+        _showAdvancedCourseInfo(index);
+        break;
+      case CategorySearchFilter.frontend:
+        _showFrontendCourseInfo(index);
+        break;
+      case CategorySearchFilter.backend:
+        _showBackendCourseInfo(index);
+        break;
+      case CategorySearchFilter.programming:
+        _showProgrammingCourseInfo(index);
+        break;
+      case CategorySearchFilter.devOps:
+        _showDevOpsCourseInfo(index);
+        break;
+      case CategorySearchFilter.software:
+        _showSoftwareCourseInfo(index);
+        break;
     }
-    courseNotifier.currentCourse = selectedList[index];
+  }
+
+  void _showAllCourseInfo(int index) {
+    courseNotifier.currentCourse = displayAllList[index];
     Navigator.pushNamed(context, PageRoutes.courseInfo);
   }
 
-  /// Allows course saving on the filtered lists
+  void _showBeginnerCourseInfo(int index) {
+    courseNotifier.currentCourse = displayBeginnerList[index];
+    Navigator.pushNamed(context, PageRoutes.courseInfo);
+  }
+
+  void _showIntermediateCourseInfo(int index) {
+    courseNotifier.currentCourse = displayIntermediateList[index];
+    Navigator.pushNamed(context, PageRoutes.courseInfo);
+  }
+
+  void _showAdvancedCourseInfo(int index) {
+    courseNotifier.currentCourse = displayAdvancedList[index];
+    Navigator.pushNamed(context, PageRoutes.courseInfo);
+  }
+
+  void _showFrontendCourseInfo(int index) {
+    courseNotifier.currentCourse = displayFrontedList[index];
+    Navigator.pushNamed(context, PageRoutes.courseInfo);
+  }
+
+  void _showBackendCourseInfo(int index) {
+    courseNotifier.currentCourse = displayBackendList[index];
+    Navigator.pushNamed(context, PageRoutes.courseInfo);
+  }
+
+  void _showProgrammingCourseInfo(int index) {
+    courseNotifier.currentCourse = displayProgrammingList[index];
+    Navigator.pushNamed(context, PageRoutes.courseInfo);
+  }
+
+  void _showDevOpsCourseInfo(int index) {
+    courseNotifier.currentCourse = displayDevOpsList[index];
+    Navigator.pushNamed(context, PageRoutes.courseInfo);
+  }
+
+  void _showSoftwareCourseInfo(int index) {
+    courseNotifier.currentCourse = displaySoftwareList[index];
+    Navigator.pushNamed(context, PageRoutes.courseInfo);
+  }
+
   _saveCourse(int index) {
     var displayList, item;
     switch (searchFilter) {
@@ -645,9 +739,8 @@ class _SearchSheetState extends State<SearchSheet>
         savedCourses: savedCoursesNotifier,
         courseNotifier: courseNotifier);
   }
-
 }
-/// [CatPill] encapsulates the UI elements of the category pills to filter courses
+
 class CatPill extends StatelessWidget {
   final String categoryName;
   final Color categoryColour;
@@ -658,15 +751,15 @@ class CatPill extends StatelessWidget {
     Key? key,
     required this.categoryName,
     required this.categoryColour,
-    required this.categoryIcon, required this.onPressed,
+    required this.categoryIcon,
+    required this.onPressed,
   }) : super(key: key);
 
-  /// Builds ui elements for the search page
   @override
   Widget build(BuildContext context) {
     return InkWell(
       splashColor: kSaraLightPink,
-      onTap: ()=> onPressed.call(),
+      onTap: () => onPressed.call(),
       child: Padding(
         padding: const EdgeInsets.only(right: 5.0),
         child: Container(

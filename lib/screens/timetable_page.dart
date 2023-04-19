@@ -22,29 +22,34 @@ class _TimetableState extends State<Timetable> {
   final DatabaseManager _db = DatabaseManager();
   late final LessonNotifier lessonNotifier;
   late final UserNotifier userNotifier;
-  late List<Lesson> lessons= [];
+  late List<Lesson> lessons = [];
+  var courses;
 
 
   @override
   void initState() {
+    super.initState();
     lessonNotifier = Provider.of<LessonNotifier>(context, listen: false);
     userNotifier = Provider.of<UserNotifier>(context, listen: false);
-    getLessons();
-    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      courses = userNotifier.getCourseIds();
+      getLessons();
+    });
   }
+
   getLessons() async {
-    await _db.getLessons(userNotifier.getCourseIds(),lessonNotifier)
+    await _db.getUserLessons(courses,lessonNotifier, userNotifier)
         .then((value) {
           setState(() {
             lessons = value;
           });
     });
+    // await _db.updateLessonDates(courses);
   }
 
   @override
   Widget build(BuildContext context) {
-     // print(lessons.first.startTime.toString());
-    print(lessonNotifier.lessonsList);
+    // print(lessons);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -85,11 +90,11 @@ class _TimetableState extends State<Timetable> {
                   width: MediaQuery.of(context).size.width,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: lessonNotifier.lessonsList.length,
+                    itemCount: lessonNotifier.userLessonsList.length,
                       itemBuilder: (context,index){
-                        return LessonCard(title: lessonNotifier.lessonsList[index].lessonName,
-                          startTime: DateFormat.Hm().format(lessonNotifier.lessonsList[index].startTime!.toDate()),
-                          endTime: DateFormat.Hm().format(lessonNotifier.lessonsList[index].endTime!.toDate()));
+                        return LessonCard(title: lessonNotifier.userLessonsList[index].lessonName,
+                          startTime: DateFormat.Hm().format(lessonNotifier.userLessonsList[index].startTime!.toDate()),
+                          endTime: DateFormat.Hm().format(lessonNotifier.userLessonsList[index].endTime!.toDate()));
                       }
                   ),
                 ),
@@ -133,23 +138,89 @@ class _TimetableState extends State<Timetable> {
     );
   }
 
-  /// Get lesson data from the database
   List<Meeting> _getDataSource() {
     final List<Meeting> meetings = <Meeting>[];
     final DateTime today = DateTime.now();
     final DateTime startTime = DateTime(today.year, today.month, today.day, 9);
     final DateTime endTime = startTime.add(const Duration(hours: 2));
-    meetings.add(Meeting('Introduction to Design Patterns', startTime, endTime,
-        const Color(0xFF0F8644), false));
-    meetings.add(Meeting(
-        'UX/UI Design', startTime, endTime, const Color(0xFF245953), false));
-    meetings.add(Meeting('Software Testing', startTime, endTime,
-        const Color(0xFF408E91), false));
+
+    for(var lesson in lessons){
+      var startTime = lesson.startTime?.toDate();
+      var endTime = lesson.endTime?.toDate();
+      meetings.add(Meeting(lesson.lessonName, startTime!, endTime!,
+          const Color(0xFF0F8644), false));
+    }
     return meetings;
   }
 }
 
-/// [LessonCard] represents a single lesson item above the timetable
+/// An object to set the appointment collection data source to calendar, which
+/// used to map the custom appointment data to the calendar appointment, and
+/// allows to add, remove or reset the appointment collection.
+class MeetingDataSource extends CalendarDataSource {
+  /// Creates a meeting data source, which used to set the appointment
+  /// collection to the calendar
+  MeetingDataSource(List<Meeting> source) {
+    appointments = source;
+  }
+
+  @override
+  DateTime getStartTime(int index) {
+    return _getMeetingData(index).from;
+  }
+
+  @override
+  DateTime getEndTime(int index) {
+    return _getMeetingData(index).to;
+  }
+
+  @override
+  String getSubject(int index) {
+    return _getMeetingData(index).eventName;
+  }
+
+  @override
+  Color getColor(int index) {
+    return _getMeetingData(index).background;
+  }
+
+  @override
+  bool isAllDay(int index) {
+    return _getMeetingData(index).isAllDay;
+  }
+
+  Meeting _getMeetingData(int index) {
+    final dynamic meeting = appointments![index];
+    late final Meeting meetingData;
+    if (meeting is Meeting) {
+      meetingData = meeting;
+    }
+
+    return meetingData;
+  }
+}
+
+/// Custom business object class which contains properties to hold the detailed
+/// information about the event data which will be rendered in calendar.
+class Meeting {
+  /// Creates a meeting class with required details.
+  Meeting(this.eventName, this.from, this.to, this.background, this.isAllDay);
+
+  /// Event name which is equivalent to subject property of [Appointment].
+  String eventName;
+
+  /// From which is equivalent to start time property of [Appointment].
+  DateTime from;
+
+  /// To which is equivalent to end time property of [Appointment].
+  DateTime to;
+
+  /// Background which is equivalent to color property of [Appointment].
+  Color background;
+
+  /// IsAllDay which is equivalent to isAllDay property of [Appointment].
+  bool isAllDay;
+}
 class LessonCard extends StatelessWidget {
   final String? title;
   final String startTime;
@@ -162,7 +233,7 @@ class LessonCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding:  EdgeInsets.only(
-        bottom: 10.0.h, right: 10.h
+          bottom: 10.0.h, right: 10.h
       ),
       child: Container(
         height: 160.h,
@@ -234,77 +305,4 @@ class LessonCard extends StatelessWidget {
       ),
     );
   }
-}
-
-/// An object to set the appointment collection data source to calendar, which
-/// used to map the custom appointment data to the calendar appointment, and
-/// allows to add, remove or reset the appointment collection.
-class MeetingDataSource extends CalendarDataSource {
-  /// Creates a meeting data source, which used to set the appointment
-  /// collection to the calendar
-  MeetingDataSource(List<Meeting> source) {
-    appointments = source;
-  }
-
-  /// Gets the lesson start time
-  @override
-  DateTime getStartTime(int index) {
-    return _getMeetingData(index).from;
-  }
-
-  /// Gets the lesson end time
-  @override
-  DateTime getEndTime(int index) {
-    return _getMeetingData(index).to;
-  }
-
-  /// Gets the lesson subject
-  @override
-  String getSubject(int index) {
-    return _getMeetingData(index).eventName;
-  }
-
-  /// Gets the lesson color
-  @override
-  Color getColor(int index) {
-    return _getMeetingData(index).background;
-  }
-  /// Flag for whether a lesson is all day
-  @override
-  bool isAllDay(int index) {
-    return _getMeetingData(index).isAllDay;
-  }
-
-  /// Get meeting information from list of meetings
-  Meeting _getMeetingData(int index) {
-    final dynamic meeting = appointments![index];
-    late final Meeting meetingData;
-    if (meeting is Meeting) {
-      meetingData = meeting;
-    }
-
-    return meetingData;
-  }
-}
-
-/// Custom business object class which contains properties to hold the detailed
-/// information about the event data which will be rendered in calendar.
-class Meeting {
-  /// Creates a meeting class with required details.
-  Meeting(this.eventName, this.from, this.to, this.background, this.isAllDay);
-
-  /// Event name which is equivalent to subject property of [Appointment].
-  String eventName;
-
-  /// From which is equivalent to start time property of [Appointment].
-  DateTime from;
-
-  /// To which is equivalent to end time property of [Appointment].
-  DateTime to;
-
-  /// Background which is equivalent to color property of [Appointment].
-  Color background;
-
-  /// IsAllDay which is equivalent to isAllDay property of [Appointment].
-  bool isAllDay;
 }

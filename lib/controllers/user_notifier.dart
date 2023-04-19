@@ -27,6 +27,14 @@ class UserNotifier extends ChangeNotifier {
   List _userInterests = [];
   List _skillLevel = [];
   int _studentLevel = 0;
+  bool _isConflict = false;
+
+  bool get isConflict => _isConflict;
+
+  set isConflict(bool value) {
+    _isConflict = value;
+    notifyListeners();
+  }
 
   /// A getter for the authenticated email
   /// returns [_email]
@@ -172,8 +180,6 @@ class UserNotifier extends ChangeNotifier {
     for (int i = 0; i < usersList.length; i++) {
       if (usersList[i].email == user?.email) {
         match = true;
-        // print(match);
-        // print(usersList[i].email);
         ids = usersList[i].courses!;
         userCourseIds = ids;
       }

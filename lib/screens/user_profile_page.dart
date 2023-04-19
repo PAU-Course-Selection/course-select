@@ -628,7 +628,7 @@ _showMultiSelect(
                                   'Allowable time limit for full time students is ',
                               style: TextStyle(color: Colors.black)),
                           TextSpan(
-                              text: '10 hours per week',
+                              text: '20 hours per week',
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black)),

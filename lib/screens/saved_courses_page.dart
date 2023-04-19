@@ -16,7 +16,6 @@ import '../utils/auth.dart';
 import '../utils/firebase_data_management.dart';
 import '../models/saved_course_data_model.dart';
 
-/// The [SavedCourses] page allows a user to view the courses they have saved/bookmarked
 class SavedCourses extends StatefulWidget {
   const SavedCourses({Key? key}) : super(key: key);
 

@@ -23,10 +23,6 @@ import '../utils/auth.dart';
 import '../utils/firebase_data_management.dart';
 import 'app_main_navigation.dart';
 
-/// [HomePage] displays the dashboard page of the app. The first page seen after logging in a selecting preferences
-/// This allows users to search and filter course
-/// Displays in progress courses
-/// Displays recommended courses
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -42,14 +38,11 @@ class _HomePageState extends State<HomePage> {
   final User? user = Auth().currentUser;
   late List<Course> forYouList = [];
 
-  late List userCourseIds = [];
-  bool match = false;
-
   final DatabaseManager _db = DatabaseManager();
 
-  /// initialises notifiers and retrieves data from the database
   @override
   void initState() {
+    super.initState();
     _courseNotifier = Provider.of<CourseNotifier>(context, listen: false);
     userNotifier = Provider.of<UserNotifier>(context, listen: false);
     _db.getTotalLessons(_courseNotifier);
@@ -58,19 +51,14 @@ class _HomePageState extends State<HomePage> {
     valueNotifier = ValueNotifier(0.0);
     print(user?.email);
     getForYouList();
-    super.initState();
   }
 
-  /// Gets required models for use by the screen from the database
-  /// Gets users, updates user info and gets the list of courses from the database
   Future getModels() async{
     await _db.getUsers(userNotifier);
     userNotifier.updateUserDetails();
     return _db.getCourses(_courseNotifier);
   }
 
-  /// Retrieves the list of recommmended course based on user interest selection
-  /// Filters the required courses from the full list
   Future getForYouList() async{
     await _db.getUsers(userNotifier);
     await _db.getCourses(_courseNotifier);
@@ -80,9 +68,10 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  late List userCourseIds = [];
+   bool match = false;
 
-/// Retrieves the list of courses after checking if the current user is logged in
-  void getCourseIds(UserNotifier userNotifier) {
+   getCourseIds(UserNotifier userNotifier) {
     for (int i = 0; i < userNotifier.usersList.length; i++) {
       if (userNotifier.usersList[i].email == user?.email) {
         match = true;
@@ -96,9 +85,9 @@ class _HomePageState extends State<HomePage> {
     } else {
       print('user not found');
     }
+    return userCourseIds;
   }
 
-  /// Filters courses from the full list by id, works with the search bar
   List<Course> filterCoursesByIds(List courseIds, List<Course> courses) {
     List<Course> filteredCourses = [];
     for (var course in courses) {
@@ -110,7 +99,6 @@ class _HomePageState extends State<HomePage> {
     return filteredCourses;
   }
 
-  /// Filters courses from the full list by interest. Works with the search bar
   List<Course> filterCoursesByInterests(List interests, List<Course> courses) {
     List<Course> filteredCourses = [];
     for (var course in courses) {
@@ -122,7 +110,6 @@ class _HomePageState extends State<HomePage> {
     return filteredCourses;
   }
 
-  /// Builds the full dashboard page UI structure
   @override
   Widget build(BuildContext context) {
     valueNotifier.value = 80.0;

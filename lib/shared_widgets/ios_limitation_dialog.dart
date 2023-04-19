@@ -1,14 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class IOSLimitationDialog extends StatelessWidget {
+class IOSLimitationDialog extends StatefulWidget {
+  final String message;
+  final VoidCallback onTap;
   const IOSLimitationDialog({
     Key? key,
-    required this.preReqs,
+    required this.preReqs, required this.message, required this.onTap,
   }) : super(key: key);
 
   final String preReqs;
 
+  @override
+  State<IOSLimitationDialog> createState() => _IOSLimitationDialogState();
+}
+
+class _IOSLimitationDialogState extends State<IOSLimitationDialog> {
   @override
   Widget build(BuildContext context) {
     return CupertinoAlertDialog(
@@ -18,12 +25,11 @@ class IOSLimitationDialog extends StatelessWidget {
         child: RichText(
           textAlign: TextAlign.center,
           text: TextSpan(children: [
-            const TextSpan(
-                text: 'Based on your skill level and this course\'s prerequisite requirements, '
-                    'we recommend that you take ',
-                style: TextStyle(color: Colors.black)),
+             TextSpan(
+                text: widget.message,
+                style: const TextStyle(color: Colors.black)),
             TextSpan(
-                text: preReqs,
+                text: widget.preReqs,
                 style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.black))
@@ -36,7 +42,7 @@ class IOSLimitationDialog extends StatelessWidget {
           /// and turns the action's text to bold text.
           isDefaultAction: true,
           onPressed: () {
-            Navigator.pop(context);
+            widget.onTap.call();
           },
           child: const Text('Okay'),
         ),
