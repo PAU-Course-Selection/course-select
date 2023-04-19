@@ -445,25 +445,39 @@ class DatabaseManager {
     List<Lesson> _lessons = [];
     await updateLessonDates(userNotifier.userCourseIds);
 
-    final coursesQuery =
-        courseCollection.where('courseId', whereIn: userCourses);
-    final coursesSnapshot = await coursesQuery.get();
-
-    for (final courseDoc in coursesSnapshot.docs) {
-      final courseLessonsRef = courseDoc.reference.collection('Lessons');
-      final snapshot = await courseLessonsRef.get();
-
-      for (var document in snapshot.docs) {
-        //final data = document as Map<String, dynamic>;
-        Lesson lesson = Lesson.fromMap(document.data());
-        //print(lesson.lessonName);
-        _lessons.add(lesson);
-      }
-      lessonNotifier.userLessonsList = _lessons;
+    if (userCourses.isEmpty) {
+      // handle the case where userCourses is empty
+      print('EMPTY');
+      // return;
     }
 
+    if (userCourses.isNotEmpty) {
+      final coursesQuery = courseCollection.where(
+          'courseId', whereIn: userCourses);
+      final coursesSnapshot = await coursesQuery.get();
+      // process coursesSnapshot here
+
+
+// process coursesSnapshot here
+
+
+      for (final courseDoc in coursesSnapshot.docs) {
+        final courseLessonsRef = courseDoc.reference.collection('Lessons');
+        final snapshot = await courseLessonsRef.get();
+
+        for (var document in snapshot.docs) {
+          //final data = document as Map<String, dynamic>;
+          Lesson lesson = Lesson.fromMap(document.data());
+          print("LESSON ADDED: ${lesson.lessonName} and ${lesson.courseId}");
+          _lessons.add(lesson);
+        }
+        lessonNotifier.userLessonsList = _lessons;
+      }
+
+      return _lessons;
+      // print(lessonNotifier.lessonsList);
+    }
     return _lessons;
-    // print(lessonNotifier.lessonsList);
   }
 
   getClassmates(String courseId, UserNotifier userNotifier) async {
