@@ -30,6 +30,14 @@ class UserNotifier extends ChangeNotifier {
   List _userInterests = [];
   List _skillLevel = [];
   int _studentLevel = 0;
+  bool _isConflict = false;
+
+  bool get isConflict => _isConflict;
+
+  set isConflict(bool value) {
+    _isConflict = value;
+    notifyListeners();
+  }
 
   int get studentLevel => _studentLevel;
 

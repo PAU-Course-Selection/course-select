@@ -1,3 +1,4 @@
+import 'package:course_select/controllers/lesson_notifier.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -14,14 +15,15 @@ class AndroidConfirmationDialog extends StatelessWidget {
     required this.preReqs,
     required DatabaseManager db,
     required UserNotifier userNotifier,
-    required HomePageNotifier homePageNotifier,
-  }) : _courseNotifier = courseNotifier, _db = db, _userNotifier = userNotifier, _homePageNotifier = homePageNotifier, super(key: key);
+    required HomePageNotifier homePageNotifier, required LessonNotifier lessonNotifier,
+  }) : _courseNotifier = courseNotifier, _db = db, _userNotifier = userNotifier, _homePageNotifier = homePageNotifier, _lessonNotifier = lessonNotifier, super(key: key);
 
   final CourseNotifier _courseNotifier;
   final String preReqs;
   final DatabaseManager _db;
   final UserNotifier _userNotifier;
   final HomePageNotifier _homePageNotifier;
+  final LessonNotifier _lessonNotifier;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +50,7 @@ class AndroidConfirmationDialog extends StatelessWidget {
           style: ButtonStyle(overlayColor: MaterialStatePropertyAll(kSaraLightPink)),
           onPressed: () {
             _db.updateUserCourses(
-                _userNotifier, _courseNotifier);
+                _userNotifier, _courseNotifier, _lessonNotifier);
             _homePageNotifier.isStateChanged = true;
             Navigator.pop(context);
             ScaffoldMessenger.of(context).showSnackBar(

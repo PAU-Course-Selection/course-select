@@ -38,7 +38,7 @@ class _TimetableState extends State<Timetable> {
   }
 
   getLessons() async {
-    await _db.getLessons(courses,lessonNotifier, userNotifier)
+    await _db.getUserLessons(courses,lessonNotifier, userNotifier)
         .then((value) {
           setState(() {
             lessons = value;
@@ -90,11 +90,11 @@ class _TimetableState extends State<Timetable> {
                   width: MediaQuery.of(context).size.width,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: lessonNotifier.lessonsList.length,
+                    itemCount: lessonNotifier.userLessonsList.length,
                       itemBuilder: (context,index){
-                        return LessonCard(title: lessonNotifier.lessonsList[index].lessonName,
-                          startTime: DateFormat.Hm().format(lessonNotifier.lessonsList[index].startTime!.toDate()),
-                          endTime: DateFormat.Hm().format(lessonNotifier.lessonsList[index].endTime!.toDate()));
+                        return LessonCard(title: lessonNotifier.userLessonsList[index].lessonName,
+                          startTime: DateFormat.Hm().format(lessonNotifier.userLessonsList[index].startTime!.toDate()),
+                          endTime: DateFormat.Hm().format(lessonNotifier.userLessonsList[index].endTime!.toDate()));
                       }
                   ),
                 ),

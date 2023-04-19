@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:course_select/controllers/course_notifier.dart';
 import 'package:course_select/constants/constants.dart';
 import 'package:course_select/controllers/home_page_notifier.dart';
+import 'package:course_select/controllers/lesson_notifier.dart';
 import 'package:course_select/models/user_data_model.dart';
 import 'package:course_select/shared_widgets/android_confirmation_dialog.dart';
 import 'package:course_select/shared_widgets/android_limitation_dialog.dart';
@@ -40,6 +41,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
   late CourseNotifier _courseNotifier;
   late UserNotifier _userNotifier;
   late HomePageNotifier _homePageNotifier;
+  late LessonNotifier _lessonNotifier;
   final DatabaseManager _db = DatabaseManager();
   late List<UserModel> classmates = [];
   late List recommendations;
@@ -58,6 +60,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     numLessons = _courseNotifier.currentCourse.totalLessons;
     _homePageNotifier = Provider.of<HomePageNotifier>(context, listen: false);
     _userNotifier = Provider.of<UserNotifier>(context, listen: false);
+    _lessonNotifier = Provider.of<LessonNotifier>(context, listen: false);
     videoUrl = _courseNotifier.currentCourse.media[0];
     getNumLessons();
     getClassmates();
@@ -194,6 +197,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     } else {
       return GradientButton(
         onPressed: () {
+          print('_userNotifier.isConflict: ${_userNotifier.isConflict}');
           if (_db.getTotalWeeklyHours(
                       _userNotifier.userCourseIds, _courseNotifier) +
                   _courseNotifier.currentCourse.hoursPerWeek >
@@ -234,7 +238,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
                   isMatching: isMatching,
                   db: _db,
                   userNotifier: _userNotifier,
-                  homePageNotifier: _homePageNotifier,
+                  homePageNotifier: _homePageNotifier, lessonNotifier: _lessonNotifier,
                 );
               }
             },
@@ -275,7 +279,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
             : preReqs,
         db: db,
         userNotifier: userNotifier,
-        homePageNotifier: homePageNotifier,
+        homePageNotifier: homePageNotifier, lessonNotifier: _lessonNotifier,
       );
     }
   }
@@ -287,12 +291,20 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     required DatabaseManager db,
     required UserNotifier userNotifier,
     required HomePageNotifier homePageNotifier,
+    required LessonNotifier lessonNotifier,
   }) {
     if (_courseNotifier.isHourlyLimitReached == true) {
       return const IOSLimitationDialog(
         preReqs: '',
         message:
             'Enrolling on this course will cause you to exceed the 20 hours weekly limit. Please complete some courses before adding more.',
+      );
+    }
+    if (_userNotifier.isConflict == true) {
+      return const IOSLimitationDialog(
+        preReqs: '',
+        message:
+        'Course conflicts with enrolled lessons.',
       );
     }
     if (preReqs.isNotEmpty && !isMatching) {
@@ -310,7 +322,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
             : preReqs,
         db: db,
         userNotifier: userNotifier,
-        homePageNotifier: homePageNotifier,
+        homePageNotifier: homePageNotifier, lessonNotifier: lessonNotifier,
       );
     }
   }

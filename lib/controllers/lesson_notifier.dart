@@ -23,7 +23,16 @@ class LessonNotifier extends ChangeNotifier {
   }
 
   final User? user = Auth().currentUser;
-  List<Lesson> _lessonsList = [];
+  List<Lesson> _userLessonsList = [];
+  List<Lesson> _allLessonsList = [];
+
+  List<Lesson> get allLessonsList => _allLessonsList;
+
+  set allLessonsList(List<Lesson> value) {
+    _allLessonsList = value;
+    notifyListeners();
+  }
+
   var _startTime = '00:00';
   var _endTime = '00:00';
 
@@ -37,7 +46,7 @@ class LessonNotifier extends ChangeNotifier {
   void updateDate(LessonNotifier lessonNotifier, UserNotifier userNotifier) {
     for (var student in userNotifier.usersList) {
       if(student.email == user?.email){
-        for (var lesson in lessonNotifier.lessonsList) {
+        for (var lesson in lessonNotifier.userLessonsList) {
           DateTime? startDate = lesson.startTime?.toDate();
           String? timeHour = startDate?.hour.toString();
           String? timeMin = startDate?.hour.toString();
@@ -55,12 +64,12 @@ class LessonNotifier extends ChangeNotifier {
   }
 
   ///A getter for the list of lessons
-  UnmodifiableListView<Lesson> get lessonsList =>
-      UnmodifiableListView(_lessonsList);
+  UnmodifiableListView<Lesson> get userLessonsList =>
+      UnmodifiableListView(_userLessonsList);
 
   ///Sets or updates list downloaded from the database using the model api
-  set lessonsList(List<Lesson> list) {
-    _lessonsList = list;
+  set userLessonsList(List<Lesson> list) {
+    _userLessonsList = list;
     notifyListeners();
   }
 
