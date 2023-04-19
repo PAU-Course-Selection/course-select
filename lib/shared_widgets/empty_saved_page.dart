@@ -8,6 +8,9 @@ import '../constants/constants.dart';
 import '../screens/search_sheet.dart';
 import 'gradient_button.dart';
 
+/// [EmptyFavouritesPage] shows the substitute for the empty saved courses list
+/// This page tells a user they have no saved courses and requests that they
+/// save a course for it to be added to the list
 class EmptyFavouritesPage extends StatefulWidget {
   final Function onAdd;
 

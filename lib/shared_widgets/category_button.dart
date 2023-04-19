@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+/// [CategoryButton] encapsulates the pill button responsible for filtering courses by subject area in the course lists
 class CategoryButton extends StatefulWidget {
   final Color bgColour;
   final Color iconBgColour;

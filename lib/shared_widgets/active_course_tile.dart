@@ -4,7 +4,8 @@ import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 
 import '../constants/constants.dart';
 
-
+/// [ActiveCourseTile] formats an active course item in the ongoing course list on the courses page
+/// This view shows the course progress
 class ActiveCourseTile extends StatelessWidget {
   final String courseName;
   final String courseImage;

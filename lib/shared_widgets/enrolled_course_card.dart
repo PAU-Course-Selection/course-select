@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../models/course_data_model.dart';
 import '../constants/constants.dart';
 
+/// [EnrolledCourseCard] represents the list item for enrolled courses in the enrolled list after clicking the tab on the courses page
 class EnrolledCourseCard extends StatefulWidget {
   const EnrolledCourseCard({
     Key? key,

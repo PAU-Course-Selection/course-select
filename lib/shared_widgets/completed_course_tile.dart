@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../constants/constants.dart';
 
+/// [CompletedCourseTile] formats the list items for completed courses on the courses page
 class CompletedCourseTile extends StatelessWidget {
   final String courseName;
   final String courseImage;
