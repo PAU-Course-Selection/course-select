@@ -5,7 +5,6 @@ import 'package:course_select/utils/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import '../constants/constants.dart';
 import '../controllers/course_notifier.dart';
@@ -14,14 +13,13 @@ import '../models/course_data_model.dart';
 import '../models/saved_course_data_model.dart';
 import '../routes/routes.dart';
 import '../shared_widgets/active_course_tile.dart';
-import '../shared_widgets/category_title.dart';
 import '../shared_widgets/completed_course_tile.dart';
 import '../shared_widgets/enrolled_course_card.dart';
-import '../shared_widgets/filter_button.dart';
 import '../shared_widgets/mini_course_card.dart';
 import '../utils/firebase_data_management.dart';
-import 'filter_sheet.dart';
 
+/// [MyCourses] allows a user to view all courses, as well as enrolled, ongoing and completed courses.
+/// A user can also filter each of these categories using the search bar
 class MyCourses extends StatefulWidget {
   const MyCourses({Key? key}) : super(key: key);
 
@@ -53,8 +51,8 @@ class _MyCoursesState extends State<MyCourses>
   late List<MyCourse> displayOngoingList;
   late List<Course> myList;
 
+  /// filter courses list based on search bar input
   void updateList(String value) {
-    /// filter courses list
     setState(() {
       displayList = courseNotifier.courseList
           .where((element) =>
@@ -67,6 +65,7 @@ class _MyCoursesState extends State<MyCourses>
     });
   }
 
+  /// Filters ongoing course list based on course name from search bar input
   void updateOngoingList(String value) {
     /// filter courses list
     setState(() {
@@ -77,17 +76,21 @@ class _MyCoursesState extends State<MyCourses>
     });
   }
 
+  /// Filters enrolled course list based on search input from search bar
   void updateEnrolledList(){
     setState(() {
       myList = userNotifier.filterCoursesByIds(displayList);
     });
   }
 
+  /// Get users and courses from the database
   Future getModels() {
     db.getUsers(userNotifier);
     return db.getCourses(courseNotifier);
   }
 
+  /// counts the number of duplicates in the saved courses list
+  /// Ensure duplicate entries can't be created
   int duplicateCount = 0;
 
   Widget _showList(int index) {
@@ -319,6 +322,7 @@ class _MyCoursesState extends State<MyCourses>
     }
   }
 
+  /// Initialise controllers and retrieve data from database
   @override
   void initState() {
     _animationController = AnimationController(vsync: this);
@@ -338,6 +342,7 @@ class _MyCoursesState extends State<MyCourses>
     super.initState();
   }
 
+  /// Get courses pertaining to a specific user
   getMyCourses() async {
     await db.getCourses(courseNotifier)
         .then((value) {
@@ -347,6 +352,7 @@ class _MyCoursesState extends State<MyCourses>
     });
     return myList;
   }
+
 
   @override
   void dispose() {
@@ -359,6 +365,7 @@ class _MyCoursesState extends State<MyCourses>
         ValueNotifier(calculateCompletionPercentage(course));
   }
 
+  /// Build search bar tabs and course lists
   @override
   Widget build(BuildContext context) {
     HomePageNotifier homePageNotifier =
@@ -453,6 +460,7 @@ class _MyCoursesState extends State<MyCourses>
     );
   }
 
+  /// Default course listings for ongoing courses
   static final List<MyCourse> _myCourses = [
     MyCourse("Introduction to Programming", "assets/images/c2.jpg", 20, 15),
     MyCourse("Web Development with HTML/CSS", "assets/images/c2.jpg", 30, 20),
@@ -460,6 +468,7 @@ class _MyCoursesState extends State<MyCourses>
     MyCourse("Mobile App Development", "assets/images/c2.jpg", 40, 10),
   ];
 
+  /// Returns the completion percentage based on the number of lessons in the course
   double calculateCompletionPercentage(MyCourse course) {
     double completionPercentage =
         (course.numLessons - course.remainingLessons) / course.numLessons * 100;
@@ -467,6 +476,7 @@ class _MyCoursesState extends State<MyCourses>
   }
 }
 
+/// Course model for ongoing courses
 class MyCourse {
   String courseName;
   String courseImage;

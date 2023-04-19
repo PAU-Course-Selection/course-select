@@ -11,7 +11,6 @@ import 'package:provider/provider.dart';
 
 import '../constants/constants.dart';
 import '../models/course_data_model.dart';
-import '../routes/routes.dart';
 import '../shared_widgets/saved_course_card.dart';
 import '../utils/auth.dart';
 import '../utils/firebase_data_management.dart';
@@ -38,6 +37,8 @@ class _SavedCoursesState extends State<SavedCourses> {
   late final DocumentReference<Map<String, dynamic>>? userRef;
   late Query<Map<String, dynamic>>? favoritesQuery;
 
+
+  /// Initialise controllers and get data from the database for user's saved courses
   @override
   void initState() {
     super.initState();
@@ -55,6 +56,7 @@ class _SavedCoursesState extends State<SavedCourses> {
     }).whenComplete(() {});
   }
 
+  /// Get the users document ID to retrieve their saved courses from the database
   Future<String> getDocId() async {
     var myUser = await FirebaseFirestore.instance
         .collection('Users')
@@ -67,28 +69,34 @@ class _SavedCoursesState extends State<SavedCourses> {
     throw Exception('User document not found');
   }
 
+  /// Get the current user's saved courses
   Future getModels() {
     //db.getUsers(userNotifier);
     return db.getSavedCourses(savedCoursesNotifier, myDocId);
   }
 
-  Future<dynamic> _deleteDocument() async {
+
+  /// Remove a saved course from the database
+   Future<dynamic> _deleteDocument() async {
     print('called');
     await db.test();
-    if (mounted) {
+    if(mounted){
       setState(() {
         futureData = getModels();
       });
     }
   }
 
+  /// Ensures state is mounted
   @override
   void setState(fn) {
-    if (mounted) {
+    if(mounted) {
       super.setState(fn);
     }
   }
 
+
+  /// Builds the saved course list or else displays a button prompting the user to save courses from the main list
   @override
   Widget build(BuildContext context) {
     print('rebuilt');
@@ -130,12 +138,10 @@ class _SavedCoursesState extends State<SavedCourses> {
                   return futureData;
                 },
                 child: SingleChildScrollView(
-                    child: SizedBox(
-                  width: double.infinity,
-                  height: MediaQuery.of(context).size.height * 0.80.w,
-                  child: EmptyFavouritesPage(
-                    onAdd: _deleteDocument,
-                  ),
+                  child: SizedBox(
+                      width: double.infinity,
+                      height: MediaQuery.of(context).size.height * 0.80.w,
+                      child:   EmptyFavouritesPage(onAdd: _deleteDocument,),
                 )));
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -143,17 +149,11 @@ class _SavedCoursesState extends State<SavedCourses> {
               savedList: savedList,
               savedCoursesNotifier: savedCoursesNotifier,
               courseNotifier: courseNotifier,
-              db: db,
-              onDelete: _deleteDocument,
+              db: db, onDelete: _deleteDocument,
             );
           } else if (snapshot.connectionState == ConnectionState.done) {
-            return SavedCourseTile(
-              savedList: savedList,
-              savedCoursesNotifier: savedCoursesNotifier,
-              courseNotifier: courseNotifier,
-              db: db,
-              onDelete: _deleteDocument,
-            );
+            return SavedCourseTile(savedList: savedList, savedCoursesNotifier: savedCoursesNotifier,
+              courseNotifier: courseNotifier, db: db, onDelete: _deleteDocument,);
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           }
@@ -167,6 +167,8 @@ class _SavedCoursesState extends State<SavedCourses> {
   }
 }
 
+/// Encapsulated the tiles that make up saved course list items
+/// Saved courses can be shared or deleted
 class SavedCourseTile extends StatefulWidget {
   final SavedCoursesNotifier savedCoursesNotifier;
   final CourseNotifier courseNotifier;
@@ -179,8 +181,7 @@ class SavedCourseTile extends StatefulWidget {
       required this.savedList,
       required this.savedCoursesNotifier,
       required this.courseNotifier,
-      required this.db,
-      required this.onDelete})
+      required this.db, required this.onDelete})
       : super(key: key);
 
   @override
@@ -196,60 +197,55 @@ class _SavedCourseTileState extends State<SavedCourseTile> {
           scrollDirection: Axis.vertical,
           itemCount: widget.savedList.length,
           itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: (){
-                widget.courseNotifier.currentCourse = widget.savedList[index];
-                Navigator.pushNamed(
-                    context, PageRoutes.courseInfo);
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: Slidable(
-                    key: Key(widget.savedList[index].courseId),
-                    // The start action pane is the one at the left or the top side.
-                    endActionPane: ActionPane(
-                      // A motion is a widget used to control how the pane animates.
-                      motion: const ScrollMotion(),
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 10.0),
+              child: Slidable(
+                  key: Key(widget.savedList[index].courseId),
+                  // The start action pane is the one at the left or the top side.
+                  endActionPane: ActionPane(
+                    // A motion is a widget used to control how the pane animates.
+                    motion: const ScrollMotion(),
 
-                      // A pane can dismiss the Slidable.
-                      dismissible: DismissiblePane(onDismissed: () {
-                        widget.onDelete.call();
-                        _handleRemoveSavedCourse(index);
-                      }),
+                    // A pane can dismiss the Slidable.
+                    dismissible: DismissiblePane(
+                        onDismissed: () {
+                          widget.onDelete.call();
+                      _handleRemoveSavedCourse(index);
+                    } ),
 
-                      // All actions are defined in the children parameter.
-                      children: [
-                        // A SlidableAction can have an icon and/or a label.
-                        SlidableAction(
-                          autoClose: true,
-                          onPressed: (context) {},
-                          backgroundColor: const Color(0xFF21B7CA),
-                          foregroundColor: Colors.white,
-                          icon: Icons.share,
-                          label: 'Share',
-                        ),
+                    // All actions are defined in the children parameter.
+                    children: [
+                      // A SlidableAction can have an icon and/or a label.
+                      SlidableAction(
+                        autoClose: true,
+                        onPressed: (context) {},
+                        backgroundColor: const Color(0xFF21B7CA),
+                        foregroundColor: Colors.white,
+                        icon: Icons.share,
+                        label: 'Share',
+                      ),
 
-                        SlidableAction(
-                          autoClose: true,
-                          onPressed: (context) => _handleRemoveSavedCourse(index),
-                          backgroundColor: const Color(0xFFFE4A49),
-                          foregroundColor: Colors.white,
-                          icon: Icons.delete,
-                          label: 'Delete',
-                        ),
-                      ],
-                    ),
-                    child: SavedCourseCard(
-                      displayList: widget.savedList,
-                      index: index,
-                    )),
-              ),
+                      SlidableAction(
+                        autoClose: true,
+                        onPressed: (context) => _handleRemoveSavedCourse(index),
+                        backgroundColor: const Color(0xFFFE4A49),
+                        foregroundColor: Colors.white,
+                        icon: Icons.delete,
+                        label: 'Delete',
+                      ),
+                    ],
+                  ),
+                  child: SavedCourseCard(
+                    displayList: widget.savedList,
+                    index: index,
+                  )),
             );
           }),
     );
   }
 
-  _handleRemoveSavedCourse(int index) {
+  /// Deals with the removal of a saved course when the user slides the course off the list or taps delete
+   _handleRemoveSavedCourse(int index) {
     widget.courseNotifier.currentCourse = widget.savedList[index];
     widget.db.removeSavedCourseSubCollection(
       savedCourses: widget.savedCoursesNotifier,

@@ -23,7 +23,9 @@ import 'package:settings_ui/settings_ui.dart';
 import '../controllers/user_notifier.dart';
 import '../utils/auth.dart';
 import '../utils/firebase_data_management.dart';
-
+/// This screen allows a user to edit the preferences regarding their account.
+/// This includes their user image, privacy settings and interests
+/// A user can also delete their account from this page
 class UserProfilePage extends StatefulWidget {
   const UserProfilePage({Key? key}) : super(key: key);
 
@@ -40,6 +42,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
   int levelResult = 0;
   List myInterests = [];
 
+  /// Displays formatted page title
   Widget _title() {
     return Text(
       'Profile',
@@ -47,6 +50,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     );
   }
 
+ /// Gets current student interests and level from the database
   Future<dynamic> _update() async {
     // print('called');
     await db.test();
@@ -59,6 +63,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     }
   }
 
+  /// Gets data from the database
   Future getData() async {
     var users = await db.getUsers(userNotifier);
 
@@ -69,6 +74,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
   late XFile? imgFile;
 
+  /// Loads avatar image and handles updating of the avatar
   Future loadAvatar(bool useCamera) async {
     ImagePicker imagePicker = ImagePicker();
     XFile? file = await imagePicker.pickImage(
@@ -112,6 +118,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
   bool imgChanged = false;
 
+  /// Initialise notifiers and get data from the database
   @override
   void initState() {
     userNotifier = Provider.of<UserNotifier>(context, listen: false);
@@ -121,6 +128,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
   late String oldUrl;
 
+  /// Build UI elements for the profile screen
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -546,6 +554,7 @@ late int studentLevel;
 List<dynamic> _selectedInterests = [];
 // var userInterests = [];
 
+/// displays multi select list for interest and level selection
 _showMultiSelect(
     BuildContext context,
     List subjectsList,
@@ -727,6 +736,7 @@ _showMultiSelect(
   return studentLevel;
 }
 
+///Encapsulates skill level pills for multi select skill list
 Widget getLevelPill(int count) {
   Widget levelPill = Container(
     padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
@@ -745,6 +755,7 @@ Widget getLevelPill(int count) {
   return levelPill;
 }
 
+/// [EditImageOptionsItem] encapsulates the controls for editing the user image
 class EditImageOptionsItem extends StatelessWidget {
   final String text;
   final Function onPressed;
@@ -755,6 +766,7 @@ class EditImageOptionsItem extends StatelessWidget {
     required this.onPressed,
   }) : super(key: key);
 
+  /// Builds UI elements for editing images after clicking on avatar image
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -772,7 +784,7 @@ class EditImageOptionsItem extends StatelessWidget {
     );
   }
 }
-
+/// [PhotoAvatar] encapsulates avatar image display
 class PhotoAvatar extends StatelessWidget {
   final String image;
 

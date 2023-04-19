@@ -15,9 +15,9 @@ class LessonNotifier extends ChangeNotifier {
 
   var _lessonName = '';
   var _link = '';
-
+///returns the lesson start time
   get startTime => _startTime;
-
+/// sets the lesson start time
   set startTime(value) {
     _startTime = value;
   }
@@ -36,13 +36,16 @@ class LessonNotifier extends ChangeNotifier {
   var _startTime = '00:00';
   var _endTime = '00:00';
 
+  ///Gets the lesson name
   get lessonName => _lessonName;
 
+  ///Sets the lesson name
   set lessonName(value) {
     _lessonName = value;
     notifyListeners();
   }
 
+  /// Updates the lesson date and time for the current student
   void updateDate(LessonNotifier lessonNotifier, UserNotifier userNotifier) {
     for (var student in userNotifier.usersList) {
       if(student.email == user?.email){
@@ -72,17 +75,17 @@ class LessonNotifier extends ChangeNotifier {
     _userLessonsList = list;
     notifyListeners();
   }
-
+///Gets the link to the lesson
   get link => _link;
-
+///Sets the link to the lesson
   set link(value) {
     _link = value;
     notifyListeners();
   }
 
-
+///Gets the lesson end time
   get endTime => _endTime;
-
+/// Sets the Lesson end time
   set endTime(value) {
     _endTime = value;
     notifyListeners();

@@ -5,7 +5,6 @@ import 'package:course_select/screens/select_interests_page.dart';
 import 'package:flutter/cupertino.dart';
 import '../screens/auth_pages/forgot_password_page.dart';
 import '../screens/auth_pages/login_register_page.dart';
-import '../screens/filter_sheet.dart';
 import '../screens/app_main_navigation.dart';
 import '../screens/my_courses_page.dart';
 import '../screens/user_profile_page.dart';
@@ -23,7 +22,6 @@ class PageRoutes{
   static const String forgotPassword = 'forgot_password';
   static const String courseInfo = 'course_info';
   static const String searchSheet = 'search_sheet';
-  static const String filterSheet = 'filter_sheet';
   static const String courses = 'courses_page';
   static const String edit = 'edit_profile_page';
 
@@ -38,7 +36,6 @@ class PageRoutes{
       userProfile: (context) => const UserProfilePage(),
       forgotPassword: (context) => const ForgotPasswordPage(),
       searchSheet: (context) =>  const SearchSheet(categoryFilterKeyword: CategorySearchFilter.all,),
-      filterSheet: (context) => const FilterSheet(),
       courses: (context) => const MyCourses(),
       edit: (context) => const EditUserProfilePage(),
     };
