@@ -466,6 +466,7 @@ class DatabaseManager {
     // print(lessonNotifier.lessonsList);
   }
 
+
   getClassmates(String courseId, UserNotifier userNotifier) async {
     List<student.UserModel> _users = [];
     var querySnapshot = await FirebaseFirestore.instance
