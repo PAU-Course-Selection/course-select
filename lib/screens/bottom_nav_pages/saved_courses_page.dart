@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:course_select/controllers/course_notifier.dart';
-import 'package:course_select/shared_widgets/course_list_shimmer.dart';
-import 'package:course_select/shared_widgets/empty_saved_page.dart';
+import 'package:course_select/shared_widgets/display_elements/course_list_shimmer.dart';
+import 'package:course_select/shared_widgets/display_elements/empty_saved_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,13 +9,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
 
-import '../constants/constants.dart';
-import '../models/course_data_model.dart';
-import '../routes/routes.dart';
-import '../shared_widgets/saved_course_card.dart';
-import '../utils/auth.dart';
-import '../utils/firebase_data_management.dart';
-import '../models/saved_course_data_model.dart';
+import '../../constants/constants.dart';
+import '../../models/course_data_model.dart';
+import '../../routes/routes.dart';
+import '../../shared_widgets/saved_course_card.dart';
+import '../../auth/auth.dart';
+import '../../firestore/firebase_data_management.dart';
+import '../../models/saved_course_data_model.dart';
 
 class SavedCourses extends StatefulWidget {
   const SavedCourses({Key? key}) : super(key: key);

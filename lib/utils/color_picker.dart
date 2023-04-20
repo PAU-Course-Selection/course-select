@@ -1,5 +1,5 @@
 import 'package:course_select/constants/constants.dart';
-import 'package:course_select/utils/enums.dart';
+import 'package:course_select/constants/enums.dart';
 import 'package:flutter/material.dart';
 
 /// [ColorPicker] is a utility class that allows selection of colours based on difficulty from the level enum

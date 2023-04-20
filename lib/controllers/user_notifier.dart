@@ -1,13 +1,13 @@
 import 'dart:collection';
 
-import 'package:course_select/utils/firebase_data_management.dart';
+import 'package:course_select/firestore/firebase_data_management.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:course_select/models/user_data_model.dart' as student;
 import 'package:intl/intl.dart';
 
 import '../models/course_data_model.dart';
-import '../utils/auth.dart';
+import '../auth/auth.dart';
 
 ///Creates a controller class with user attributes which notify all widgets of changes
 class UserNotifier extends ChangeNotifier {

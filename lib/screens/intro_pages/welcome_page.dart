@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../routes/routes.dart';
-import '../../utils/auth.dart';
+import '../../auth/auth.dart';
 import '../select_interests_page.dart';
 import 'intro_page2.dart';
 import 'intro_page3.dart';

@@ -11,7 +11,7 @@ import 'package:intl/intl.dart';
 
 import '../controllers/user_notifier.dart';
 import '../models/saved_course_data_model.dart';
-import 'auth.dart';
+import '../auth/auth.dart';
 
 class DatabaseManager {
   final data = FirebaseFirestore.instance;

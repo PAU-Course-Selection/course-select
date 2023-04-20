@@ -5,7 +5,7 @@ import 'package:chips_choice/chips_choice.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:course_select/routes/routes.dart';
 import 'package:course_select/constants/constants.dart';
-import 'package:course_select/utils/enums.dart';
+import 'package:course_select/constants/enums.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,8 +21,8 @@ import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 
 import '../controllers/user_notifier.dart';
-import '../utils/auth.dart';
-import '../utils/firebase_data_management.dart';
+import '../auth/auth.dart';
+import '../firestore/firebase_data_management.dart';
 
 class UserProfilePage extends StatefulWidget {
   const UserProfilePage({Key? key}) : super(key: key);

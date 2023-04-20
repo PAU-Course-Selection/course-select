@@ -4,12 +4,13 @@ import 'package:course_select/constants/constants.dart';
 import 'package:course_select/controllers/home_page_notifier.dart';
 import 'package:course_select/controllers/lesson_notifier.dart';
 import 'package:course_select/models/user_data_model.dart';
-import 'package:course_select/shared_widgets/android_confirmation_dialog.dart';
-import 'package:course_select/shared_widgets/android_limitation_dialog.dart';
+import 'package:course_select/shared_widgets/dialogs/android_confirmation_dialog.dart';
+import 'package:course_select/shared_widgets/dialogs/android_limitation_dialog.dart';
 import 'package:course_select/shared_widgets/gradient_button.dart';
+import 'package:course_select/shared_widgets/list_items/course_card.dart';
 import 'package:course_select/shared_widgets/video_player.dart';
 import 'package:course_select/utils/color_picker.dart';
-import 'package:course_select/utils/firebase_data_management.dart';
+import 'package:course_select/firestore/firebase_data_management.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -23,10 +24,9 @@ import 'dart:io' show Platform;
 import '../controllers/user_notifier.dart';
 import '../models/course_data_model.dart';
 import '../routes/routes.dart';
-import '../shared_widgets/course_card.dart';
 import '../shared_widgets/ios_confirmation_dialog.dart';
 import '../shared_widgets/ios_limitation_dialog.dart';
-import '../utils/enums.dart';
+import '../constants/enums.dart';
 
 class CourseInfoPage extends StatefulWidget {
   const CourseInfoPage({

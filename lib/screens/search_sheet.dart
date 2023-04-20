@@ -8,8 +8,8 @@ import '../controllers/course_notifier.dart';
 import '../models/course_data_model.dart';
 import '../routes/routes.dart';
 import '../shared_widgets/mini_course_card.dart';
-import '../utils/enums.dart';
-import '../utils/firebase_data_management.dart';
+import '../constants/enums.dart';
+import '../firestore/firebase_data_management.dart';
 
 class SearchSheet extends StatefulWidget {
   final CategorySearchFilter categoryFilterKeyword;

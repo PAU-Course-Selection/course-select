@@ -1,10 +1,10 @@
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
-import 'package:course_select/screens/home_page.dart';
-import 'package:course_select/screens/saved_courses_page.dart';
-import 'package:course_select/screens/timetable_page.dart';
+import 'package:course_select/screens/bottom_nav_pages/home_page.dart';
+import 'package:course_select/screens/bottom_nav_pages/saved_courses_page.dart';
+import 'package:course_select/screens/bottom_nav_pages/timetable_page.dart';
 import 'package:course_select/constants/constants.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
-import 'my_courses_page.dart';
+import 'bottom_nav_pages/my_courses_page.dart';
 
 class AppMainNav extends StatefulWidget {
   const AppMainNav({Key? key}) : super(key: key);

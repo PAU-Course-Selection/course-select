@@ -1,6 +1,6 @@
 import 'package:chips_choice/chips_choice.dart';
 import 'package:course_select/shared_widgets/gradient_button.dart';
-import 'package:course_select/utils/firebase_data_management.dart';
+import 'package:course_select/firestore/firebase_data_management.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 
 import '../constants/constants.dart';
 import '../controllers/user_notifier.dart';
-import '../utils/enums.dart';
+import '../constants/enums.dart';
 
 class SelectInterestsPage extends StatefulWidget {
   const SelectInterestsPage({Key? key}) : super(key: key);

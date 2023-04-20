@@ -1,12 +1,12 @@
-import 'package:course_select/utils/enums.dart';
+import 'package:course_select/constants/enums.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
-import '../constants/constants.dart';
-import '../screens/search_sheet.dart';
-import 'gradient_button.dart';
+import '../../constants/constants.dart';
+import '../../screens/search_sheet.dart';
+import '../gradient_button.dart';
 
 /// [EmptyFavouritesPage] shows the substitute for the empty saved courses list
 /// This page tells a user they have no saved courses and requests that they

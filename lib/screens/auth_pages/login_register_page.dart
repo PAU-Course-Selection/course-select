@@ -1,12 +1,12 @@
 import 'package:course_select/controllers/user_notifier.dart';
-import 'package:course_select/utils/firebase_data_management.dart';
+import 'package:course_select/firestore/firebase_data_management.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../routes/routes.dart';
 import '../../shared_widgets/gradient_button.dart';
-import '../../utils/auth.dart';
+import '../../auth/auth.dart';
 
 class LoginRegisterPage extends StatefulWidget {
   static const screenId = 'login_screen';

@@ -1,15 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:course_select/constants/constants.dart';
 import 'package:course_select/controllers/lesson_notifier.dart';
-import 'package:course_select/utils/firebase_data_management.dart';
+import 'package:course_select/controllers/user_notifier.dart';
+import 'package:course_select/firestore/firebase_data_management.dart';
+import 'package:course_select/models/lesson_data_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-import '../controllers/user_notifier.dart';
-import '../models/lesson_data_model.dart';
+
 
 class Timetable extends StatefulWidget {
   const Timetable({Key? key}) : super(key: key);

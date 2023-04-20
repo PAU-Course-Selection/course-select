@@ -1,5 +1,5 @@
+import 'package:course_select/constants/constants.dart';
 import 'package:flutter/material.dart';
-import '../constants/constants.dart';
 
 /// [CategoryTitle] formats the category headings displayed on the dashboard
 class CategoryTitle extends StatelessWidget {

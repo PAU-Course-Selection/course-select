@@ -6,7 +6,7 @@ import '../constants/constants.dart';
 import '../controllers/course_notifier.dart';
 import '../controllers/home_page_notifier.dart';
 import '../controllers/user_notifier.dart';
-import '../utils/firebase_data_management.dart';
+import '../firestore/firebase_data_management.dart';
 
 class IOSConfirmationDialog extends StatelessWidget {
   const IOSConfirmationDialog({

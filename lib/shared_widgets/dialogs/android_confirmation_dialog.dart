@@ -2,11 +2,11 @@ import 'package:course_select/controllers/lesson_notifier.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../constants/constants.dart';
-import '../controllers/course_notifier.dart';
-import '../controllers/home_page_notifier.dart';
-import '../controllers/user_notifier.dart';
-import '../utils/firebase_data_management.dart';
+import '../../constants/constants.dart';
+import '../../controllers/course_notifier.dart';
+import '../../controllers/home_page_notifier.dart';
+import '../../controllers/user_notifier.dart';
+import '../../firestore/firebase_data_management.dart';
 
 /// [AndroidConfirmationDialog] encapsulates the formatting for the AlertDialog shown when a user tries to enroll on a course
 /// This is used when the user is able to enroll on the course i.e. There are no prerequisites

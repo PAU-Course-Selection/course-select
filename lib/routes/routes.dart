@@ -7,10 +7,10 @@ import '../screens/auth_pages/forgot_password_page.dart';
 import '../screens/auth_pages/login_register_page.dart';
 import '../screens/filter_sheet.dart';
 import '../screens/app_main_navigation.dart';
-import '../screens/my_courses_page.dart';
+import '../screens/bottom_nav_pages/my_courses_page.dart';
 import '../screens/user_profile_page.dart';
 import '../screens/intro_pages/welcome_page.dart';
-import '../utils/enums.dart';
+import '../constants/enums.dart';
 
 ///Creates a class with accessible routes to all screens of the app
 class PageRoutes{

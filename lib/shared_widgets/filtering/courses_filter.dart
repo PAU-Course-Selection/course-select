@@ -1,14 +1,14 @@
 import 'package:course_select/screens/search_sheet.dart';
-import 'package:course_select/shared_widgets/category_pill.dart';
-import 'package:course_select/utils/enums.dart';
+import 'package:course_select/constants/enums.dart';
+import 'package:course_select/shared_widgets/display_elements/category_pill.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
-import '../constants/constants.dart';
-import '../controllers/home_page_notifier.dart';
-import 'category_button.dart';
+import '../../constants/constants.dart';
+import '../../controllers/home_page_notifier.dart';
+import '../display_elements/category_button.dart';
 
 class CoursesFilter extends StatefulWidget {
   final bool isListView;

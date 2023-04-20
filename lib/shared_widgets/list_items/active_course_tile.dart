@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 
-import '../constants/constants.dart';
+import '../../constants/constants.dart';
 
 /// [ActiveCourseTile] formats an active course item in the ongoing course list on the courses page
 /// This view shows the course progress
