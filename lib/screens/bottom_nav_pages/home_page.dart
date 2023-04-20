@@ -4,7 +4,7 @@ import 'package:course_select/controllers/user_notifier.dart';
 import 'package:course_select/screens/search_sheet.dart';
 import 'package:course_select/constants/enums.dart';
 import 'package:course_select/shared_widgets/display_elements/category_title.dart';
-import 'package:course_select/shared_widgets/list_items/active_course_tile.dart';
+import 'package:course_select/shared_widgets/list_items/ongoing_course_tile.dart';
 import 'package:course_select/shared_widgets/list_items/course_card.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +18,7 @@ import '../../controllers/course_notifier.dart';
 import '../../models/course_data_model.dart';
 import '../../routes/routes.dart';
 import '../../shared_widgets/filtering/courses_filter.dart';
-import '../../shared_widgets/filter_button.dart';
+import '../../shared_widgets/filtering/filter_button.dart';
 import '../../auth/auth.dart';
 import '../../firestore/firebase_data_management.dart';
 import '../app_main_navigation.dart';
@@ -54,14 +54,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future getModels() async{
-    await _db.getUsers(userNotifier);
+    await _db.getUsersFromDb(userNotifier);
     userNotifier.updateUserDetails();
-    return _db.getCourses(_courseNotifier);
+    return _db.getCoursesFromDb(_courseNotifier);
   }
 
   Future getForYouList() async{
-    await _db.getUsers(userNotifier);
-    await _db.getCourses(_courseNotifier);
+    await _db.getUsersFromDb(userNotifier);
+    await _db.getCoursesFromDb(_courseNotifier);
     userNotifier.getInterests();
     setState(() {
       forYouList = filterCoursesByInterests(userNotifier.getInterests(), _courseNotifier.courseList);
@@ -250,7 +250,7 @@ class _HomePageState extends State<HomePage> {
                             },),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                              child: ActiveCourseTile(valueNotifier: valueNotifier, courseImage: 'assets/images/html.jpg', courseName: 'Symmetry Theory', remainingLessons: 10,),
+                              child: OngoingCourseTile(valueNotifier: valueNotifier, courseImage: 'assets/images/html.jpg', courseName: 'Symmetry Theory', remainingLessons: 10,),
                             ),
                              CategoryTitle(text: forYouList.isEmpty? 'Top Picks':'For You', onPressed: (){
                                homePageNotifier.isAllSelected = true;

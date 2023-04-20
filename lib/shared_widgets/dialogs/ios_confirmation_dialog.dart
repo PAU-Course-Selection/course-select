@@ -2,11 +2,11 @@ import 'package:course_select/controllers/lesson_notifier.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../constants/constants.dart';
-import '../controllers/course_notifier.dart';
-import '../controllers/home_page_notifier.dart';
-import '../controllers/user_notifier.dart';
-import '../firestore/firebase_data_management.dart';
+import '../../constants/constants.dart';
+import '../../controllers/course_notifier.dart';
+import '../../controllers/home_page_notifier.dart';
+import '../../controllers/user_notifier.dart';
+import '../../firestore/firebase_data_management.dart';
 
 class IOSConfirmationDialog extends StatelessWidget {
   const IOSConfirmationDialog({

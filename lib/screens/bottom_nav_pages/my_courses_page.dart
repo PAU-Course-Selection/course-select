@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:course_select/controllers/home_page_notifier.dart';
 import 'package:course_select/shared_widgets/filtering/courses_filter.dart';
 import 'package:course_select/auth/auth.dart';
-import 'package:course_select/shared_widgets/list_items/active_course_tile.dart';
+import 'package:course_select/shared_widgets/list_items/ongoing_course_tile.dart';
 import 'package:course_select/shared_widgets/list_items/completed_course_tile.dart';
 import 'package:course_select/shared_widgets/list_items/enrolled_course_card.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,7 +15,7 @@ import '../../controllers/user_notifier.dart';
 import '../../models/course_data_model.dart';
 import '../../models/saved_course_data_model.dart';
 import '../../routes/routes.dart';
-import '../../shared_widgets/mini_course_card.dart';
+import '../../shared_widgets/list_items/mini_course_card.dart';
 import '../../firestore/firebase_data_management.dart';
 
 class MyCourses extends StatefulWidget {
@@ -46,19 +46,44 @@ class _MyCoursesState extends State<MyCourses>
   late final AnimationController _animationController;
 
   late List<Course> displayList;
-  late List<MyCourse> displayOngoingList;
-  late List<Course> myList;
+  late List<Course> displayOngoingList;
+  late List<Course> displayCompletedList;
+  late List<Course> savedList;
+
+  @override
+  void initState() {
+    _animationController = AnimationController(vsync: this);
+    courseNotifier = Provider.of<CourseNotifier>(context, listen: false);
+    savedCoursesNotifier =
+        Provider.of<SavedCoursesNotifier>(context, listen: false);
+    userRef = FirebaseFirestore.instance.collection('Users').doc(userId);
+    userNotifier = Provider.of<UserNotifier>(context, listen: false);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      savedList = userNotifier.filterCoursesByIds(courseNotifier.courseList);
+    });
+
+    futureData = getModels();
+
+    displayList = List.from(courseNotifier.courseList);
+    displayOngoingList = List.from(displayList.where((element) =>
+        userNotifier.userCourseIds.contains(element.courseId)));
+    displayCompletedList = List.from(displayList.where((element) =>
+        userNotifier.completedCourseIds.contains(element.courseId)));
+    // for (var compCourse in displayCompletedList) {
+    //  // print('COMPCOMPCOMPCOURSEINLIST ${compCourse.courseName}');
+    // }
+    super.initState();
+  }
 
   void updateList(String value) {
     /// filter courses list
     setState(() {
       displayList = courseNotifier.courseList
           .where((element) =>
-              element.courseName!.toLowerCase().contains(value.toLowerCase()) ||
-              element.subjectArea!
-                  .toLowerCase()
+              element.courseName.toLowerCase().contains(value.toLowerCase()) ||
+              element.subjectArea.toLowerCase()
                   .contains(value.toLowerCase()) ||
-              element.level!.toLowerCase().contains(value.toLowerCase()))
+              element.level.toLowerCase().contains(value.toLowerCase()))
           .toList();
     });
   }
@@ -66,22 +91,41 @@ class _MyCoursesState extends State<MyCourses>
   void updateOngoingList(String value) {
     /// filter courses list
     setState(() {
-      displayOngoingList = _myCourses
+      displayOngoingList = courseNotifier.courseList
           .where((element) =>
-              element.courseName!.toLowerCase().contains(value.toLowerCase()))
+              userNotifier.userCourseIds.contains(element.courseId) &&
+                  element.courseName.toLowerCase()
+                      .contains(value.toLowerCase()) ||
+              element.subjectArea.toLowerCase()
+                  .contains(value.toLowerCase()) ||
+              element.level.toLowerCase().contains(value.toLowerCase()))
           .toList();
     });
   }
 
-  void updateEnrolledList(){
+  void updateEnrolledList() {
     setState(() {
-      myList = userNotifier.filterCoursesByIds(displayList);
+      savedList = userNotifier.filterCoursesByIds(displayList);
+    });
+  }
+
+  void updateCompletedList(String value) {
+    setState(() {
+      displayCompletedList = courseNotifier.courseList
+          .where((element) =>
+              userNotifier.completedCourseIds.contains(element.courseId) &&
+                  element.courseName.toLowerCase()
+                      .contains(value.toLowerCase()) ||
+              element.subjectArea.toLowerCase()
+                  .contains(value.toLowerCase()) ||
+              element.level.toLowerCase().contains(value.toLowerCase()))
+          .toList();
     });
   }
 
   Future getModels() {
-    db.getUsers(userNotifier);
-    return db.getCourses(courseNotifier);
+    db.getUsersFromDb(userNotifier);
+    return db.getCoursesFromDb(courseNotifier);
   }
 
   int duplicateCount = 0;
@@ -150,17 +194,17 @@ class _MyCoursesState extends State<MyCourses>
                   ));
       case 1:
         return Expanded(
-            child: myList.isEmpty
+            child: savedList.isEmpty
                 ? const Center(
                     child: Text('You are not enrolled on any courses...'),
                   )
                 : RefreshIndicator(
                     color: kPrimaryColour,
-                    onRefresh: ()  {
+                    onRefresh: () {
                       HapticFeedback.heavyImpact();
                       setState(() {
                         updateEnrolledList();
-                        futureData =  getModels();
+                        futureData = getModels();
                       });
                       return futureData;
                     },
@@ -168,22 +212,21 @@ class _MyCoursesState extends State<MyCourses>
                       padding: const EdgeInsets.symmetric(horizontal: 25.0),
                       child: ListView.builder(
                           scrollDirection: Axis.vertical,
-                          itemCount: myList.length,
+                          itemCount: savedList.length,
                           itemBuilder: (context, index) {
                             return EnrolledCourseCard(
-                              displayList: myList,
+                              displayList: savedList,
                               index: index,
                               onBookmarkTapped: () {
                                 setState(() {
                                   HapticFeedback.heavyImpact();
-                                  myList[index].isSaved =
-                                      !myList[index].isSaved;
-                                  courseNotifier.currentCourse =
-                                      myList[index];
+                                  savedList[index].isSaved =
+                                      !savedList[index].isSaved;
+                                  courseNotifier.currentCourse = savedList[index];
                                   // Add the course as a favorite
                                   db.addSavedCourseSubCollection(
                                       index: index,
-                                      displayList: myList,
+                                      displayList: savedList,
                                       duplicateCount: duplicateCount,
                                       savedCourses: savedCoursesNotifier,
                                       courseNotifier: courseNotifier);
@@ -211,7 +254,7 @@ class _MyCoursesState extends State<MyCourses>
                               },
                               onCardPressed: () => {
                                 /// set current course to click card of user's courses
-                                courseNotifier.currentCourse = myList[index],
+                                courseNotifier.currentCourse = savedList[index],
                                 Navigator.pushNamed(
                                     context, PageRoutes.courseInfo),
                               },
@@ -231,20 +274,20 @@ class _MyCoursesState extends State<MyCourses>
                         scrollDirection: Axis.vertical,
                         itemCount: displayOngoingList.length,
                         itemBuilder: (context, index) {
-                          return ActiveCourseTile(
+                          return OngoingCourseTile(
                             valueNotifier:
                                 _setValueNotifier(displayOngoingList[index]),
                             courseName: displayOngoingList[index].courseName,
-                            courseImage: displayOngoingList[index].courseImage,
+                            courseImage: displayOngoingList[index].media[1],
                             remainingLessons:
-                                displayOngoingList[index].remainingLessons,
+                                displayOngoingList[index].totalLessons,
                           );
                         }),
                   ));
         break;
       case 3:
         return Expanded(
-            child: displayOngoingList.isEmpty
+            child: displayCompletedList.isEmpty
                 ? const Center(
                     child: Text('No completed courses found...'),
                   )
@@ -252,13 +295,11 @@ class _MyCoursesState extends State<MyCourses>
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
                     child: ListView.builder(
                         scrollDirection: Axis.vertical,
-                        itemCount: displayOngoingList.length,
+                        itemCount: displayCompletedList.length,
                         itemBuilder: (context, index) {
                           return CompletedCourseTile(
-                            courseName: displayOngoingList[index].courseName,
-                            courseImage: displayOngoingList[index].courseImage,
-                            remainingLessons:
-                                displayOngoingList[index].remainingLessons,
+                            index: index,
+                            displayList: displayCompletedList,
                           );
                         }),
                   ));
@@ -315,33 +356,13 @@ class _MyCoursesState extends State<MyCourses>
     }
   }
 
-  @override
-  void initState() {
-    _animationController = AnimationController(vsync: this);
-    courseNotifier = Provider.of<CourseNotifier>(context, listen: false);
-    savedCoursesNotifier =
-        Provider.of<SavedCoursesNotifier>(context, listen: false);
-    userRef = FirebaseFirestore.instance.collection('Users').doc(userId);
-    userNotifier = Provider.of<UserNotifier>(context, listen: false);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      myList = userNotifier.filterCoursesByIds(courseNotifier.courseList);
-    });
-
-    futureData = getModels();
-    displayOngoingList = List.from(_myCourses);
-    displayList = List.from(courseNotifier.courseList);
-
-    super.initState();
-  }
-
   getMyCourses() async {
-    await db.getCourses(courseNotifier)
-        .then((value) {
+    await db.getCoursesFromDb(courseNotifier).then((value) {
       setState(() {
-        myList = userNotifier.filterCoursesByIds(value);
+        savedList = userNotifier.filterCoursesByIds(value);
       });
     });
-    return myList;
+    return savedList;
   }
 
   @override
@@ -350,7 +371,7 @@ class _MyCoursesState extends State<MyCourses>
     super.dispose();
   }
 
-  ValueNotifier<double> _setValueNotifier(MyCourse course) {
+  ValueNotifier<double> _setValueNotifier(Course course) {
     return _valueNotifier =
         ValueNotifier(calculateCompletionPercentage(course));
   }
@@ -387,8 +408,7 @@ class _MyCoursesState extends State<MyCourses>
                     ),
                     SizedBox(
                       child: Padding(
-                        padding:
-                            const EdgeInsets.only(left: 25.0, right: 20),
+                        padding: const EdgeInsets.only(left: 25.0, right: 20),
                         child: TextField(
                           onChanged: (value) {
                             updateList(value);
@@ -449,16 +469,16 @@ class _MyCoursesState extends State<MyCourses>
     );
   }
 
-  static final List<MyCourse> _myCourses = [
-    MyCourse("Introduction to Programming", "assets/images/c2.jpg", 20, 15),
-    MyCourse("Web Development with HTML/CSS", "assets/images/c2.jpg", 30, 20),
-    MyCourse("Data Science Fundamentals", "assets/images/c2.jpg", 25, 5),
-    MyCourse("Mobile App Development", "assets/images/c2.jpg", 40, 10),
-  ];
+  // static final List<MyCourse> _myCourses = [
+  //   MyCourse("Introduction to Programming", "assets/images/c2.jpg", 20, 15),
+  //   MyCourse("Web Development with HTML/CSS", "assets/images/c2.jpg", 30, 20),
+  //   MyCourse("Data Science Fundamentals", "assets/images/c2.jpg", 25, 5),
+  //   MyCourse("Mobile App Development", "assets/images/c2.jpg", 40, 10),
+  // ];
 
-  double calculateCompletionPercentage(MyCourse course) {
+  double calculateCompletionPercentage(Course course) {
     double completionPercentage =
-        (course.numLessons - course.remainingLessons) / course.numLessons * 100;
+        (course.totalLessons - course.totalLessons) / course.totalLessons * 100;
     return completionPercentage;
   }
 }

@@ -27,6 +27,7 @@ class UserNotifier extends ChangeNotifier {
 
   List<student.UserModel> _usersList = [];
   List _userCourseIds = [];
+  List _completedCourseIds = [];
   List _userInterests = [];
   List _skillLevel = [];
   int _studentLevel = 0;
@@ -73,6 +74,13 @@ class UserNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  List get completedCourseIds => _completedCourseIds;
+
+  set completedCourseIds(List value) {
+    _completedCourseIds = value;
+    notifyListeners();
+  }
+
 
   ///A getter for the list of users
   UnmodifiableListView<student.UserModel> get usersList =>
@@ -100,7 +108,7 @@ class UserNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  ///Sets or updates list downloaded from the database using the model api
+  ///Sets or updates list of users downloaded from the database using the model api
   set usersList(List<student.UserModel> list) {
     _usersList = list;
     notifyListeners();
@@ -138,13 +146,13 @@ class UserNotifier extends ChangeNotifier {
 
   bool match = false;
 
-  List getCourseIds() {
-    List ids = [];
+  List getUserCourseIds() {
+    List currentIds = [];
     for (int i = 0; i < usersList.length; i++) {
       if (usersList[i].email == user?.email) {
         match = true;
-        ids = usersList[i].courses!;
-        userCourseIds = ids;
+        currentIds = usersList[i].courses!;
+        userCourseIds = currentIds;
       }
     }
     if (match) {
@@ -152,7 +160,24 @@ class UserNotifier extends ChangeNotifier {
     } else {
       print('user not found');
     }
-    return ids;
+    return currentIds;
+  }
+
+  List getCompletedCourseIds() {
+    List completedIds = [];
+    for (int i = 0; i < usersList.length; i++) {
+      if (usersList[i].email == user?.email) {
+        match = true;
+        completedIds = usersList[i].completedCourses!;
+        completedCourseIds = completedIds;
+      }
+    }
+    if (match) {
+      print('user found!');
+    } else {
+      print('user not found');
+    }
+    return completedIds;
   }
 
   List getInterests() {
@@ -194,7 +219,7 @@ class UserNotifier extends ChangeNotifier {
 
 
   List<Course> filterCoursesByIds(List<Course> courses) {
-    List ids = getCourseIds();
+    List ids = getUserCourseIds();
     List<Course> filteredCourses = [];
     for (var course in courses) {
       //print(course.courseId);

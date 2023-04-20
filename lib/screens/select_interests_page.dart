@@ -1,5 +1,5 @@
 import 'package:chips_choice/chips_choice.dart';
-import 'package:course_select/shared_widgets/gradient_button.dart';
+import 'package:course_select/shared_widgets/display_elements/gradient_button.dart';
 import 'package:course_select/firestore/firebase_data_management.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';

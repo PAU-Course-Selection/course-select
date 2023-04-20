@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 import '../../constants/constants.dart';
 import '../../models/course_data_model.dart';
 import '../../routes/routes.dart';
-import '../../shared_widgets/saved_course_card.dart';
+import '../../shared_widgets/list_items/saved_course_card.dart';
 import '../../auth/auth.dart';
 import '../../firestore/firebase_data_management.dart';
 import '../../models/saved_course_data_model.dart';

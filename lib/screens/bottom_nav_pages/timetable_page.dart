@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:course_select/constants/constants.dart';
 import 'package:course_select/controllers/lesson_notifier.dart';
 import 'package:course_select/controllers/user_notifier.dart';
@@ -33,7 +32,7 @@ class _TimetableState extends State<Timetable> {
     lessonNotifier = Provider.of<LessonNotifier>(context, listen: false);
     userNotifier = Provider.of<UserNotifier>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      courses = userNotifier.getCourseIds();
+      courses = userNotifier.getUserCourseIds();
       getLessons();
     });
   }

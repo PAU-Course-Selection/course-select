@@ -6,7 +6,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../../constants/constants.dart';
 import '../../screens/search_sheet.dart';
-import '../gradient_button.dart';
+import 'gradient_button.dart';
 
 /// [EmptyFavouritesPage] shows the substitute for the empty saved courses list
 /// This page tells a user they have no saved courses and requests that they

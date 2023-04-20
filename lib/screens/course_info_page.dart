@@ -6,9 +6,10 @@ import 'package:course_select/controllers/lesson_notifier.dart';
 import 'package:course_select/models/user_data_model.dart';
 import 'package:course_select/shared_widgets/dialogs/android_confirmation_dialog.dart';
 import 'package:course_select/shared_widgets/dialogs/android_limitation_dialog.dart';
-import 'package:course_select/shared_widgets/gradient_button.dart';
+import 'package:course_select/shared_widgets/dialogs/ios_limitation_dialog.dart';
+import 'package:course_select/shared_widgets/display_elements/gradient_button.dart';
 import 'package:course_select/shared_widgets/list_items/course_card.dart';
-import 'package:course_select/shared_widgets/video_player.dart';
+import 'package:course_select/shared_widgets/display_elements/video_player.dart';
 import 'package:course_select/utils/color_picker.dart';
 import 'package:course_select/firestore/firebase_data_management.dart';
 import 'package:flutter/cupertino.dart';
@@ -24,8 +25,7 @@ import 'dart:io' show Platform;
 import '../controllers/user_notifier.dart';
 import '../models/course_data_model.dart';
 import '../routes/routes.dart';
-import '../shared_widgets/ios_confirmation_dialog.dart';
-import '../shared_widgets/ios_limitation_dialog.dart';
+import '../shared_widgets/dialogs/ios_confirmation_dialog.dart';
 import '../constants/enums.dart';
 
 class CourseInfoPage extends StatefulWidget {
@@ -48,10 +48,11 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
   late int numLessons;
   Image img = Image.asset('assets/images/c2.jpg');
   String videoUrl = '';
-  var userCourses;
+  List userCourses = [];
+  List completedCourses = [];
 
   final ScrollController _controller =
-      ScrollController(initialScrollOffset: 60.w);
+  ScrollController(initialScrollOffset: 60.w);
 
   @override
   void initState() {
@@ -64,7 +65,8 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     videoUrl = _courseNotifier.currentCourse.media[0];
     getNumLessons();
     getClassmates();
-    userCourses = _userNotifier.getCourseIds();
+    userCourses = _userNotifier.getUserCourseIds();
+    completedCourses = _userNotifier.getCompletedCourseIds();
 
     recommendations = getRecommendation(
         _courseNotifier.courseList, _courseNotifier.currentCourse.prereqs);
@@ -127,8 +129,8 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     });
   }
 
-  String formatPrerequisites(
-      List prerequisites, List<Course> courses, List enrolledCourses) {
+  String formatPrerequisites(List prerequisites, List<Course> courses,
+      List enrolledCourses) {
     final reqCourseIds = <String>{};
 
     for (final course in courses) {
@@ -172,24 +174,36 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
     if (userCourses.contains(_courseNotifier.currentCourse.courseId)) {
       return GradientButton(
         onPressed: () {
+          completedCourses.add(_courseNotifier.currentCourse.courseId);
+          userCourses.remove(_courseNotifier.currentCourse.courseId);
+
+          _db.updateUserCourses(
+              _userNotifier, _courseNotifier, _lessonNotifier);
+          _homePageNotifier.isStateChanged = true;
+
+          _db.updateUserCompletedCourses(
+              _userNotifier, _courseNotifier);
+          _homePageNotifier.isStateChanged = true;
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              elevation: 1,
-              behavior: SnackBarBehavior.fixed,
-              backgroundColor: kKindaGreen,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5)),
-              content: const Center(
-                  child: Text(
-                "Yayy! Course Completed!",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 15.0,
-                    fontFamily: "Robots",
-                    fontWeight: FontWeight.bold),
-              )),
-              duration: const Duration(seconds: 1),
-            ),
+          SnackBar(
+          elevation: 1,
+          behavior: SnackBarBehavior.fixed,
+          backgroundColor: kKindaGreen,
+          shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5)),
+          content: const Center(
+          child: Text(
+          "Yayy! Course Completed!",
+          style: TextStyle(
+          color: Colors.black,
+          fontSize: 15.0,
+          fontFamily: "Robots",
+          fontWeight: FontWeight.bold),
+          )),
+          duration: const Duration(seconds: 1)
+          ,
+          )
+          ,
           );
         },
         buttonText: 'Complete Course',
@@ -198,9 +212,15 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
       return GradientButton(
         onPressed: () {
           if (_db.getTotalWeeklyHours(
-                      _userNotifier.userCourseIds, _courseNotifier) +
-                  _courseNotifier.currentCourse.hoursPerWeek >
+              _userNotifier.userCourseIds, _courseNotifier) +
+              _courseNotifier.currentCourse.hoursPerWeek >
               19) {
+            print('Total weekly hours in currently enrolled courses${_db
+                .getTotalWeeklyHours(
+                _userNotifier.userCourseIds, _courseNotifier)}');
+            print('Current course weekly length:${_courseNotifier.currentCourse
+                .hoursPerWeek}');
+
             _courseNotifier.isHourlyLimitReached = true;
           }
           // _homePageNotifier.isStateChanged = true;
@@ -237,7 +257,8 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
                   isMatching: isMatching,
                   db: _db,
                   userNotifier: _userNotifier,
-                  homePageNotifier: _homePageNotifier, lessonNotifier: _lessonNotifier,
+                  homePageNotifier: _homePageNotifier,
+                  lessonNotifier: _lessonNotifier,
                 );
               }
             },
@@ -260,14 +281,14 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
       return const AndroidLimitationDialog(
         preReqs: '',
         message:
-            'Enrolling on this course will cause you to exceed the 20 hours weekly limit. Please complete some courses before adding more.',
+        'Enrolling on this course will cause you to exceed the 20 hours weekly limit. Please complete some courses before adding more.',
       );
     }
     if (preReqs.isNotEmpty && !isMatching) {
       return AndroidLimitationDialog(
         preReqs: preReqs,
         message:
-            'Based on your skill level and this course\'s prerequisite requirements, '
+        'Based on your skill level and this course\'s prerequisite requirements, '
             'we recommend that you take ',
       );
     } else {
@@ -278,7 +299,8 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
             : preReqs,
         db: db,
         userNotifier: userNotifier,
-        homePageNotifier: homePageNotifier, lessonNotifier: _lessonNotifier,
+        homePageNotifier: homePageNotifier,
+        lessonNotifier: _lessonNotifier,
       );
     }
   }
@@ -296,7 +318,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
       return IOSLimitationDialog(
         preReqs: '',
         message:
-            'Enrolling on this course will cause you to exceed the 20 hours weekly limit. Please complete some courses before adding more.',
+        'Enrolling on this course will cause you to exceed the 20 hours weekly limit. Please complete some courses before adding more.',
         onTap: _setConflictState,
       );
     }
@@ -312,7 +334,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
       return IOSLimitationDialog(
         preReqs: preReqs,
         message:
-            'Based on your skill level and this course\'s prerequisite requirements, '
+        'Based on your skill level and this course\'s prerequisite requirements, '
             'we recommend that you take ',
         onTap: _setConflictState,
       );
@@ -324,20 +346,21 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
             : preReqs,
         db: db,
         userNotifier: userNotifier,
-        homePageNotifier: homePageNotifier, lessonNotifier: lessonNotifier,
+        homePageNotifier: homePageNotifier,
+        lessonNotifier: lessonNotifier,
       );
     }
   }
 
-   _setConflictState(){
+  _setConflictState() {
     Navigator.pop(context);
     setState(() {
-      _userNotifier.isConflict =false;
+      _userNotifier.isConflict = false;
       print('called');
-      _userNotifier.getCourseIds();
+      _userNotifier.getUserCourseIds();
       print(_userNotifier.isConflict);
     });
-   }
+  }
 
   @override
   void didChangeDependencies() {
@@ -428,8 +451,10 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
                     foregroundColor: kTeal,
                     elevation: 0,
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    onPressed: () => Share.share(
-                        "Check out the ${_courseNotifier.currentCourse.courseName} course in the Study Sprint app."),
+                    onPressed: () =>
+                        Share.share(
+                            "Check out the ${_courseNotifier.currentCourse
+                                .courseName} course in the Study Sprint app."),
                     child: const Icon(Icons.share),
                   ),
                 ],
@@ -451,9 +476,9 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
                   trimCollapsedText: 'Show more',
                   trimExpandedText: '..Show less',
                   moreStyle:
-                      TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                  TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                   lessStyle:
-                      TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                  TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                 )),
           ),
           //Classmates Heading
@@ -478,96 +503,96 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
                   ),
                   child: classmates.isNotEmpty
                       ? ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: classmates.length,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 5.0, horizontal: 10),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  CircleAvatar(
-                                      radius: 30,
-                                      backgroundColor: Colors.white,
-                                      child: ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(75.0),
-                                        child: CachedNetworkImage(
-                                          height: 60.0,
-                                          width: 60.0,
-                                          fit: BoxFit.cover,
-                                          imageUrl: classmates[index].avatar!,
-                                          placeholder: (context, url) {
-                                            return const CircularProgressIndicator();
-                                          },
-                                          errorWidget: (context, url, error) =>
-                                              const Icon(
-                                            Icons.person,
-                                            color: Colors.grey,
-                                          ),
-                                        ),
-                                      )),
-                                  Text(
-                                    classmates[index].displayName!,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w600),
-                                  )
-                                ],
-                              ),
-                            );
-                          })
+                      scrollDirection: Axis.horizontal,
+                      itemCount: classmates.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 5.0, horizontal: 10),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              CircleAvatar(
+                                  radius: 30,
+                                  backgroundColor: Colors.white,
+                                  child: ClipRRect(
+                                    borderRadius:
+                                    BorderRadius.circular(75.0),
+                                    child: CachedNetworkImage(
+                                      height: 60.0,
+                                      width: 60.0,
+                                      fit: BoxFit.cover,
+                                      imageUrl: classmates[index].avatar!,
+                                      placeholder: (context, url) {
+                                        return const CircularProgressIndicator();
+                                      },
+                                      errorWidget: (context, url, error) =>
+                                      const Icon(
+                                        Icons.person,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  )),
+                              Text(
+                                classmates[index].displayName!,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w600),
+                              )
+                            ],
+                          ),
+                        );
+                      })
                       : const Center(
-                          child: Text('No one has enrolled on this course yet'),
-                        ))),
+                    child: Text('No one has enrolled on this course yet'),
+                  ))),
           recommendations.isNotEmpty
               ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 25.0, bottom: 10, top: 10),
-                      child: Text(
-                        "Recommended",
-                        style: kHeadlineMedium,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 25.0),
-                      child: SizedBox(
-                        height: 250.h,
-                        width: double.infinity,
-                        child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: recommendations.length,
-                            itemBuilder: (context, index) {
-                              var courseName =
-                                  recommendations[index].courseName;
-                              return GestureDetector(
-                                onTap: () {
-                                  _courseNotifier.currentCourse =
-                                      recommendations[index];
-                                  Navigator.pushNamed(
-                                      context, PageRoutes.courseInfo);
-                                },
-                                child: CourseCard(
-                                  courseTitle: courseName.length > 30
-                                      ? courseName.substring(0, 30) + '...'
-                                      : courseName,
-                                  courseImage: recommendations[index].media[1],
-                                  subjectArea:
-                                      recommendations[index].subjectArea,
-                                  hoursPerWeek: recommendations[index].duration,
-                                  numLessons:
-                                      recommendations[index].totalLessons,
-                                ),
-                              );
-                            }),
-                      ),
-                    ),
-                  ],
-                )
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 25.0, bottom: 10, top: 10),
+                child: Text(
+                  "Recommended",
+                  style: kHeadlineMedium,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 25.0),
+                child: SizedBox(
+                  height: 250.h,
+                  width: double.infinity,
+                  child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: recommendations.length,
+                      itemBuilder: (context, index) {
+                        var courseName =
+                            recommendations[index].courseName;
+                        return GestureDetector(
+                          onTap: () {
+                            _courseNotifier.currentCourse =
+                            recommendations[index];
+                            Navigator.pushNamed(
+                                context, PageRoutes.courseInfo);
+                          },
+                          child: CourseCard(
+                            courseTitle: courseName.length > 30
+                                ? courseName.substring(0, 30) + '...'
+                                : courseName,
+                            courseImage: recommendations[index].media[1],
+                            subjectArea:
+                            recommendations[index].subjectArea,
+                            hoursPerWeek: recommendations[index].duration,
+                            numLessons:
+                            recommendations[index].totalLessons,
+                          ),
+                        );
+                      }),
+                ),
+              ),
+            ],
+          )
               : Container(),
           const SizedBox(
             height: 200,

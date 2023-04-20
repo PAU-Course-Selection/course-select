@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../routes/routes.dart';
-import '../../shared_widgets/gradient_button.dart';
+import '../../shared_widgets/display_elements/gradient_button.dart';
 import '../../auth/auth.dart';
 
 class LoginRegisterPage extends StatefulWidget {

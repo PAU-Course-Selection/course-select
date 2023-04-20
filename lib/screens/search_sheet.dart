@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import '../controllers/course_notifier.dart';
 import '../models/course_data_model.dart';
 import '../routes/routes.dart';
-import '../shared_widgets/mini_course_card.dart';
+import '../shared_widgets/list_items/mini_course_card.dart';
 import '../constants/enums.dart';
 import '../firestore/firebase_data_management.dart';
 
@@ -246,7 +246,7 @@ class _SearchSheetState extends State<SearchSheet>
 
   Future getModels() {
     //db.getUsers(userNotifier);
-    return db.getCourses(courseNotifier);
+    return db.getCoursesFromDb(courseNotifier);
   }
 
   String getSearchKeyword(CategorySearchFilter filter) {

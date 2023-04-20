@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import '../../shared_widgets/gradient_button.dart';
+import '../../shared_widgets/display_elements/gradient_button.dart';
 
 ///Shows the screen for users to request a new password
 class ForgotPasswordPage extends StatefulWidget {

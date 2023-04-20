@@ -60,7 +60,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
   }
 
   Future getData() async {
-    var users = await db.getUsers(userNotifier);
+    var users = await db.getUsersFromDb(userNotifier);
 
     userNotifier.updateUserDetails();
     userNotifier.getStudentLevel();
@@ -282,7 +282,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         ),
                         Column(
                           children: [
-                            Text('1',
+                            Text(
+                                userNotifier.completedCourseIds.length
+                                    .toString(),
                                 style: kHeadlineMedium.copyWith(color: kTeal)),
                             const Text('Completed'),
                           ],
@@ -553,10 +555,9 @@ _showMultiSelect(
     DatabaseManager db,
     UserNotifier userNotifier,
     Function onComplete) {
-
   List<dynamic> userInterests = userNotifier.userInterests;
-  if(userInterests.isEmpty){
-    userInterests= userNotifier.getInterests();
+  if (userInterests.isEmpty) {
+    userInterests = userNotifier.getInterests();
   }
   studentLevel = userNotifier.studentLevel;
 
